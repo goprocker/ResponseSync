@@ -5,6 +5,10 @@ import { MOCK_EVACUATION_ROUTE } from '../shared/mockDigitalTwinData';
 export function useEvacuationRoute(shelters: EmergencyShelter[]) {
   const [evacuationRoute, setEvacuationRoute] = useState<EvacuationRoute>(MOCK_EVACUATION_ROUTE);
   const [isCalculating, setIsCalculating] = useState<boolean>(false);
+  const [currentOrigin, setCurrentOrigin] = useState<{ name: string; coords: [number, number] }>({
+    name: 'Velachery 100ft Road (Vijaya Nagar Junction)',
+    coords: [12.9785, 80.2205]
+  });
 
   const calculateRoute = useCallback(async (
     originName: string,
@@ -12,6 +16,8 @@ export function useEvacuationRoute(shelters: EmergencyShelter[]) {
     shelterId: string
   ) => {
     setIsCalculating(true);
+    setCurrentOrigin({ name: originName, coords: originCoords });
+
     const shelter = shelters.find(s => s.id === shelterId) || shelters[0] || {
       id: 'sh-01',
       name: 'Velachery Relief Camp',
@@ -58,12 +64,13 @@ export function useEvacuationRoute(shelters: EmergencyShelter[]) {
   }, [shelters]);
 
   const selectShelter = useCallback((shelterId: string) => {
-    calculateRoute('Velachery 100ft Road (Vijaya Nagar Junction)', [12.9785, 80.2205], shelterId);
-  }, [calculateRoute]);
+    calculateRoute(currentOrigin.name, currentOrigin.coords, shelterId);
+  }, [calculateRoute, currentOrigin]);
 
   return {
     evacuationRoute,
     isCalculating,
+    currentOrigin,
     calculateRoute,
     selectShelter
   };

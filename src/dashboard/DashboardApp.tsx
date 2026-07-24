@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   DisasterType,
   AgencyRole,
@@ -31,6 +31,7 @@ import { DigitalTwinMap } from './components/DigitalTwinMap';
 import { AuthorityDashboard } from './components/AuthorityDashboard';
 import { SimulationStudio } from './components/SimulationStudio';
 import { CitizenPortal } from './components/CitizenPortal';
+import { AnalyticsHub } from './components/AnalyticsHub';
 import { ExplainabilityModal } from './components/ExplainabilityModal';
 import { ResourceDispatchModal } from './components/ResourceDispatchModal';
 import { AlertNotificationBanner } from './components/AlertNotificationBanner';
@@ -41,6 +42,7 @@ import ResourcesPanel from './components/ResourcesPanel';
 import SheltersPanel from './components/SheltersPanel';
 import IncidentsPanel from './components/IncidentsPanel';
 import SettingsPanel from './components/SettingsPanel';
+import CascadingImpactView from './components/CascadingImpactView';
 
 import { 
   LayoutDashboard, 
@@ -57,7 +59,9 @@ import {
   ChevronDown,
   RefreshCw,
   Activity,
-  AlertTriangle
+  AlertTriangle,
+  GitBranch,
+  Zap
 } from 'lucide-react';
 
 import { useSSEStream } from '../hooks/useSSEStream';
@@ -75,21 +79,18 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
   const [agencyRole, setAgencyRole] = useState<AgencyRole>('authority');
   const [activeTab, setActiveTabState] = useState<string>(initialTab || 'dashboard');
 
-  // Sync initialTab only on first mount via ref guard
-  const initialTabSyncedRef = useRef(false);
   useEffect(() => {
-    if (!initialTabSyncedRef.current && initialTab) {
-      initialTabSyncedRef.current = true;
+    if (initialTab && initialTab !== activeTab) {
       setActiveTabState(initialTab);
     }
   }, [initialTab]);
 
-  const setActiveTab = useCallback((tab: string) => {
+  const setActiveTab = (tab: string) => {
     setActiveTabState(tab);
     if (onNavigateTab) {
       onNavigateTab(tab);
     }
-  }, [onNavigateTab]);
+  };
 
   const [zones, setZones] = useState<ZoneRisk[]>(INITIAL_ZONES);
   const [sensors, setSensors] = useState<IoTSensorNode[]>(INITIAL_IOT_SENSORS);
@@ -101,26 +102,31 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
   const [recommendations, setRecommendations] = useState<ExplainableAIRecommendation[]>(INITIAL_RECOMMENDATIONS);
   const [alerts, setAlerts] = useState<AutomatedAlert[]>(INITIAL_ALERTS);
 
+  // Fetch active citizen reports from backend/Supabase on mount
+  useEffect(() => {
+    async function fetchReports() {
+      try {
+        const resp = await fetch('/api/reports');
+        if (resp.ok) {
+          const json = await resp.json();
+          if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+            setReports(json.data);
+          }
+        }
+      } catch (err) {
+        console.warn('Initial reports fetch warning:', err);
+      }
+    }
+    fetchReports();
+  }, []);
+
   // Custom Hooks
-  const { evacuationRoute, calculateRoute, selectShelter } = useEvacuationRoute(shelters);
-
-  // Stable SSE callbacks using useCallback + functional updaters (no stale closures)
-  const handleNewReport = useCallback((newReport: CitizenReport) => {
-    setReports(prev => [newReport, ...prev]);
-  }, []);
-
-  const handleNewLog = useCallback((newLog: AgentActivityLog) => {
-    setAgentLogs(prev => [newLog, ...prev]);
-  }, []);
-
-  const handleNewAlert = useCallback((newAlert: AutomatedAlert) => {
-    setAlerts(prev => [newAlert, ...prev]);
-  }, []);
+  const { evacuationRoute, isCalculating, calculateRoute, selectShelter } = useEvacuationRoute(shelters);
 
   useSSEStream({
-    onNewReport: handleNewReport,
-    onNewLog: handleNewLog,
-    onNewAlert: handleNewAlert
+    onNewReport: (newReport) => setReports(prev => [newReport, ...prev]),
+    onNewLog: (newLog) => setAgentLogs(prev => [newLog, ...prev]),
+    onNewAlert: (newAlert) => setAlerts(prev => [newAlert, ...prev])
   });
 
   const [timeHorizon, setTimeHorizon] = useState<'live' | '30m' | '1h' | '2h'>('live');
@@ -332,6 +338,7 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'cascading_impact', label: 'Cascading AI', icon: Zap },
     { id: 'incidents', label: 'Incidents', icon: ShieldAlert, badge: activeReportsCount },
     { id: 'twin_map', label: 'Map View', icon: Map },
     { id: 'resources', label: 'Resources', icon: Truck },
@@ -363,7 +370,7 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
         </div>
 
         {/* Sidebar Navigation Links */}
-        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+        <nav className="flex-1 p-3 space-y-1 overflow-y-auto no-scrollbar">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -494,7 +501,7 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
         </header>
 
         {/* 3. Main Workspace Screen */}
-        <main className={`flex-1 min-h-0 relative overflow-hidden ${activeTab === 'twin_map' ? 'p-0' : 'p-6 overflow-y-auto'}`}>
+        <main className={`flex-1 min-h-0 relative overflow-hidden ${activeTab === 'twin_map' ? 'p-0' : 'p-6 overflow-y-auto no-scrollbar'}`}>
           
           {/* Tab Render Router */}
           {activeTab === 'dashboard' && (
@@ -513,6 +520,10 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
               onSelectZone={(zoneId) => setDispatchZoneId(zoneId)}
               onNavigateToTab={setActiveTab}
             />
+          )}
+
+          {activeTab === 'cascading_impact' && (
+            <CascadingImpactView onNavigateToTab={setActiveTab} />
           )}
 
           {activeTab === 'incidents' && (
@@ -536,6 +547,8 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
               onSelectZone={(zone) => setDispatchZoneId(zone.id)}
               onSelectResource={(res) => {}}
               onSelectReport={(rep) => {}}
+              onCalculateEvacuationRoute={calculateRoute}
+              isCalculatingRoute={isCalculating}
             />
           )}
 
@@ -584,6 +597,8 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
               onSubmitReport={handleSubmitCitizenReport}
               evacuationRoute={evacuationRoute}
               onSelectRouteShelter={handleSelectRouteShelter}
+              onCalculateEvacuationRoute={calculateRoute}
+              onNavigateToMap={() => setActiveTab('twin_map')}
             />
           )}
 
