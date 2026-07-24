@@ -1,31 +1,8 @@
-# Virtual Environment
-.venv/
-venv/
-env/
-ENV/
-
-# Python cache & build outputs
-__pycache__/
-*.py[cod]
-*$py.class
+node_modules/
 build/
 dist/
-*.egg-info/
-
-# Environment Variables
-.env
-.env.local
-
-# IDE & Editors
-.vscode/
-.idea/
-*.swp
-
-# Node dependencies
-node_modules/
-
-# Testing & Logs
-.pytest_cache/
-.coverage
-htmlcov/
+coverage/
+.DS_Store
 *.log
+.env*
+!.env.example

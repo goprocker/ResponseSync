@@ -1,1 +1,0 @@
-"""ResponSync Backend Application Package."""
