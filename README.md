@@ -29,7 +29,12 @@
 
 | Role | Name | GitHub |
 | :--- | :--- | :--- |
-| **Team Lead / Full-Stack** | Mohan | [@goprocker](https://github.com/goprocker) |
+| **Team Lead / Frontend** | Gopinath R | [@goprocker](https://github.com/goprocker) |
+| ** Backend** | Meda Venkata Sai Charan | [@NINJA981](https://github.com/NINJA981) |
+| ** Database & Mangenment** | Gopi K | [@K-Gopi2007](https://github.com/K-Gopi2007) |
+| ** Simulations** | Anaya Harish | [@ananyadharish](https://github.com/ananyadharish) |
+| ** Research & Documentation** | Shivani SK | [@shivaniisk](https://github.com/shivaniisk) |
+
 
 > **Repository:** [github.com/goprocker/ResponseSync](https://github.com/goprocker/ResponseSync)
 
