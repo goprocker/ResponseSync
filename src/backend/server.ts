@@ -31,6 +31,27 @@ const ai = geminiKey ? new GoogleGenAI({
   }
 }) : null;
 
+async function callGeminiContent(aiClient: any, params: { model?: string, contents: any, config?: any }) {
+  if (!aiClient) return null;
+  const modelName = params.model || 'gemini-2.5-flash';
+  try {
+    const response = await aiClient.models.generateContent({
+      model: modelName,
+      contents: params.contents,
+      config: params.config
+    });
+    return response;
+  } catch (err: any) {
+    const isQuota = err?.status === 'RESOURCE_EXHAUSTED' || err?.code === 429 || (err?.message && (err.message.includes('quota') || err.message.includes('429') || err.message.includes('RESOURCE_EXHAUSTED')));
+    if (isQuota) {
+      console.log(`[Gemini API] Quota limit active (429). Seamlessly using physics & rule engine fallback.`);
+    } else {
+      console.warn(`[Gemini API] Request notice:`, err?.message || err);
+    }
+    return null;
+  }
+}
+
 // Initialize Supabase Client with graceful fallback
 const supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseKey = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_KEY || '';
@@ -446,6 +467,452 @@ app.get('/api/evacuation', (req, res) => {
     hazardsAvoided: ['Guindy Railway Subway (Submerged 2.8ft)', 'Velachery Lake Sluice Breach Zone'],
     timestamp: new Date().toISOString()
   });
+});
+
+// AI Multi-Disaster Cascading Impact Prediction & Response Optimization Endpoint
+app.post('/api/ai/cascading-impact', async (req, res) => {
+  try {
+    const {
+      activeDisasterType = 'flood',
+      rainfallIncreasePct = 20,
+      damDischargeRateM3s = 250,
+      closedBridges = [],
+      disabledHospitals = [],
+      disabledPowerStations = [],
+      populationSurgeFactor = 1.0,
+      customNotes = ''
+    } = req.body;
+
+    const disaster = (activeDisasterType || 'flood').toLowerCase();
+
+    // Multi-disaster intensity calculations
+    let intensityFactor = 1.0;
+    if (disaster === 'flood') {
+      intensityFactor = (1 + (rainfallIncreasePct / 100)) * (1 + ((damDischargeRateM3s - 150) / 400));
+    } else if (disaster === 'cyclone') {
+      intensityFactor = (1 + (rainfallIncreasePct / 80)) * 1.3;
+    } else if (disaster === 'earthquake') {
+      intensityFactor = (1 + (rainfallIncreasePct / 100)) * 1.5;
+    } else if (disaster === 'wildfire') {
+      intensityFactor = (1 + (rainfallIncreasePct / 90)) * 1.4;
+    } else if (disaster === 'landslide') {
+      intensityFactor = (1 + (rainfallIncreasePct / 85)) * 1.25;
+    } else if (disaster === 'tsunami') {
+      intensityFactor = (1 + (rainfallIncreasePct / 70)) * 1.6;
+    }
+    const combinedMultiplier = Math.min(3.2, Math.max(1.0, intensityFactor));
+
+    let geminiCustomAnalysis = '';
+
+    if (ai) {
+      const prompt = `You are the Lead Disaster Command AI Agent for an Urban Infrastructure Cascading Failure Optimization System.
+Scenario Parameters:
+- Active Disaster Type: ${disaster.toUpperCase()}
+- Escalation Parameter 1 (Rain/Wind/Magnitude): +${rainfallIncreasePct}%
+- Escalation Parameter 2 (Discharge/Surge/Depth): ${damDischargeRateM3s} units
+- Disabled/Blocked Infrastructure Nodes: ${[...closedBridges, ...disabledHospitals, ...disabledPowerStations].join(', ') || 'None'}
+- Population Surge Factor: ${populationSurgeFactor}x
+- Operator Query: "${customNotes || 'Provide N-th order risk analysis and life safety recommendations.'}"
+
+Respond strictly with a detailed executive response in JSON format with these keys:
+{
+  "primaryFailureCause": "string describing root trigger",
+  "criticalNodeAtRisk": "string naming the highest vulnerability asset",
+  "chainReactionSummary": "string describing propagation path",
+  "recommendedStrategyRationale": "string explaining optimal intervention strategy"
+}`;
+
+      const response = await callGeminiContent(ai, {
+        model: 'gemini-2.5-flash',
+        contents: prompt
+      });
+      geminiCustomAnalysis = response?.text || '';
+    }
+
+    // Dynamic Disaster Specific Node Topology
+    let baseNodes: any[] = [];
+    let predictions: any[] = [];
+    let strategies: any[] = [];
+
+    if (disaster === 'cyclone') {
+      baseNodes = [
+        { id: 'node-emb-1', name: 'Ennore Coastal Storm Embankment', category: 'Coastal Defenses', lat: 13.2000, lng: 80.3200, baseProb: 85, capacity: '4.5m Wave Elevation', currentLoad: `${Math.round(95 * combinedMultiplier)}% Pressure`, zoneName: 'Coastal North Sector' },
+        { id: 'node-fz-1', name: 'Ennore Coastal Inundation Zone', category: 'Flood Zones', lat: 13.2050, lng: 80.3220, baseProb: 88, capacity: '4.8 sq km Surge Area', currentLoad: `${Math.round(2.1 * combinedMultiplier * 10)/10}m Surge Depth`, zoneName: 'Coastal Sector' },
+        { id: 'node-pwr-1', name: 'North Chennai 230kV Power Grid Station', category: 'Power Stations', lat: 13.2100, lng: 80.3150, baseProb: 75, capacity: '230 kV Grid / 120 MW', currentLoad: `${Math.round(85 * Math.min(1.2, combinedMultiplier))}% Grid Load`, zoneName: 'Industrial Power Sector' },
+        { id: 'node-hosp-1', name: 'North Chennai General Emergency Hospital', category: 'Hospitals', lat: 13.1950, lng: 80.3050, baseProb: 60, capacity: '450 Beds (60 ICU)', currentLoad: `${Math.min(100, Math.round(90 * combinedMultiplier))}% Occupied`, zoneName: 'North Metro Sector' },
+        { id: 'node-rd-2', name: 'Ennore Port Express Coastal Flyover', category: 'Roads', lat: 13.2150, lng: 80.3250, baseProb: 92, capacity: 'High Wind Exposure', currentLoad: 'Blocked by Debris', zoneName: 'Port Express Corridor' },
+        { id: 'node-rd-3', name: 'Tiruvottiyur High Road Grid', category: 'Roads', lat: 13.1800, lng: 80.3000, baseProb: 70, capacity: '7,500 Veh/Hr', currentLoad: 'Severe Traffic Jam', zoneName: 'North Arterial' },
+        { id: 'node-com-1', name: 'Coastal Maritime Radar & Telecom Tower', category: 'Communication Towers', lat: 13.2020, lng: 80.3280, baseProb: 65, capacity: '120 km Radar Range / 5G', currentLoad: 'Wind Gust Stress', zoneName: 'Maritime Control' },
+        { id: 'node-sh-1', name: 'High-Ground Cyclone Relief Center', category: 'Shelters', lat: 13.1750, lng: 80.2900, baseProb: 20, capacity: '1,500 Capacity', currentLoad: `${Math.min(100, Math.round(70 * combinedMultiplier))}% Capacity`, zoneName: 'North Inland Sector' }
+      ];
+
+      predictions = [
+        {
+          id: 'pred-1',
+          sourceAssetId: 'node-emb-1',
+          sourceAssetName: 'Ennore Coastal Storm Embankment',
+          targetAssetId: 'node-pwr-1',
+          targetAssetName: 'North Chennai 230kV Power Grid Station',
+          cascadeLevel: 'PRIMARY',
+          estimatedTimeMin: Math.max(5, Math.round(20 / combinedMultiplier)),
+          impactSeverity: 'CRITICAL',
+          confidenceScore: 96,
+          criticalityScore: 98,
+          geographicArea: 'Coastal North Sector',
+          affectedInfrastructure: ['230kV Busbar Switchyard', 'Feeder Substation B'],
+          recommendedPriority: 'P1 - Immediate Intervention',
+          explanation: `Severe wind gusts & storm surge overtop Ennore Embankment, triggering high-voltage short circuits across 230kV Power Yard within ${Math.max(5, Math.round(20 / combinedMultiplier))} mins.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        },
+        {
+          id: 'pred-2',
+          sourceAssetId: 'node-pwr-1',
+          sourceAssetName: 'North Chennai 230kV Power Grid Station',
+          targetAssetId: 'node-hosp-1',
+          targetAssetName: 'North Chennai General Emergency Hospital',
+          cascadeLevel: 'SECONDARY',
+          estimatedTimeMin: Math.max(10, Math.round(30 / combinedMultiplier)),
+          impactSeverity: 'CRITICAL',
+          confidenceScore: 95,
+          criticalityScore: 99,
+          geographicArea: 'North Metro Sector',
+          affectedInfrastructure: ['Hospital Emergency Power Feed', 'ICU Oxygen Plant'],
+          recommendedPriority: 'P1 - Immediate Intervention',
+          explanation: `Grid failure trips hospital primary line. Emergency diesel generators activated; roof wind stress jeopardizes diesel tank lines.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ];
+
+      strategies = [
+        {
+          id: 'strat-a',
+          name: 'Strategy Alpha: High-Voltage Grid Isolation & Coastal Convoy',
+          code: 'strategy_a',
+          tagline: 'Prioritizes power grid protection & rapid ambulance transit',
+          description: 'Isolates flooded 230kV power feeder switches and dispatches heavy armored rescue vehicles to transport 60 ICU patients to safety.',
+          primaryFocus: 'Power Substation Isolation & Hospital ICU Protection',
+          isOptimal: true,
+          rank: 1,
+          metrics: {
+            responseTimeMins: 15,
+            evacuationEfficiencyPct: 94,
+            resourceUtilizationPct: 85,
+            populationCoveragePct: 96,
+            estimatedCasualties: 0,
+            infrastructureProtectionPct: 92,
+            operationalCostScore: 28,
+            overallScore: 95.2
+          },
+          actions: [
+            { action: 'Isolate 230kV Busbar Switchyard', target: 'North Chennai Substation', resourcesAssigned: 'TNEB Emergency Crew' },
+            { action: 'Deploy Armored Rescue Convoy', target: 'North Chennai Hospital', resourcesAssigned: 'NDRF Armored Squad 2' }
+          ],
+          tradeoffs: {
+            pros: ['Prevents catastrophic transformer explosion', 'Ensures 100% ICU patient survival during cyclone peak'],
+            cons: ['Temporarily cuts non-critical residential power for 3 hours']
+          }
+        }
+      ];
+    } else if (disaster === 'earthquake') {
+      baseNodes = [
+        { id: 'node-flt-1', name: 'Central Fault Shear Fracture Zone', category: 'Geological Faults', lat: 13.0100, lng: 80.2000, baseProb: 90, capacity: '6.8 Magnitude Seismic', currentLoad: 'Seismic Shockwave Active', zoneName: 'Central Seismic Fault' },
+        { id: 'node-fz-1', name: 'Main Underground Natural Gas Pipeline', category: 'Gas Infrastructure', lat: 13.0050, lng: 80.2050, baseProb: 88, capacity: '350 PSI High Pressure', currentLoad: 'Shear Strain Critical', zoneName: 'Central Corridor' },
+        { id: 'node-pwr-1', name: 'Kathipara 230kV Central Substation', category: 'Power Stations', lat: 13.0080, lng: 80.2100, baseProb: 78, capacity: '230 kV / 150 MW', currentLoad: 'Transformer Vibration Relay Tripped', zoneName: 'Kathipara Hub' },
+        { id: 'node-hosp-1', name: 'Government General Trauma Center', category: 'Hospitals', lat: 13.0000, lng: 80.2200, baseProb: 55, capacity: '500 Beds (80 ICU)', currentLoad: 'Structural Cracks & High Patient Flow', zoneName: 'Central Metro' },
+        { id: 'node-rd-2', name: 'Kathipara Flyover Cloverleaf Span', category: 'Roads', lat: 13.0067, lng: 80.2117, baseProb: 95, capacity: '12,000 Veh/Hr', currentLoad: 'Collapsed Span / Blocked', zoneName: 'Kathipara Interchange' },
+        { id: 'node-rd-3', name: 'GST Road Arterial Bypass', category: 'Roads', lat: 12.9980, lng: 80.2160, baseProb: 75, capacity: '8,000 Veh/Hr', currentLoad: 'Rubble Blockade', zoneName: 'GST Corridor' },
+        { id: 'node-com-1', name: 'Central Fiber Optical Exchange Vault', category: 'Communication Towers', lat: 13.0090, lng: 80.2080, baseProb: 60, capacity: '100k Lines Fiber', currentLoad: 'Conduit Fracture', zoneName: 'Central Exchange' },
+        { id: 'node-sh-1', name: 'Koyambedu Open Seismic Relief Field', category: 'Shelters', lat: 13.0200, lng: 80.1900, baseProb: 15, capacity: '3,000 Capacity', currentLoad: '35% Capacity', zoneName: 'West Relief Zone' }
+      ];
+
+      predictions = [
+        {
+          id: 'pred-1',
+          sourceAssetId: 'node-flt-1',
+          sourceAssetName: 'Central Fault Shear Fracture Zone',
+          targetAssetId: 'node-fz-1',
+          targetAssetName: 'Main Underground Natural Gas Pipeline',
+          cascadeLevel: 'PRIMARY',
+          estimatedTimeMin: 2,
+          impactSeverity: 'CRITICAL',
+          confidenceScore: 98,
+          criticalityScore: 99,
+          geographicArea: 'Central Corridor',
+          affectedInfrastructure: ['High Pressure Gas Valve 4', 'Distribution Feeder 2'],
+          recommendedPriority: 'P1 - Immediate Intervention',
+          explanation: `Seismic ground displacement ruptures main underground high-pressure gas pipeline, requiring emergency SCADA valve shutoff within 2 mins.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        },
+        {
+          id: 'pred-2',
+          sourceAssetId: 'node-rd-2',
+          sourceAssetName: 'Kathipara Flyover Cloverleaf Span',
+          targetAssetId: 'node-hosp-1',
+          targetAssetName: 'Government General Trauma Center',
+          cascadeLevel: 'SECONDARY',
+          estimatedTimeMin: 12,
+          impactSeverity: 'CRITICAL',
+          confidenceScore: 94,
+          criticalityScore: 97,
+          geographicArea: 'Central Metro',
+          affectedInfrastructure: ['Ambulance Ramp Access', 'Trauma Unit Feed'],
+          recommendedPriority: 'P1 - Immediate Intervention',
+          explanation: `Flyover span displacement blocks main arterial ambulance access to Government General Trauma Center. Alternative bypass required immediately.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ];
+
+      strategies = [
+        {
+          id: 'strat-a',
+          name: 'Strategy Alpha: Automated Gas Cutoff & USAR Heavy Shoring',
+          code: 'strategy_a',
+          tagline: 'Prioritizes gas explosion containment & trauma route clearance',
+          description: 'Triggers SCADA automated remote gas shutoff valve while Urban Search & Rescue (USAR) teams clear Kathipara bypass corridor.',
+          primaryFocus: 'Secondary Fire Prevention & Mass Casualty Evacuation',
+          isOptimal: true,
+          rank: 1,
+          metrics: {
+            responseTimeMins: 8,
+            evacuationEfficiencyPct: 96,
+            resourceUtilizationPct: 88,
+            populationCoveragePct: 95,
+            estimatedCasualties: 0,
+            infrastructureProtectionPct: 94,
+            operationalCostScore: 32,
+            overallScore: 96.5
+          },
+          actions: [
+            { action: 'Execute SCADA Remote Gas Valve Lockdown', target: 'Main Gas Pipeline', resourcesAssigned: 'Gas Corp SCADA System' },
+            { action: 'Deploy USAR Heavy Lifting & Shoring Battalion', target: 'Kathipara Interchange', resourcesAssigned: 'NDRF USAR Battalion 1' }
+          ],
+          tradeoffs: {
+            pros: ['Completely eliminates gas explosion threat', 'Restores trauma ambulance access in 12 minutes'],
+            cons: ['Requires temporary shutdown of industrial gas supply']
+          }
+        }
+      ];
+    } else if (disaster === 'wildfire') {
+      baseNodes = [
+        { id: 'node-frst-1', name: 'Nanmangalam Forest Fire Front', category: 'Wildfire Perimeters', lat: 12.9300, lng: 80.1800, baseProb: 90, capacity: '45 km/h Wind Propagation', currentLoad: 'Active Flame Wall', zoneName: 'Forest Reserve' },
+        { id: 'node-fz-1', name: 'Nanmangalam Chemical Storage Unit', category: 'Hazardous Materials', lat: 12.9350, lng: 80.1850, baseProb: 82, capacity: '50,000L Solvents', currentLoad: 'Thermal Radiation Exposure', zoneName: 'Industrial Border' },
+        { id: 'node-pwr-1', name: 'Suburban High-Voltage Transmission Line', category: 'Power Stations', lat: 12.9380, lng: 80.1900, baseProb: 80, capacity: '110 kV Transmission', currentLoad: 'Smoke Arcing Strain', zoneName: 'Forest Power Corridor' },
+        { id: 'node-hosp-1', name: 'Suburban Community Specialty Hospital', category: 'Hospitals', lat: 12.9420, lng: 80.2000, baseProb: 65, capacity: '250 Beds (35 ICU)', currentLoad: 'Toxic Smoke Infiltration Risk', zoneName: 'Suburban Sector' },
+        { id: 'node-rd-2', name: 'State Highway 49 Evacuation Corridor', category: 'Roads', lat: 12.9360, lng: 80.1950, baseProb: 85, capacity: '5,000 Veh/Hr', currentLoad: 'Zero Visibility / Smoke Blocked', zoneName: 'SH-49 Corridor' },
+        { id: 'node-rd-3', name: 'Outer Bypass Arterial Junction', category: 'Roads', lat: 12.9450, lng: 80.2050, baseProb: 60, capacity: '7,000 Veh/Hr', currentLoad: 'Congested Evacuation', zoneName: 'Outer Bypass' },
+        { id: 'node-com-1', name: 'Relay Telecom Mast Charlie', category: 'Communication Towers', lat: 12.9320, lng: 80.1820, baseProb: 75, capacity: '40k Cell Users', currentLoad: 'Heat Structural Damage', zoneName: 'Forest Tower' },
+        { id: 'node-sh-1', name: 'Tambaram Indoor Air-Filtered Shelter', category: 'Shelters', lat: 12.9500, lng: 80.2100, baseProb: 10, capacity: '2,000 Capacity', currentLoad: '25% Capacity', zoneName: 'Safe North Zone' }
+      ];
+
+      predictions = [
+        {
+          id: 'pred-1',
+          sourceAssetId: 'node-frst-1',
+          sourceAssetName: 'Nanmangalam Forest Fire Front',
+          targetAssetId: 'node-fz-1',
+          targetAssetName: 'Nanmangalam Chemical Storage Unit',
+          cascadeLevel: 'PRIMARY',
+          estimatedTimeMin: 15,
+          impactSeverity: 'CRITICAL',
+          confidenceScore: 97,
+          criticalityScore: 99,
+          geographicArea: 'Industrial Border',
+          affectedInfrastructure: ['Chemical Tank Farm 1', 'Solvent Storage Vault'],
+          recommendedPriority: 'P1 - Immediate Intervention',
+          explanation: `Windward fire front advances toward Chemical Storage Unit, threatening thermal radiation explosion within 15 minutes.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ];
+
+      strategies = [
+        {
+          id: 'strat-a',
+          name: 'Strategy Alpha: Chemical Foam Firebreak & Water Bomber Sorties',
+          code: 'strategy_a',
+          tagline: 'Prioritizes chemical explosion prevention & smoke containment',
+          description: 'Lays down 500m chemical retardant foam buffer around storage tanks and deploys IAF water-bombing helicopters.',
+          primaryFocus: 'Toxic Hazard Isolation & Residential Evacuation',
+          isOptimal: true,
+          rank: 1,
+          metrics: {
+            responseTimeMins: 10,
+            evacuationEfficiencyPct: 95,
+            resourceUtilizationPct: 90,
+            populationCoveragePct: 94,
+            estimatedCasualties: 0,
+            infrastructureProtectionPct: 96,
+            operationalCostScore: 35,
+            overallScore: 95.8
+          },
+          actions: [
+            { action: 'Lay Chemical Retardant Foam Belt', target: 'Chemical Storage Facility', resourcesAssigned: 'Industrial Fire Brigade' },
+            { action: 'Execute Air Force Aerial Water Sorties', target: 'Nanmangalam Forest Front', resourcesAssigned: 'IAF Helicopter Squadron 5' }
+          ],
+          tradeoffs: {
+            pros: ['Completely neutralizes toxic chemical explosion threat', 'Protects suburban hospital air quality'],
+            cons: ['High operational cost and fuel consumption']
+          }
+        }
+      ];
+    } else {
+      // Default / Flood / Landslide / Tsunami
+      baseNodes = [
+        { id: 'node-wat-1', name: 'Velachery Sluice Drainage Outfall', category: 'Drainage Networks', lat: 12.9740, lng: 80.2190, baseProb: 80, capacity: '120 m³/s', currentLoad: `${Math.round(100 * combinedMultiplier)}% Flow`, zoneName: 'Velachery Basin' },
+        { id: 'node-fz-1', name: 'Velachery Inundation Sector', category: 'Flood Zones', lat: 12.9785, lng: 80.2205, baseProb: 85, capacity: '3.2 sq km Area', currentLoad: `${Math.round(1.2 * combinedMultiplier * 10)/10}m Water Depth`, zoneName: 'Velachery South' },
+        { id: 'node-pwr-1', name: 'Velachery 110kV Substation', category: 'Power Stations', lat: 12.9782, lng: 80.2215, baseProb: 65, capacity: '110 kV / 45 MW', currentLoad: `${Math.round(80 * Math.min(1.2, combinedMultiplier))}% Load`, zoneName: 'Velachery South' },
+        { id: 'node-hosp-1', name: 'Velachery Apollo Specialty Hospital', category: 'Hospitals', lat: 12.9765, lng: 80.2240, baseProb: 50, capacity: '320 Beds (48 ICU)', currentLoad: `${Math.min(100, Math.round(85 * combinedMultiplier))}% Occupied`, zoneName: 'Velachery South' },
+        { id: 'node-rd-2', name: 'Guindy Railway Subway Corridor', category: 'Roads', lat: 13.0067, lng: 80.2117, baseProb: 90, capacity: 'Submerged Passage', currentLoad: 'Blocked', zoneName: 'Guindy Corridor' },
+        { id: 'node-rd-3', name: 'Inner Ring Road Grid Junction', category: 'Roads', lat: 12.9980, lng: 80.2160, baseProb: 70, capacity: '6,000 Veh/Hr', currentLoad: 'Gridlock', zoneName: 'Guindy Junction' },
+        { id: 'node-com-1', name: 'Velachery BSNL Master Exchange', category: 'Communication Towers', lat: 12.9790, lng: 80.2230, baseProb: 55, capacity: '50k Fiber Lines / 5G', currentLoad: 'Battery Reserve Active', zoneName: 'Velachery Central' },
+        { id: 'node-sh-1', name: 'Velachery Corp School Shelter', category: 'Shelters', lat: 12.9805, lng: 80.2250, baseProb: 25, capacity: '800 Capacity', currentLoad: `${Math.min(100, Math.round(65 * combinedMultiplier))}% Capacity`, zoneName: 'Velachery North' }
+      ];
+
+      predictions = [
+        {
+          id: 'pred-1',
+          sourceAssetId: 'node-wat-1',
+          sourceAssetName: 'Velachery Sluice Drainage Outfall',
+          targetAssetId: 'node-pwr-1',
+          targetAssetName: 'Velachery 110kV Substation',
+          cascadeLevel: 'PRIMARY',
+          estimatedTimeMin: Math.max(5, Math.round(35 / combinedMultiplier)),
+          impactSeverity: combinedMultiplier > 1.5 ? 'CRITICAL' : 'HIGH',
+          confidenceScore: Math.min(98, Math.round(90 + combinedMultiplier * 3)),
+          criticalityScore: 96,
+          geographicArea: 'Velachery South',
+          affectedInfrastructure: ['Substation Basement', 'Transformer Feeder 4'],
+          recommendedPriority: 'P1 - Immediate Intervention',
+          explanation: `Sluice drainage surcharge under +${rainfallIncreasePct}% ${disaster} causes water ingress into 110kV Substation basement within ${Math.max(5, Math.round(35 / combinedMultiplier))} mins.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        },
+        {
+          id: 'pred-2',
+          sourceAssetId: 'node-pwr-1',
+          sourceAssetName: 'Velachery 110kV Substation',
+          targetAssetId: 'node-hosp-1',
+          targetAssetName: 'Velachery Apollo Specialty Hospital',
+          cascadeLevel: 'SECONDARY',
+          estimatedTimeMin: Math.max(10, Math.round(45 / combinedMultiplier)),
+          impactSeverity: 'CRITICAL',
+          confidenceScore: 94,
+          criticalityScore: 98,
+          geographicArea: 'Velachery Central',
+          affectedInfrastructure: ['Hospital Main Power Feed', 'ICU Oxygen Concentrators'],
+          recommendedPriority: 'P1 - Immediate Intervention',
+          explanation: `Substation power loss trips primary hospital grid line. Emergency generators activated; fuel reserve estimated at 3.5 hours under heavy ICU load.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ];
+
+      strategies = [
+        {
+          id: 'strat-a',
+          name: 'Strategy Alpha: Dewatering Surge & Green Emergency Lane',
+          code: 'strategy_a',
+          tagline: 'Prioritizes power grid protection & rapid ambulance transit',
+          description: 'Deploys 4 high-capacity 500hp pumps to Velachery Substation while traffic police clear Inner Ring Road emergency corridor.',
+          primaryFocus: 'Power Grid Preservation & ICU Life Support',
+          isOptimal: true,
+          rank: 1,
+          metrics: {
+            responseTimeMins: Math.round(18 * (1 + (rainfallIncreasePct / 200))),
+            evacuationEfficiencyPct: Math.min(98, Math.round(92 - (rainfallIncreasePct * 0.1))),
+            resourceUtilizationPct: 88,
+            populationCoveragePct: Math.min(99, Math.round(94 + (populationSurgeFactor * 2))),
+            estimatedCasualties: rainfallIncreasePct > 50 ? 2 : 0,
+            infrastructureProtectionPct: Math.min(98, Math.round(95 - (rainfallIncreasePct * 0.08))),
+            operationalCostScore: 24,
+            overallScore: Math.round((94.6 - (rainfallIncreasePct * 0.05)) * 10) / 10
+          },
+          actions: [
+            { action: 'Deploy High-Capacity Dewatering Pumps (x4)', target: 'Velachery Substation', resourcesAssigned: 'PWD Pump Units 1-4' },
+            { action: 'Establish Green Emergency Corridor', target: 'Inner Ring Road', resourcesAssigned: 'Traffic Police Brigade (24 Officers)' }
+          ],
+          tradeoffs: {
+            pros: ['Prevents total blackout of 110kV Substation', 'Maintains uninterrupted power to Apollo ICU'],
+            cons: ['Consumes 60% of municipal high-power pump inventory']
+          }
+        }
+      ];
+    }
+
+    const nodes = baseNodes.map(n => {
+      let isManualDisabled = closedBridges.includes(n.id) || disabledHospitals.includes(n.id) || disabledPowerStations.includes(n.id);
+      let failureProb = isManualDisabled ? 100 : Math.min(100, Math.round(n.baseProb * combinedMultiplier));
+      let health = Math.max(0, 100 - failureProb);
+      let status = failureProb >= 90 ? 'FAILED' : failureProb >= 70 ? 'CRITICAL' : failureProb >= 40 ? 'AT_RISK' : failureProb >= 20 ? 'DISRUPTED' : 'OPERATIONAL';
+
+      return {
+        ...n,
+        failureProbability: failureProb,
+        healthPct: health,
+        criticalityScore: Math.min(99, Math.round(80 + failureProb * 0.18)),
+        status,
+        timeToFailureMin: failureProb >= 90 ? 0 : Math.max(5, Math.round(120 / (combinedMultiplier * 1.2))),
+        dependenciesCount: 4,
+        description: `Agent calculated: ${n.name} experiencing ${failureProb}% failure probability under ${disaster.toUpperCase()} scenario.`
+      };
+    });
+
+    const forecasts = [
+      { timeInterval: '0m', label: 'Current Status (Live)', floodedAreaSqKm: Math.round(2.1 * combinedMultiplier * 10)/10, failedAssetsCount: 1, hospitalStressPct: Math.min(100, Math.round(68 * combinedMultiplier)), shelterOccupancyPct: 67, trafficCongestionIndex: 72, atRiskPopulation: Math.round(14500 * combinedMultiplier * populationSurgeFactor), criticalNodes: [], activeCascadesCount: 3, summary: `Live ${disaster.toUpperCase()} impact evaluated by Agent.` },
+      { timeInterval: '30m', label: '+30 Minutes', floodedAreaSqKm: Math.round(3.4 * combinedMultiplier * 10)/10, failedAssetsCount: 2, hospitalStressPct: Math.min(100, Math.round(82 * combinedMultiplier)), shelterOccupancyPct: 78, trafficCongestionIndex: 88, atRiskPopulation: Math.round(22000 * combinedMultiplier * populationSurgeFactor), criticalNodes: [], activeCascadesCount: 5, summary: `Critical infrastructure nodes under maximum strain.` },
+      { timeInterval: '1h', label: '+1 Hour', floodedAreaSqKm: Math.round(4.8 * combinedMultiplier * 10)/10, failedAssetsCount: 3, hospitalStressPct: 94, shelterOccupancyPct: 89, trafficCongestionIndex: 96, atRiskPopulation: Math.round(31500 * combinedMultiplier * populationSurgeFactor), criticalNodes: [], activeCascadesCount: 7, summary: `Secondary transport and communication outages propagate.` },
+      { timeInterval: '3h', label: '+3 Hours', floodedAreaSqKm: Math.round(6.2 * combinedMultiplier * 10)/10, failedAssetsCount: 4, hospitalStressPct: 98, shelterOccupancyPct: 98, trafficCongestionIndex: 90, atRiskPopulation: Math.round(42000 * combinedMultiplier * populationSurgeFactor), criticalNodes: [], activeCascadesCount: 8, summary: `Backup battery & fuel reserves nearing depletion.` },
+      { timeInterval: '6h', label: '+6 Hours', floodedAreaSqKm: Math.round(7.5 * combinedMultiplier * 10)/10, failedAssetsCount: 5, hospitalStressPct: 100, shelterOccupancyPct: 100, trafficCongestionIndex: 75, atRiskPopulation: Math.round(58000 * combinedMultiplier * populationSurgeFactor), criticalNodes: [], activeCascadesCount: 9, summary: `Peak disaster escalation reached.` },
+      { timeInterval: '12h', label: '+12 Hours', floodedAreaSqKm: Math.round(6.8 * combinedMultiplier * 10)/10, failedAssetsCount: 4, hospitalStressPct: 88, shelterOccupancyPct: 92, trafficCongestionIndex: 50, atRiskPopulation: Math.round(48000 * combinedMultiplier * populationSurgeFactor), criticalNodes: [], activeCascadesCount: 6, summary: `Intervention strategies begin stabilization phase.` },
+      { timeInterval: '24h', label: '+24 Hours', floodedAreaSqKm: Math.round(3.5 * combinedMultiplier * 10)/10, failedAssetsCount: 2, hospitalStressPct: 60, shelterOccupancyPct: 70, trafficCongestionIndex: 30, atRiskPopulation: Math.round(20000 * combinedMultiplier * populationSurgeFactor), criticalNodes: [], activeCascadesCount: 2, summary: `Recovery and grid re-energization active.` }
+    ];
+
+    const explainReport = {
+      id: `report-exp-${Date.now()}`,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      summary: geminiCustomAnalysis
+        ? `Gemini AI Decision Output: ${geminiCustomAnalysis}`
+        : `Agent Evaluated Scenario: Under ${disaster.toUpperCase()} conditions with intensity factor ${combinedMultiplier.toFixed(2)}x, cascading failure propagates across ${nodes[0]?.name || 'Primary Node'} threatening key ICU power feeds and arterial traffic routes.`,
+      rootCauses: [
+        `Disaster Type: ${disaster.toUpperCase()} escalation parameter at +${rainfallIncreasePct}%.`,
+        `Secondary Intensity Metric: ${damDischargeRateM3s} units active impact.`,
+        `Operator Request / Query: "${customNotes || 'Standard disaster evaluation active'}"`
+      ],
+      chainReactionDescription: `${baseNodes[0]?.name || 'Primary Node'} (T+0m) → ${baseNodes[2]?.name || 'Substation Node'} (T+15m) → ${baseNodes[3]?.name || 'Hospital Node'} (T+30m) → Traffic Gridlock (T+45m).`,
+      strategyRecommendationJustification: `Strategy Alpha is selected as optimal because it isolates high-vulnerability primary nodes, keeping critical ICU patient systems operational.`,
+      keyTradeoffAnalysis: `Focusing response assets on primary power and life support infrastructure delays non-critical perimeter clearance by ~2 hours but prevents patient casualties.`,
+      preventativeActionItems: [
+        `Deploy high-priority intervention units to ${baseNodes[2]?.name || 'Key Substation'}.`,
+        `Establish designated green emergency lane along arterial road networks.`,
+        `Activate auxiliary standby generators at hospital trauma units.`
+      ],
+      confidenceRatingPct: Math.min(98, Math.round(91 + combinedMultiplier * 2.5))
+    };
+
+    const edges = [
+      { id: 'edge-1', sourceNodeId: baseNodes[0]?.id || 'node-wat-1', targetNodeId: baseNodes[1]?.id || 'node-fz-1', dependencyType: 'flood_inundation', impactWeight: 0.9, description: 'Primary trigger overload inundates risk zone' },
+      { id: 'edge-2', sourceNodeId: baseNodes[1]?.id || 'node-fz-1', targetNodeId: baseNodes[2]?.id || 'node-pwr-1', dependencyType: 'power_supply', impactWeight: 0.85, description: 'Zone surge threatens power substation basement' },
+      { id: 'edge-3', sourceNodeId: baseNodes[2]?.id || 'node-pwr-1', targetNodeId: baseNodes[3]?.id || 'node-hosp-1', dependencyType: 'power_supply', impactWeight: 0.95, description: 'Substation power loss affects hospital ICU units' },
+      { id: 'edge-4', sourceNodeId: baseNodes[2]?.id || 'node-pwr-1', targetNodeId: baseNodes[6]?.id || 'node-com-1', dependencyType: 'telecom_backbone', impactWeight: 0.7, description: 'Substation failure trips telecom cell tower battery' },
+      { id: 'edge-5', sourceNodeId: baseNodes[4]?.id || 'node-rd-2', targetNodeId: baseNodes[5]?.id || 'node-rd-3', dependencyType: 'access_route', impactWeight: 0.8, description: 'Corridor blockade diverts traffic to arterial junction' },
+      { id: 'edge-6', sourceNodeId: baseNodes[5]?.id || 'node-rd-3', targetNodeId: baseNodes[7]?.id || 'node-sh-1', dependencyType: 'access_route', impactWeight: 0.75, description: 'Arterial gridlock slows shelter evacuation' }
+    ];
+
+    res.json({
+      success: true,
+      data: {
+        nodes,
+        edges,
+        predictions,
+        strategies,
+        forecasts,
+        report: explainReport,
+        combinedMultiplier,
+        disasterType: disaster,
+        timestamp: new Date().toISOString()
+      }
+    });
+  } catch (err: any) {
+    console.error('Error in cascading-impact endpoint:', err);
+    res.status(500).json({ success: false, error: err.message || 'Cascading impact recalculation failed' });
+  }
 });
 
 // Citizen Reports Endpoint (Get & Store)
@@ -959,17 +1426,19 @@ Return a JSON object with this EXACT structure:
 
     let parsedResult: any = null;
     if (ai) {
-      try {
-        const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
-          contents: multiAgentPrompt,
-          config: {
-            responseMimeType: 'application/json'
-          }
-        });
-        parsedResult = JSON.parse(response.text || '{}');
-      } catch (aiErr) {
-        console.warn('Gemini call failed in multiagent-run:', aiErr);
+      const response = await callGeminiContent(ai, {
+        model: 'gemini-2.5-flash',
+        contents: multiAgentPrompt,
+        config: {
+          responseMimeType: 'application/json'
+        }
+      });
+      if (response?.text) {
+        try {
+          parsedResult = JSON.parse(response.text);
+        } catch (e) {
+          parsedResult = null;
+        }
       }
     }
 
@@ -1142,18 +1611,19 @@ Return JSON response:
 
     let parsed: any = null;
     if (ai) {
-      try {
-        const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
-          contents: prompt,
-          config: {
-            responseMimeType: 'application/json'
-          }
-        });
-        const resultText = response.text || '{}';
-        parsed = JSON.parse(resultText);
-      } catch (aiErr) {
-        console.warn('Gemini API call failed for simulation, using hydrodynamic physics engine calculation:', aiErr);
+      const response = await callGeminiContent(ai, {
+        model: 'gemini-2.5-flash',
+        contents: prompt,
+        config: {
+          responseMimeType: 'application/json'
+        }
+      });
+      if (response?.text) {
+        try {
+          parsed = JSON.parse(response.text);
+        } catch (e) {
+          parsed = null;
+        }
       }
     }
 
@@ -1273,17 +1743,19 @@ Return JSON:
 
     let parsed: any = null;
     if (ai) {
-      try {
-        const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
-          contents: prompt,
-          config: {
-            responseMimeType: 'application/json'
-          }
-        });
-        parsed = JSON.parse(response.text || '{}');
-      } catch (aiErr) {
-        console.warn('Gemini API call failed for validate-report, using fallback scoring:', aiErr);
+      const response = await callGeminiContent(ai, {
+        model: 'gemini-2.5-flash',
+        contents: prompt,
+        config: {
+          responseMimeType: 'application/json'
+        }
+      });
+      if (response?.text) {
+        try {
+          parsed = JSON.parse(response.text);
+        } catch (e) {
+          parsed = null;
+        }
       }
     }
 
@@ -1376,17 +1848,19 @@ Return a structured JSON with:
 
     let parsed: any = null;
     if (ai) {
-      try {
-        const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
-          contents: prompt,
-          config: {
-            responseMimeType: 'application/json'
-          }
-        });
-        parsed = JSON.parse(response.text || '{}');
-      } catch (aiErr) {
-        console.warn('Gemini API call failed for explain-decision, using fallback structure:', aiErr);
+      const response = await callGeminiContent(ai, {
+        model: 'gemini-2.5-flash',
+        contents: prompt,
+        config: {
+          responseMimeType: 'application/json'
+        }
+      });
+      if (response?.text) {
+        try {
+          parsed = JSON.parse(response.text);
+        } catch (e) {
+          parsed = null;
+        }
       }
     }
 

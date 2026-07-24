@@ -32,8 +32,8 @@ interface DashboardOverviewProps {
   hospitals: EmergencyHospital[];
   agentLogs?: AgentActivityLog[];
   evacuationRoute: EvacuationRoute | null;
-  timeHorizon: 'live' | '30m' | '1h' | '2h';
-  setTimeHorizon: (val: 'live' | '30m' | '1h' | '2h') => void;
+  timeHorizon: number;
+  setTimeHorizon: (val: number) => void;
   onSelectReport: (report: CitizenReport) => void;
   onSelectZone: (zoneId: string) => void;
   onNavigateToTab: (tabId: string) => void;
@@ -147,6 +147,36 @@ export default function DashboardOverview({
 
       </div>
 
+      {/* NEW: AI Multi-Disaster Cascading Impact Banner */}
+      <div 
+        onClick={() => onNavigateToTab('cascading_impact')}
+        className="bg-gradient-to-r from-brand/15 via-[#0e0e18] to-purple-500/10 border border-brand/40 p-4 cursor-pointer hover:border-brand transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group shadow-lg"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-brand text-black font-extrabold flex items-center justify-center rounded-sm flex-shrink-0 group-hover:scale-105 transition-transform">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-white font-sans uppercase tracking-tight">
+                AI Multi-Disaster Cascading Impact Prediction & Response Optimizer
+              </span>
+              <span className="px-1.5 py-0.2 text-[8px] font-mono font-extrabold bg-brand text-black uppercase">
+                NEW FEATURE
+              </span>
+            </div>
+            <p className="text-xs text-neutral-300 font-mono mt-0.5">
+              Continuously predicts N-th order asset failures (Power → Hospital → Traffic → Shelters) & simulates optimal emergency strategies.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 text-xs font-mono font-bold text-brand uppercase group-hover:text-white transition-colors flex-shrink-0">
+          <span>Launch Cascading AI Workbench</span>
+          <ArrowRight className="w-4 h-4 text-brand group-hover:translate-x-1 transition-transform" />
+        </div>
+      </div>
+
       {/* 2. Map & Incidents Middle Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
@@ -204,7 +234,7 @@ export default function DashboardOverview({
           </div>
 
           {/* Incidents Stream */}
-          <div className="flex-1 overflow-y-auto space-y-3.5 pr-1">
+          <div className="flex-1 overflow-y-auto space-y-3.5 pr-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {reports.slice(0, 5).map((report) => (
               <div 
                 key={report.id} 
