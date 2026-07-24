@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="https://www.vecteezy.com/free-photos/image" alt="ResponSync — AI Decision Digital Twin for Predictive Flood Management" width="100%">
+  <img
+    src="./assets/banner.png"
+    alt="ResponSync — AI Decision Digital Twin for Predictive Flood Management"
+    width="100%"
+  />
 </p>
 
 <h1 align="center">🌊 ResponSync</h1>
