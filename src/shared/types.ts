@@ -94,7 +94,7 @@ export interface CitizenReport {
 
 export interface AgentActivityLog {
   id: string;
-  agentName: 'Weather Agent' | 'Traffic Agent' | 'Infrastructure Agent' | 'Citizen Intelligence Agent' | 'Satellite Agent' | 'Flood Prediction Agent' | 'Resource Planner Agent' | 'Evacuation Agent' | 'Simulation Agent' | 'Decision Agent' | 'Explainability Agent' | 'Coordinator Agent';
+  agentName: 'Hydro-Risk Ingestion Agent' | 'Decision & Resource Agent' | 'Command & Dispatch Agent' | 'Weather Agent' | 'Traffic Agent' | 'Infrastructure Agent' | 'Citizen Intelligence Agent' | 'Satellite Agent' | 'Flood Prediction Agent' | 'Resource Planner Agent' | 'Evacuation Agent' | 'Simulation Agent' | 'Decision Agent' | 'Explainability Agent' | 'Coordinator Agent' | string;
   timestamp: string;
   action: string;
   details: string;

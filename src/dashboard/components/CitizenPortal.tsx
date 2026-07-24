@@ -24,6 +24,7 @@ interface CitizenPortalProps {
   evacuationRoute?: EvacuationRoute;
   onSelectRouteShelter: (shelterId: string) => void;
   onCalculateEvacuationRoute?: (originName: string, originCoords: [number, number], shelterId: string) => void;
+  onNavigateToMap?: () => void;
 }
 
 export const CitizenPortal: React.FC<CitizenPortalProps> = ({
@@ -32,7 +33,8 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
   onSubmitReport,
   evacuationRoute,
   onSelectRouteShelter,
-  onCalculateEvacuationRoute
+  onCalculateEvacuationRoute,
+  onNavigateToMap
 }) => {
   const [originChoice, setOriginChoice] = useState({
     name: 'Velachery 100ft Road (Vijaya Nagar Junction)',
@@ -168,18 +170,26 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
           {/* Location & Shelter Picker */}
           <div className="space-y-3 bg-[#050507] p-4 rounded border border-white/5 text-xs">
             <div>
-              <label className="text-[#888] font-mono uppercase text-[10px] block mb-1">Your Current Location:</label>
-              <div className="flex items-center gap-2 bg-[#050507] px-3 py-2 rounded border border-white/10 text-[#ccc] font-medium font-sans">
-                <MapPin className="w-4 h-4 text-[#e0e0e6] shrink-0" />
-                <span>Velachery 100ft Road (Vijaya Nagar Junction)</span>
-              </div>
+              <label className="text-[#888] font-mono uppercase text-[10px] block mb-1">Select Your Starting Origin:</label>
+              <select
+                value={originChoice.name}
+                onChange={(e) => handleOriginChange(e.target.value)}
+                className="w-full bg-[#0d0d12] border border-white/10 text-xs text-[#e0e0e6] font-mono font-bold rounded p-2 focus:outline-none focus:border-brand/40"
+              >
+                {origins.map((orig, idx) => (
+                  <option key={idx} value={orig.name}>
+                    📍 {orig.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>
               <label className="text-[#888] font-mono uppercase text-[10px] block mb-1">Select Relief Shelter Destination:</label>
               <select
-                onChange={(e) => onSelectRouteShelter(e.target.value)}
-                className="w-full bg-[#050507] border border-white/10 text-xs text-[#e0e0e6] font-mono font-bold rounded p-2 focus:outline-none"
+                value={selectedShelterId}
+                onChange={(e) => handleShelterChange(e.target.value)}
+                className="w-full bg-[#0d0d12] border border-white/10 text-xs text-[#e0e0e6] font-mono font-bold rounded p-2 focus:outline-none focus:border-brand/40"
               >
                 {shelters.map((shelter) => (
                   <option key={shelter.id} value={shelter.id}>
@@ -233,6 +243,16 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
               <div className="text-[11px] font-mono text-[#e0e0e6] bg-brand/10 p-2 rounded border border-brand/30">
                 <strong>Hazards Avoided:</strong> {evacuationRoute.hazardsAvoided.join(' • ')}
               </div>
+
+              {onNavigateToMap && (
+                <button
+                  onClick={onNavigateToMap}
+                  className="w-full mt-2 py-2 bg-brand/15 hover:bg-brand/25 text-brand border border-brand/30 hover:border-brand font-mono text-xs font-bold uppercase tracking-wider rounded flex items-center justify-center gap-2 cursor-pointer transition-all"
+                >
+                  <Navigation className="w-3.5 h-3.5" />
+                  <span>View Route on Interactive Digital Twin Map</span>
+                </button>
+              )}
             </div>
           ) : (
             <div className="text-center py-6 text-[#666] text-xs font-mono">

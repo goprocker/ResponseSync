@@ -38,11 +38,36 @@ export const AlertNotificationBanner: React.FC<AlertNotificationBannerProps> = (
 
         <div className="flex items-center gap-2 self-end sm:self-auto shrink-0 font-sans">
           <button
-            onClick={() => onAcknowledge(activeAlerts[0].id)}
+            onClick={async () => {
+              try {
+                // Trigger FCM Push & Emergency SMS Gateway Broadcast
+                await fetch('/api/notifications/fcm/send', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    title: `⚠️ CRITICAL BROADCAST: ${activeAlerts[0].headline}`,
+                    body: activeAlerts[0].description || 'Emergency flood warning. Evacuate low-lying areas.',
+                    targetRole: 'all',
+                    priority: 'high'
+                  })
+                });
+                await fetch('/api/notifications/sms/send', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    message: `EMERGENCY ALERT: ${activeAlerts[0].headline}. Seek shelter immediately.`,
+                    targetZone: 'Velachery - Adyar Floodplain'
+                  })
+                });
+              } catch (e) {
+                console.warn('Broadcast API call warning:', e);
+              }
+              onAcknowledge(activeAlerts[0].id);
+            }}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-brand hover:bg-brand-deep text-black font-bold uppercase tracking-wider rounded-none text-[10px] transition-all cursor-pointer border border-brand"
           >
             <CheckCircle2 className="w-3 h-3 text-black" />
-            Acknowledge & Broadcast
+            Acknowledge & FCM/SMS Broadcast
           </button>
         </div>
 
