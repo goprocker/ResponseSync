@@ -34,6 +34,9 @@ import { ExplainabilityModal } from './components/ExplainabilityModal';
 import { ResourceDispatchModal } from './components/ResourceDispatchModal';
 import { AlertNotificationBanner } from './components/AlertNotificationBanner';
 
+import { useSSEStream } from './hooks/useSSEStream';
+import { useEvacuationRoute } from './hooks/useEvacuationRoute';
+
 export default function App() {
   // Global State
   const [disasterType, setDisasterType] = useState<DisasterType>('flood');
@@ -49,8 +52,16 @@ export default function App() {
   const [recommendations, setRecommendations] = useState<ExplainableAIRecommendation[]>(INITIAL_RECOMMENDATIONS);
   const [alerts, setAlerts] = useState<AutomatedAlert[]>(INITIAL_ALERTS);
 
+  // Custom Hooks
+  const { evacuationRoute, calculateRoute, selectShelter } = useEvacuationRoute(shelters);
+
+  useSSEStream({
+    onNewReport: (newReport) => setReports(prev => [newReport, ...prev]),
+    onNewLog: (newLog) => setAgentLogs(prev => [newLog, ...prev]),
+    onNewAlert: (newAlert) => setAlerts(prev => [newAlert, ...prev])
+  });
+
   const [timeHorizon, setTimeHorizon] = useState<'live' | '30m' | '1h' | '2h'>('live');
-  const [evacuationRoute, setEvacuationRoute] = useState<EvacuationRoute>(MOCK_EVACUATION_ROUTE);
 
   // Modals
   const [explainModalRec, setExplainModalRec] = useState<ExplainableAIRecommendation | null>(null);
@@ -160,6 +171,14 @@ export default function App() {
     }
   };
 
+  // Periodic Auto-Sync Heartbeat (Runs 12 Agents every 60 seconds)
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      handleTriggerSync();
+    }, 60000);
+    return () => clearInterval(timer);
+  }, []);
+
   // Recommendation Approvals
   const handleApproveRecommendation = (recId: string) => {
     setRecommendations(prev => prev.map(r => r.id === recId ? { ...r, status: 'approved' } : r));
@@ -207,6 +226,88 @@ export default function App() {
     setAgentLogs(prev => [newLog, ...prev]);
   };
 
+  // Initial Backend API Data Sync
+  React.useEffect(() => {
+    // Fetch Weather Data
+    fetch('/api/weather')
+      .then(res => res.json())
+      .then(weather => {
+        if (weather && weather.rainfallMmHr) {
+          const log: AgentActivityLog = {
+            id: `log-wth-${Date.now()}`,
+            agentName: 'Weather Agent',
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            action: 'Live Weather Ingested',
+            details: `${weather.location}: ${weather.description}, Rain: ${weather.rainfallMmHr}mm/hr, Wind: ${weather.windSpeedKmh}km/h (${weather.highTideStatus})`,
+            severity: weather.rainfallMmHr > 50 ? 'alert' : 'info'
+          };
+          setAgentLogs(prev => [log, ...prev]);
+        }
+      })
+      .catch(err => console.warn('Weather sync skipped:', err));
+
+    // Real-Time SSE (Server-Sent Events) Subscription
+    let eventSource: EventSource | null = null;
+    try {
+      eventSource = new EventSource('/api/events');
+      eventSource.onmessage = (event) => {
+        try {
+          const payload = JSON.parse(event.data);
+          if (payload.type === 'citizen_report_created' && payload.data) {
+            const r = payload.data;
+            const liveReport: CitizenReport = {
+              id: r.id || `rep-${Date.now()}`,
+              reporterName: r.reporterName || 'Citizen Dispatch',
+              phone: r.phone || '+91 90000 00000',
+              timestamp: 'LIVE JUST NOW',
+              lat: r.coordinates ? r.coordinates[0] : 12.978,
+              lng: r.coordinates ? r.coordinates[1] : 80.220,
+              locationName: r.locationName || 'Velachery Sector',
+              category: r.category || r.hazardType || 'waterlogging',
+              severity: r.severity || 'high',
+              description: r.description || '',
+              imageUrl: r.imageUrl || 'https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=600&q=80',
+              aiValidationScore: 96,
+              aiValidatedCategory: 'Live SOS Incident Verified',
+              aiSummary: 'Real-time broadcast received via SSE.',
+              status: 'verified'
+            };
+
+            setReports(prev => [liveReport, ...prev.filter(item => item.id !== liveReport.id)]);
+
+            // Toast Alert
+            const newAlert: AutomatedAlert = {
+              id: `alert-sse-${Date.now()}`,
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              headline: `🚨 REAL-TIME SOS INTAKE: ${liveReport.locationName}`,
+              zone: liveReport.locationName,
+              severity: 'critical',
+              agenciesNotified: ['Disaster Management (NDRF)', 'Fire & Rescue', 'Traffic Control'],
+              instructions: liveReport.description,
+              acknowledged: false
+            };
+            setAlerts(prev => [newAlert, ...prev]);
+
+            // Agent Log
+            const log: AgentActivityLog = {
+              id: `log-sse-${Date.now()}`,
+              agentName: 'Citizen Intelligence Agent',
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+              action: 'Real-Time SSE Event Received',
+              details: `Live hazard report broadcasted from ${liveReport.reporterName} at ${liveReport.locationName}.`,
+              severity: 'alert'
+            };
+            setAgentLogs(prev => [log, ...prev]);
+          }
+        } catch (e) {
+          console.warn('Error parsing SSE event:', e);
+        }
+      };
+    } catch (err) {
+      console.warn('SSE subscription failed:', err);
+    }
+  }, []);
+
   // Citizen Report Submission
   const handleSubmitCitizenReport = (reportData: Partial<CitizenReport>) => {
     const newReport: CitizenReport = {
@@ -227,6 +328,19 @@ export default function App() {
       status: 'verified'
     };
 
+    // POST report to backend API
+    fetch('/api/reports', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        description: newReport.description,
+        hazardType: newReport.category,
+        severity: newReport.severity,
+        locationName: newReport.locationName,
+        coordinates: [newReport.lat, newReport.lng]
+      })
+    }).catch(err => console.warn('POST report to backend failed:', err));
+
     setReports(prev => [newReport, ...prev]);
 
     const newLog: AgentActivityLog = {
@@ -238,22 +352,6 @@ export default function App() {
       severity: 'warning'
     };
     setAgentLogs(prev => [newLog, ...prev]);
-  };
-
-  // Route Shelter Selector
-  const handleSelectRouteShelter = (shelterId: string) => {
-    const shelter = shelters.find(s => s.id === shelterId);
-    if (shelter) {
-      setEvacuationRoute({
-        ...MOCK_EVACUATION_ROUTE,
-        destinationShelterName: shelter.name,
-        waypoints: [
-          [12.977, 80.221],
-          [12.985, 80.225],
-          [shelter.lat, shelter.lng]
-        ]
-      });
-    }
   };
 
   // Alert Acknowledgment
@@ -325,7 +423,8 @@ export default function App() {
             reports={reports}
             onSubmitReport={handleSubmitCitizenReport}
             evacuationRoute={evacuationRoute}
-            onSelectRouteShelter={handleSelectRouteShelter}
+            onSelectRouteShelter={selectShelter}
+            onCalculateEvacuationRoute={calculateRoute}
           />
         )}
 

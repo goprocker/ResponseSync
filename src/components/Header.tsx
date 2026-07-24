@@ -2,21 +2,12 @@ import React from 'react';
 import {
   ShieldAlert,
   Activity,
-  Radio,
-  CloudRain,
   Cpu,
   Users,
-  Building2,
-  Flame,
-  Siren,
-  Hospital,
   RefreshCw,
-  Clock,
-  MapPin,
-  ChevronRight,
   Sliders,
   Layers,
-  FileText
+  MapPin
 } from 'lucide-react';
 import { DisasterType, AgencyRole } from '../types';
 
@@ -34,162 +25,149 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  disasterType,
-  setDisasterType,
   agencyRole,
   setAgencyRole,
   activeTab,
   setActiveTab,
   isSyncing,
   onTriggerSync,
-  alertsCount,
-  lastSyncTime
+  alertsCount
 }) => {
   return (
-    <header className="bg-[#0a0a0f] border-b border-[#ffffff15] sticky top-0 z-40 backdrop-blur-md px-4 sm:px-6 py-3 shadow-2xl">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
+    <header className="bg-[#08080c] border-b border-[#ffffff12] sticky top-0 z-50 backdrop-blur-md px-4 sm:px-6 py-2.5">
+      <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
         
-        {/* Brand & Pilot Indicator */}
-        <div className="flex items-center gap-4 w-full lg:w-auto justify-between lg:justify-start">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="w-8 h-8 bg-[#ff4e00] rounded-sm rotate-45 flex items-center justify-center shadow-lg shadow-[#ff4e00]/30 transition-transform hover:scale-105">
-                <div className="w-4 h-4 border-2 border-black rotate-45"></div>
-              </div>
+        {/* Brand & Pilot Location */}
+        <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 bg-amber-500 rounded flex items-center justify-center font-black text-black text-xs tracking-tighter">
+              RS
             </div>
-
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold tracking-tighter text-white font-sans">
-                  RESPON<span className="text-[#ff4e00]">SYNC</span>
+                <h1 className="text-base font-extrabold tracking-tight text-white font-sans">
+                  RESPON<span className="text-amber-500">SYNC</span>
                 </h1>
-                <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold tracking-widest uppercase bg-[#ff4e00]/15 text-[#ff4e00] border border-[#ff4e00]/30">
-                  COMMAND_OS
+                <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold tracking-widest bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase">
+                  OS v2.4
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-[10px] font-mono text-[#888]">
-                <span className="uppercase tracking-widest text-[#666]">PILOT REGION:</span>
-                <span className="text-[#ccc] font-mono">CHENNAI_VELACHERY_04</span>
+              <div className="flex items-center gap-1 text-[10px] font-mono text-[#888]">
+                <MapPin className="w-3 h-3 text-amber-500 shrink-0" />
+                <span>CHENNAI_VELACHERY_PILOT</span>
               </div>
             </div>
           </div>
 
-          {/* Quick Warning / Mobile Sync Button */}
-          <div className="flex items-center gap-2 lg:hidden">
-            <button
-              onClick={onTriggerSync}
-              disabled={isSyncing}
-              className="p-2 bg-[#ff4e00]/20 hover:bg-[#ff4e00]/30 text-[#ff4e00] border border-[#ff4e00]/40 rounded transition-all"
-              title="Trigger AI Multi-Agent Sync"
-            >
-              <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
-            </button>
-          </div>
-        </div>
-
-        {/* Navigation Tabs */}
-        <nav className="flex items-center gap-1.5 bg-[#050507] p-1 rounded-lg border border-[#ffffff10] overflow-x-auto w-full lg:w-auto">
-          <button
-            onClick={() => setActiveTab('twin_map')}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
-              activeTab === 'twin_map'
-                ? 'bg-[#ff4e00] text-black shadow-md shadow-[#ff4e00]/20'
-                : 'text-[#888] hover:text-white hover:bg-[#ffffff08]'
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5" />
-            Digital Twin
-          </button>
-
-          <button
-            onClick={() => setActiveTab('multi_agent')}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
-              activeTab === 'multi_agent'
-                ? 'bg-[#ff4e00] text-black shadow-md shadow-[#ff4e00]/20'
-                : 'text-[#888] hover:text-white hover:bg-[#ffffff08]'
-            }`}
-          >
-            <Cpu className="w-3.5 h-3.5" />
-            Authority HQ
-            {alertsCount > 0 && (
-              <span className="ml-1 px-1.5 py-0.2 rounded text-[10px] font-mono font-extrabold bg-[#ff4e00] text-black">
-                {alertsCount}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab('simulation')}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
-              activeTab === 'simulation'
-                ? 'bg-[#ff4e00] text-black shadow-md shadow-[#ff4e00]/20'
-                : 'text-[#888] hover:text-white hover:bg-[#ffffff08]'
-            }`}
-          >
-            <Sliders className="w-3.5 h-3.5" />
-            Simulation Studio
-          </button>
-
-          <button
-            onClick={() => setActiveTab('citizen_portal')}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
-              activeTab === 'citizen_portal'
-                ? 'bg-[#ff4e00] text-black shadow-md shadow-[#ff4e00]/20'
-                : 'text-[#888] hover:text-white hover:bg-[#ffffff08]'
-            }`}
-          >
-            <Users className="w-3.5 h-3.5" />
-            Citizen Portal
-          </button>
-
-          <button
-            onClick={() => setActiveTab('analytics')}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
-              activeTab === 'analytics'
-                ? 'bg-[#ff4e00] text-black shadow-md shadow-[#ff4e00]/20'
-                : 'text-[#888] hover:text-white hover:bg-[#ffffff08]'
-            }`}
-          >
-            <Activity className="w-3.5 h-3.5" />
-            Data Fusion
-          </button>
-        </nav>
-
-        {/* Agency Selector & Telemetry Controls */}
-        <div className="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
-          
-          {/* Agency View Dropdown */}
-          <div className="flex items-center gap-2 bg-[#151520] px-3 py-1.5 rounded border border-[#ffffff15]">
-            <span className="text-[10px] uppercase font-mono tracking-widest text-[#888] hidden xl:inline">Role:</span>
-            <select
-              value={agencyRole}
-              onChange={(e) => setAgencyRole(e.target.value as AgencyRole)}
-              className="bg-transparent text-xs font-mono font-bold text-[#e0e0e6] focus:outline-none cursor-pointer"
-            >
-              <option value="authority" className="bg-[#0d0d14] text-white">🏛️ Disaster Mgmt HQ</option>
-              <option value="fire_rescue" className="bg-[#0d0d14] text-white">🚒 Fire & Rescue</option>
-              <option value="police" className="bg-[#0d0d14] text-white">🚓 Police Traffic</option>
-              <option value="health_hospitals" className="bg-[#0d0d14] text-white">🏥 Health & Hospitals</option>
-              <option value="citizen" className="bg-[#0d0d14] text-white">👤 Citizen Public View</option>
-            </select>
-          </div>
-
-          {/* Sync Trigger */}
+          {/* Mobile Refresh Button */}
           <button
             onClick={onTriggerSync}
             disabled={isSyncing}
-            className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-[#ff4e00] hover:bg-[#ff6a2b] text-black font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer disabled:opacity-50"
+            className="md:hidden p-1.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded"
           >
-            <RefreshCw className={`w-3.5 h-3.5 text-black ${isSyncing ? 'animate-spin' : ''}`} />
-            <span>{isSyncing ? 'Syncing...' : 'Agent Loop'}</span>
+            <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+          </button>
+        </div>
+
+        {/* Portal Switcher (Govt HQ vs Citizen Portal) */}
+        <div className="flex items-center gap-1.5 bg-[#101018] p-1 rounded-lg border border-[#ffffff12]">
+          <button
+            onClick={() => {
+              setAgencyRole('authority');
+              if (activeTab === 'citizen_portal') setActiveTab('twin_map');
+            }}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              agencyRole === 'authority' && activeTab !== 'citizen_portal'
+                ? 'bg-amber-500 text-black shadow'
+                : 'text-[#888] hover:text-white'
+            }`}
+          >
+            <ShieldAlert className="w-3.5 h-3.5" />
+            <span>Govt HQ</span>
           </button>
 
-          {/* Live Sync Status Badge */}
-          <div className="px-3 py-1 bg-[#151520] border border-[#ffffff15] rounded hidden sm:flex items-center space-x-2">
-            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-            <span className="text-xs font-mono uppercase text-[#ccc]">AI Sync: ACTIVE</span>
-          </div>
+          <button
+            onClick={() => {
+              setAgencyRole('citizen');
+              setActiveTab('citizen_portal');
+            }}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              agencyRole === 'citizen' || activeTab === 'citizen_portal'
+                ? 'bg-cyan-500 text-black shadow'
+                : 'text-[#888] hover:text-white'
+            }`}
+          >
+            <Users className="w-3.5 h-3.5" />
+            <span>Citizen Portal</span>
+          </button>
+        </div>
 
+        {/* Navigation Sub-Tabs & Actions */}
+        <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+          <nav className="flex items-center gap-1 bg-[#101018] p-1 rounded-lg border border-[#ffffff12]">
+            {agencyRole === 'authority' && activeTab !== 'citizen_portal' ? (
+              <>
+                <button
+                  onClick={() => setActiveTab('twin_map')}
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                    activeTab === 'twin_map' ? 'bg-[#ffffff15] text-white' : 'text-[#888] hover:text-white'
+                  }`}
+                >
+                  <Layers className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Digital Twin</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('multi_agent')}
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                    activeTab === 'multi_agent' ? 'bg-[#ffffff15] text-white' : 'text-[#888] hover:text-white'
+                  }`}
+                >
+                  <Cpu className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>12 Agents</span>
+                  {alertsCount > 0 && (
+                    <span className="px-1 py-0.2 rounded text-[9px] font-mono font-bold bg-red-500 text-white">
+                      {alertsCount}
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('simulation')}
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                    activeTab === 'simulation' ? 'bg-[#ffffff15] text-white' : 'text-[#888] hover:text-white'
+                  }`}
+                >
+                  <Sliders className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Sim Studio</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('analytics')}
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                    activeTab === 'analytics' ? 'bg-[#ffffff15] text-white' : 'text-[#888] hover:text-white'
+                  }`}
+                >
+                  <Activity className="w-3.5 h-3.5 text-[#888]" />
+                  <span>Analytics</span>
+                </button>
+              </>
+            ) : (
+              <span className="px-3 py-1 text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">
+                Emergency Intake & Safe Router
+              </span>
+            )}
+          </nav>
+
+          {/* AI Trigger */}
+          <button
+            onClick={onTriggerSync}
+            disabled={isSyncing}
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer disabled:opacity-50"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+            <span>{isSyncing ? 'Running...' : 'Run 12 Agents'}</span>
+          </button>
         </div>
 
       </div>

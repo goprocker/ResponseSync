@@ -74,17 +74,17 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 space-y-6 text-[#e0e0e6] font-sans">
+    <div className="max-w-[1400px] mx-auto px-4 py-5 space-y-5 text-[#e0e0e6] font-sans">
       
       {/* Top Banner & Multi-Agent Headline */}
-      <div className="bg-[#0a0a0f] p-6 rounded-lg border border-[#ffffff15] shadow-2xl relative overflow-hidden flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#ff4e00]/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="bg-[#101018] p-5 rounded-lg border border-[#ffffff12] shadow-xl relative overflow-hidden flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
-        <div className="space-y-2 z-10">
+        <div className="space-y-1.5 z-10">
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-[0.2em] bg-[#ff4e00]/15 text-[#ff4e00] border border-[#ff4e00]/30 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-[#ff4e00]" />
-              Multi-Agent AI Command OS
+            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-[0.2em] bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              12-Agent AI Command OS
             </span>
             <span className="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -92,10 +92,10 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
             </span>
           </div>
 
-          <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight font-sans">
+          <h2 className="text-xl lg:text-2xl font-bold text-white tracking-tight font-sans">
             Disaster Management Command & Control HQ
           </h2>
-          <p className="text-sm text-[#aaa] max-w-2xl leading-relaxed">
+          <p className="text-xs text-[#888899] max-w-2xl leading-relaxed">
             Continuously synchronizing weather radars, satellite imagery, IoT water depth sensors, traffic corridors, and citizen emergency calls into actionable, explainable AI decisions.
           </p>
         </div>
@@ -104,19 +104,19 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
           <button
             onClick={onTriggerSync}
             disabled={isSyncing}
-            className="flex items-center justify-center gap-2 px-5 py-3 bg-[#ff4e00] hover:bg-[#ff6a2b] text-black font-bold uppercase tracking-wider text-xs rounded shadow-lg shadow-[#ff4e00]/20 transition-all cursor-pointer disabled:opacity-50"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-bold uppercase tracking-wider text-xs rounded shadow transition-all cursor-pointer disabled:opacity-50"
           >
             <Cpu className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
-            <span>{isSyncing ? 'Executing Loop...' : 'Trigger Agent Reasoning'}</span>
+            <span>{isSyncing ? 'Executing Loop...' : 'Run 12 Agents'}</span>
           </button>
         </div>
       </div>
 
       {/* Grid Layout: Agent Logs + Recommendations */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         
         {/* Left Column: Multi-Agent Intelligence Activity Feed (5 cols) */}
-        <div className="lg:col-span-5 bg-[#0d0d14] rounded-lg border border-[#ffffff15] p-5 shadow-xl flex flex-col h-[520px]">
+        <div className="lg:col-span-5 bg-[#101018] rounded-lg border border-[#ffffff12] p-5 shadow-xl flex flex-col h-[520px]">
           <div className="flex items-center justify-between border-b border-[#ffffff15] pb-3 mb-3">
             <div className="flex items-center gap-2">
               <Activity className="w-4 h-4 text-[#ff4e00]" />

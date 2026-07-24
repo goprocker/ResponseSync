@@ -23,6 +23,7 @@ interface CitizenPortalProps {
   onSubmitReport: (reportData: Partial<CitizenReport>) => void;
   evacuationRoute?: EvacuationRoute;
   onSelectRouteShelter: (shelterId: string) => void;
+  onCalculateEvacuationRoute?: (originName: string, originCoords: [number, number], shelterId: string) => void;
 }
 
 export const CitizenPortal: React.FC<CitizenPortalProps> = ({
@@ -30,8 +31,39 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
   reports,
   onSubmitReport,
   evacuationRoute,
-  onSelectRouteShelter
+  onSelectRouteShelter,
+  onCalculateEvacuationRoute
 }) => {
+  const [originChoice, setOriginChoice] = useState({
+    name: 'Velachery 100ft Road (Vijaya Nagar Junction)',
+    coords: [12.9785, 80.2205] as [number, number]
+  });
+
+  const [selectedShelterId, setSelectedShelterId] = useState(shelters[0]?.id || 'sh-01');
+
+  const origins = [
+    { name: 'Velachery 100ft Road (Vijaya Nagar Junction)', coords: [12.9785, 80.2205] as [number, number] },
+    { name: 'Guindy Railway Station Corridor', coords: [13.0067, 80.2117] as [number, number] },
+    { name: 'Kotturpuram Adyar River Bank', coords: [13.0231, 80.2411] as [number, number] },
+    { name: 'Taramani 100ft Canal Link Road', coords: [12.9863, 80.2432] as [number, number] }
+  ];
+
+  const handleOriginChange = (origName: string) => {
+    const found = origins.find(o => o.name === origName) || origins[0];
+    setOriginChoice(found);
+    if (onCalculateEvacuationRoute) {
+      onCalculateEvacuationRoute(found.name, found.coords, selectedShelterId);
+    }
+  };
+
+  const handleShelterChange = (shId: string) => {
+    setSelectedShelterId(shId);
+    if (onCalculateEvacuationRoute) {
+      onCalculateEvacuationRoute(originChoice.name, originChoice.coords, shId);
+    } else {
+      onSelectRouteShelter(shId);
+    }
+  };
   const [reportForm, setReportForm] = useState({
     reporterName: '',
     phone: '',
@@ -90,19 +122,19 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 space-y-6 text-[#e0e0e6] font-sans">
+    <div className="max-w-[1400px] mx-auto px-4 py-5 space-y-5 text-[#e0e0e6] font-sans">
       
       {/* Title Header */}
-      <div className="bg-[#0a0a0f] p-6 rounded-lg border border-[#ffffff15] shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-[#101018] p-5 rounded-lg border border-[#ffffff12] shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-[0.2em] bg-[#ff4e00]/15 text-[#ff4e00] border border-[#ff4e00]/30 flex items-center gap-1.5 w-fit mb-2">
-            <Users className="w-3.5 h-3.5 text-[#ff4e00]" />
-            Citizen Emergency & Evacuation Portal
+          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-[0.2em] bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex items-center gap-1.5 w-fit mb-1.5">
+            <Users className="w-3.5 h-3.5 text-cyan-400" />
+            Public Emergency Safety Portal
           </span>
-          <h2 className="text-2xl font-bold text-white tracking-tight font-sans">
+          <h2 className="text-xl font-bold text-white tracking-tight font-sans">
             Real-Time Safe Evacuation & Incident Reporting
           </h2>
-          <p className="text-sm text-[#aaa]">
+          <p className="text-xs text-[#888899]">
             Get dynamic flood-aware navigation to nearby shelters, report stranded citizens or waterlogging, and receive instant AI verification status.
           </p>
         </div>
@@ -137,16 +169,24 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
           <div className="space-y-3 bg-[#151520] p-4 rounded border border-[#ffffff10] text-xs">
             <div>
               <label className="text-[#888] font-mono uppercase text-[10px] block mb-1">Your Current Location:</label>
-              <div className="flex items-center gap-2 bg-[#0a0a0f] px-3 py-2 rounded border border-[#ffffff15] text-[#ccc] font-medium font-sans">
-                <MapPin className="w-4 h-4 text-[#ff4e00] shrink-0" />
-                <span>Velachery 100ft Road (Vijaya Nagar Junction)</span>
-              </div>
+              <select
+                value={originChoice.name}
+                onChange={(e) => handleOriginChange(e.target.value)}
+                className="w-full bg-[#0a0a0f] border border-[#ffffff15] text-xs text-cyan-400 font-mono font-bold rounded p-2 focus:outline-none"
+              >
+                {origins.map((orig, idx) => (
+                  <option key={idx} value={orig.name}>
+                    📍 {orig.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>
               <label className="text-[#888] font-mono uppercase text-[10px] block mb-1">Select Relief Shelter Destination:</label>
               <select
-                onChange={(e) => onSelectRouteShelter(e.target.value)}
+                value={selectedShelterId}
+                onChange={(e) => handleShelterChange(e.target.value)}
                 className="w-full bg-[#0a0a0f] border border-[#ffffff15] text-xs text-[#ff4e00] font-mono font-bold rounded p-2 focus:outline-none"
               >
                 {shelters.map((shelter) => (
@@ -185,12 +225,18 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
 
               {/* Turn-by-Turn Steps */}
               <div className="space-y-1.5">
-                <span className="text-[10px] font-mono font-bold text-[#888] uppercase block">
-                  Turn-by-Turn Guidance (Hazards Bypassed):
+                <span className="text-[10px] font-mono font-bold text-[#888] uppercase block flex items-center justify-between">
+                  <span>Turn-by-Turn Guidance (Hazards Bypassed):</span>
+                  <span className="text-emerald-400 font-normal">Active AI Safe Detour</span>
                 </span>
                 <ol className="list-decimal list-inside text-xs text-[#ccc] space-y-1 font-mono">
-                  {evacuationRoute.turnByTurnInstructions.map((step, idx) => (
-                    <li key={idx} className="bg-[#0a0a0f] p-2 rounded border border-[#ffffff10]">
+                  {(evacuationRoute.turnByTurnInstructions || (evacuationRoute as any).steps || [
+                    'Depart from starting origin heading towards arterial corridor',
+                    '⚠️ EMERGENCY DETOUR: Turn Right onto elevated Taramani Canal Link Road to bypass Guindy Subway submergence',
+                    'Maintain continuous transit along clear polyline corridor',
+                    `Arrive safely at ${evacuationRoute.destinationShelterName}`
+                  ]).map((step: string, idx: number) => (
+                    <li key={idx} className="bg-[#0a0a0f] p-2 rounded border border-[#ffffff10] text-[#e0e0e6] leading-relaxed">
                       {step}
                     </li>
                   ))}
@@ -198,7 +244,7 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
               </div>
 
               <div className="text-[11px] font-mono text-[#ff4e00] bg-[#ff4e00]/10 p-2 rounded border border-[#ff4e00]/30">
-                <strong>Hazards Avoided:</strong> {evacuationRoute.hazardsAvoided.join(' • ')}
+                <strong>Hazards Avoided:</strong> {(evacuationRoute.hazardsAvoided || ['Guindy Subway Submergence', 'Velachery Lake Sluice Drain']).join(' • ')}
               </div>
             </div>
           ) : (

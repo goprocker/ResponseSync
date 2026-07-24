@@ -141,19 +141,19 @@ export const SimulationStudio: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 space-y-6 text-[#e0e0e6] font-sans">
+    <div className="max-w-[1400px] mx-auto px-4 py-5 space-y-5 text-[#e0e0e6] font-sans">
       
       {/* Title Header */}
-      <div className="bg-[#0a0a0f] p-6 rounded-lg border border-[#ffffff15] shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-[#101018] p-5 rounded-lg border border-[#ffffff12] shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-[0.2em] bg-[#ff4e00]/15 text-[#ff4e00] border border-[#ff4e00]/30 flex items-center gap-1.5 w-fit mb-2">
-            <Sliders className="w-3.5 h-3.5 text-[#ff4e00]" />
+          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-[0.2em] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5 w-fit mb-1.5">
+            <Sliders className="w-3.5 h-3.5 text-emerald-400" />
             Simulation & Decision Knowledge Base Studio
           </span>
-          <h2 className="text-2xl font-bold text-white tracking-tight font-sans">
-            Disaster Simulation & Scenario Matching Engine
+          <h2 className="text-xl font-bold text-white tracking-tight font-sans">
+            Disaster Hydrodynamic Simulation & Scenario Engine
           </h2>
-          <p className="text-sm text-[#aaa]">
+          <p className="text-xs text-[#888899]">
             Run hydrodynamic what-if simulations, match live events against historical disaster knowledge, and extract refined AI response strategies.
           </p>
         </div>

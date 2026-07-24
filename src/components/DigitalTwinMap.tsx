@@ -435,17 +435,17 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
       {/* Map Header Overlay Bar */}
       <div className="absolute top-3 left-3 right-3 z-20 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
         
-        {/* Layer Toggles */}
-        <div className="flex flex-wrap items-center gap-1.5 bg-[#050507cc] p-2 rounded-lg border border-[#ffffff20] shadow-2xl backdrop-blur-md pointer-events-auto">
-          <span className="text-[10px] uppercase tracking-[0.2em] font-mono text-[#888] px-2 flex items-center gap-1">
-            <Layers className="w-3.5 h-3.5 text-[#ff4e00]" />
+        {/* Floating Layer Controls */}
+        <div className="flex items-center gap-1.5 bg-[#08080ccc] p-1.5 rounded-lg border border-[#ffffff12] shadow-xl backdrop-blur-md overflow-x-auto max-w-full pointer-events-auto">
+          <span className="text-[10px] uppercase font-mono font-bold text-amber-500 px-1.5 flex items-center gap-1 shrink-0">
+            <Layers className="w-3 h-3 text-amber-500" />
             Layers:
           </span>
 
           <button
             onClick={() => setShowZones(!showZones)}
-            className={`px-2.5 py-1 rounded text-[11px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              showZones ? 'bg-[#ff4e00] text-black' : 'bg-[#151520] text-[#888] border border-[#ffffff10]'
+            className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              showZones ? 'bg-amber-500 text-black' : 'bg-[#101018] text-[#888] border border-[#ffffff12]'
             }`}
           >
             Risk Zones
@@ -453,17 +453,17 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
 
           <button
             onClick={() => setShowInundation(!showInundation)}
-            className={`px-2.5 py-1 rounded text-[11px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              showInundation ? 'bg-[#3b82f6] text-white' : 'bg-[#151520] text-[#888] border border-[#ffffff10]'
+            className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              showInundation ? 'bg-blue-500 text-white' : 'bg-[#101018] text-[#888] border border-[#ffffff12]'
             }`}
           >
-            Flood Overlay
+            Flood Inundation
           </button>
 
           <button
             onClick={() => setShowSensors(!showSensors)}
-            className={`px-2.5 py-1 rounded text-[11px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              showSensors ? 'bg-[#10b981] text-black' : 'bg-[#151520] text-[#888] border border-[#ffffff10]'
+            className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              showSensors ? 'bg-emerald-500 text-black' : 'bg-[#101018] text-[#888] border border-[#ffffff12]'
             }`}
           >
             IoT Sensors
@@ -471,8 +471,8 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
 
           <button
             onClick={() => setShowResources(!showResources)}
-            className={`px-2.5 py-1 rounded text-[11px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              showResources ? 'bg-[#a855f7] text-white' : 'bg-[#151520] text-[#888] border border-[#ffffff10]'
+            className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              showResources ? 'bg-purple-500 text-white' : 'bg-[#101018] text-[#888] border border-[#ffffff12]'
             }`}
           >
             Fleet Units
@@ -480,8 +480,8 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
 
           <button
             onClick={() => setShowShelters(!showShelters)}
-            className={`px-2.5 py-1 rounded text-[11px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              showShelters ? 'bg-[#eab308] text-black' : 'bg-[#151520] text-[#888] border border-[#ffffff10]'
+            className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              showShelters ? 'bg-yellow-500 text-black' : 'bg-[#101018] text-[#888] border border-[#ffffff12]'
             }`}
           >
             Shelters
@@ -489,11 +489,11 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
 
           <button
             onClick={() => setShowReports(!showReports)}
-            className={`px-2.5 py-1 rounded text-[11px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              showReports ? 'bg-[#f43f5e] text-white' : 'bg-[#151520] text-[#888] border border-[#ffffff10]'
+            className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              showReports ? 'bg-red-500 text-white' : 'bg-[#101018] text-[#888] border border-[#ffffff12]'
             }`}
           >
-            Reports
+            Citizen SOS
           </button>
         </div>
 
