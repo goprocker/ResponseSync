@@ -503,17 +503,15 @@ export const MOCK_EVACUATION_ROUTE: EvacuationRoute = {
   estimatedTimeMinutes: 8,
   safetyScorePct: 98,
   waypoints: [
-    [12.977, 80.221],
-    [12.979, 80.220],
-    [12.981, 80.218],
-    [12.983, 80.218]
+    [12.9770, 80.2210],
+    [12.9850, 80.2225]
   ],
   hazardsAvoided: ['Guindy Railway Subway (Submerged)', 'Lake Sluice Breach Zone', 'High Voltage Substation Flooding'],
   turnByTurnInstructions: [
-    'Head NORTH on 100 Feet Road away from lake sluice (Water level < 0.2m)',
-    'Turn LEFT onto Inner Ring Road elevate ramp',
-    'Follow elevated corridor past Vijaya Nagar Junction',
-    'Arrive safely at Velachery Community Center Relief Camp (Gate 02)'
+    '📍 Lane 1 (Left Carriageway): Depart NORTH on 100 Feet Road (Clearance: 0.8m above flood level)',
+    '↱ Lane 1 (Elevated Ramp): Keep LEFT onto Inner Ring Road Flyover Ramp to bypass submerged junction',
+    '⬆️ Lane 2 (Center Express Lane): Maintain continuous speed along elevated Vijaya Nagar Flyover',
+    '↰ Lane 1 (Deceleration Bay): Merge LEFT into Velachery Community Center Relief Camp Access Gate'
   ]
 };
 

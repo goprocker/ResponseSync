@@ -55,14 +55,14 @@ export default function DashboardOverview({
   onNavigateToTab
 }: DashboardOverviewProps) {
 
-  // Dynamic calculations from real datasets with null-safety
-  const activeReports = (reports || []).filter(r => r && r.status !== 'resolved');
-  const criticalReports = activeReports.filter(r => r && (r.severity === 'critical' || r.severity === 'high'));
-  const deployedResources = (resources || []).filter(r => r && (r.status === 'deployed' || r.status === 'en_route'));
-  const availableResources = (resources || []).filter(r => r && r.status === 'available');
-  const openSheltersCount = (shelters || []).filter(s => s && (s.status === 'open' || s.status === 'near_capacity')).length;
-  const fullShelters = (shelters || []).filter(s => s && (s.status === 'near_capacity' || s.status === 'full')).length;
-  const capacityHospitalsCount = (hospitals || []).filter(h => h && (h.status === 'near_capacity' || h.status === 'full')).length;
+  // Dynamic calculations from real datasets
+  const activeReports = reports.filter(r => r.status !== 'resolved');
+  const criticalReports = activeReports.filter(r => r.severity === 'critical' || r.severity === 'high');
+  const deployedResources = resources.filter(r => r.status === 'deployed' || r.status === 'en_route');
+  const availableResources = resources.filter(r => r.status === 'available');
+  const openSheltersCount = shelters.filter(s => s.status === 'open' || s.status === 'near_capacity').length;
+  const fullShelters = shelters.filter(s => s.status === 'near_capacity' || s.status === 'full').length;
+  const capacityHospitalsCount = hospitals.filter(h => h.status === 'near_capacity' || h.status === 'full').length;
 
   return (
     <div className="space-y-6 text-[#e0e0e6] font-sans pb-8">

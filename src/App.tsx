@@ -1,68 +1,32 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import LandingPage from './landing/LandingPage';
 import DashboardApp from './dashboard/DashboardApp';
 
-export type DashboardTab =
-  | 'dashboard'
-  | 'incidents'
-  | 'twin_map'
-  | 'resources'
-  | 'shelters'
-  | 'hospitals'
-  | 'multi_agent'
-  | 'simulation'
-  | 'citizen_portal'
-  | 'analytics'
-  | 'settings';
+export type DashboardTab = 'twin_map' | 'multi_agent' | 'simulation' | 'citizen_portal' | 'analytics';
 
 function getRouteFromPath(path: string): { view: 'landing' | 'dashboard'; tab: DashboardTab } {
   const cleanPath = path.toLowerCase().replace(/\/$/, '') || '/';
 
   switch (cleanPath) {
-    case '/dashboard':
-      return { view: 'dashboard', tab: 'dashboard' };
-    case '/incidents':
-      return { view: 'dashboard', tab: 'incidents' };
-    case '/twin':
-    case '/map':
-      return { view: 'dashboard', tab: 'twin_map' };
-    case '/resources':
-      return { view: 'dashboard', tab: 'resources' };
-    case '/shelters':
-      return { view: 'dashboard', tab: 'shelters' };
-    case '/hospitals':
-      return { view: 'dashboard', tab: 'hospitals' };
+    case '/citizen':
+      return { view: 'dashboard', tab: 'citizen_portal' };
     case '/authority':
     case '/command':
       return { view: 'dashboard', tab: 'multi_agent' };
     case '/simulation':
       return { view: 'dashboard', tab: 'simulation' };
-    case '/citizen':
-      return { view: 'dashboard', tab: 'citizen_portal' };
     case '/analytics':
     case '/fusion':
       return { view: 'dashboard', tab: 'analytics' };
-    case '/settings':
-      return { view: 'dashboard', tab: 'settings' };
+    case '/dashboard':
+    case '/twin':
+    case '/map':
+      return { view: 'dashboard', tab: 'twin_map' };
     case '/':
     default:
-      return { view: 'landing', tab: 'dashboard' };
+      return { view: 'landing', tab: 'twin_map' };
   }
 }
-
-const tabPathMap: Record<DashboardTab, string> = {
-  dashboard: '/dashboard',
-  incidents: '/incidents',
-  twin_map: '/map',
-  resources: '/resources',
-  shelters: '/shelters',
-  hospitals: '/hospitals',
-  multi_agent: '/authority',
-  simulation: '/simulation',
-  citizen_portal: '/citizen',
-  analytics: '/analytics',
-  settings: '/settings',
-};
 
 export default function App() {
   const [route, setRoute] = useState(() => getRouteFromPath(window.location.pathname));
@@ -75,40 +39,41 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const navigateTo = useCallback((path: string) => {
+  const navigateTo = (path: string) => {
     if (window.location.pathname !== path) {
       window.history.pushState(null, '', path);
     }
     setRoute(getRouteFromPath(path));
-  }, []);
-
-  const handleBackToLanding = useCallback(() => navigateTo('/'), [navigateTo]);
-
-  const handleNavigateTab = useCallback((tab: DashboardTab) => {
-    navigateTo(tabPathMap[tab] || '/dashboard');
-  }, [navigateTo]);
-
-  const handleLaunchDashboard = useCallback((targetTab?: string) => {
-    if (targetTab === 'citizen') navigateTo('/citizen');
-    else if (targetTab === 'authority') navigateTo('/authority');
-    else if (targetTab === 'simulation') navigateTo('/simulation');
-    else if (targetTab === 'analytics') navigateTo('/analytics');
-    else navigateTo('/dashboard');
-  }, [navigateTo]);
+  };
 
   if (route.view === 'dashboard') {
     return (
       <DashboardApp
         initialTab={route.tab}
-        onBackToLanding={handleBackToLanding}
-        onNavigateTab={handleNavigateTab}
+        onBackToLanding={() => navigateTo('/')}
+        onNavigateTab={(tab) => {
+          const tabPathMap: Record<DashboardTab, string> = {
+            twin_map: '/dashboard',
+            multi_agent: '/authority',
+            simulation: '/simulation',
+            citizen_portal: '/citizen',
+            analytics: '/analytics'
+          };
+          navigateTo(tabPathMap[tab] || '/dashboard');
+        }}
       />
     );
   }
 
   return (
     <LandingPage
-      onLaunchDashboard={handleLaunchDashboard}
+      onLaunchDashboard={(targetTab?: string) => {
+        if (targetTab === 'citizen') navigateTo('/citizen');
+        else if (targetTab === 'authority') navigateTo('/authority');
+        else if (targetTab === 'simulation') navigateTo('/simulation');
+        else if (targetTab === 'analytics') navigateTo('/analytics');
+        else navigateTo('/dashboard');
+      }}
     />
   );
 }

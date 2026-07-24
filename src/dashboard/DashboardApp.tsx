@@ -79,9 +79,8 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
   const [agencyRole, setAgencyRole] = useState<AgencyRole>('authority');
   const [activeTab, setActiveTabState] = useState<string>(initialTab || 'dashboard');
 
-  // Sync activeTab state whenever initialTab prop changes
   useEffect(() => {
-    if (initialTab) {
+    if (initialTab && initialTab !== activeTab) {
       setActiveTabState(initialTab);
     }
   }, [initialTab]);
@@ -600,13 +599,6 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
               onSelectRouteShelter={handleSelectRouteShelter}
               onCalculateEvacuationRoute={calculateRoute}
               onNavigateToMap={() => setActiveTab('twin_map')}
-            />
-          )}
-
-          {activeTab === 'analytics' && (
-            <AnalyticsHub
-              sensors={sensors}
-              zones={zones}
             />
           )}
 

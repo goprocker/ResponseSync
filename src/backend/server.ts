@@ -414,29 +414,26 @@ app.post('/api/ai/evacuation-route', async (req, res) => {
     hazardsAvoided.push('Velachery Lake Sluice Overflow Zone');
     hazardsAvoided.push('Vijaya Nagar Bus Stand Waterlogged Concourse');
 
-    // 3. Construct Safe Detour Polyline Waypoints
+    // 3. Construct Direct & Safe Detour Polyline Waypoints
     let finalWaypoints: number[][] = [];
-    if (osrmGeometry.length > 0 && !detourRequired) {
+    if (osrmGeometry && osrmGeometry.length > 0) {
       finalWaypoints = osrmGeometry;
     } else {
-      // Elevated Safe Detour via Taramani Link Road Corridor
-      const detourPoint: [number, number] = [12.9863, 80.2432]; // Elevated Taramani Canal Link
+      // Direct clean route from origin to destination
       finalWaypoints = [
         start,
-        detourPoint,
-        [(start[0] + dest[0]) / 2, (start[1] + dest[1]) / 2],
         dest
       ];
     }
 
     const safetyScorePct = detourRequired ? 96 : 98;
     const steps = [
-      `Depart from ${originName || 'Starting Point'} heading towards arterial corridor`,
+      `📍 Lane 1 (Left Carriageway): Depart from ${originName || 'Starting Point'} along elevated 100ft road corridor`,
       detourRequired
-        ? '⚠️ EMERGENCY DETOUR: Turn Right onto elevated Taramani Canal Link Road to bypass Guindy Subway submergence'
-        : 'Proceed along elevated 100ft road corridor avoiding ground-floor sluice drain',
-      `Maintain continuous transit along clear polyline corridor (Distance: ${distanceKm} km)`,
-      `Arrive safely at ${shelterName || 'Designated Relief Camp'}`
+        ? '⚠️ Lane 1 (Elevated Detour Ramp): Turn Right onto elevated Taramani Canal Link Road to bypass Guindy Subway submergence'
+        : '↱ Lane 2 (Center Express Lane): Follow elevated dual carriageway past Vijay Nagar Junction avoiding low-lying sluice drain',
+      `⬆️ Lane 2 (Express Corridor): Maintain continuous 40km/h transit along clear lane corridor (Distance: ${distanceKm} km)`,
+      `↰ Lane 1 (Deceleration Bay): Merge safely into ${shelterName || 'Designated Relief Camp'}`
     ];
 
     res.json({
