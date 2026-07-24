@@ -148,6 +148,32 @@ async function populateAllDetailedKnowledge() {
       retrieved_strategy: 'Deployment of army and navy personnel for immediate search and rescue using mechanized boats; emergency release of water from major reservoirs.',
       historical_outcome: 'Rescued over 10,000 stranded individuals; coordinated multi-agency response reduced potential fatalities by 40%.',
       ai_refinement: 'Implement predictive hydrodynamic models to coordinate reservoir release schedules with tidal charts, minimizing downstream estuarine backflow.'
+    },
+    {
+      id: 'sim-2012-10-31',
+      historical_event: 'October 2012 Cyclone Nilam Coastal Strike',
+      similarity_pct: 75,
+      key_matches: [
+        'Widespread tree uprooting across IT corridor',
+        'Coastal tidal surge overtopping East Coast Road (ECR)',
+        'Power grid failure in South Chennai suburbs'
+      ],
+      retrieved_strategy: 'Immediate deployment of disaster response force with chainsaws to clear OMR and ECR; setting up temporary power for major water pumping stations.',
+      historical_outcome: 'Cleared major arterial roads within 8 hours; prevented secondary flooding by restoring pump operations.',
+      ai_refinement: 'Pre-position heavy-duty tree clearing equipment at 5km intervals along OMR prior to landfall and deploy drone-based damage assessment immediately post-cyclone.'
+    },
+    {
+      id: 'sim-2018-11-16',
+      historical_event: 'November 2018 Cyclone Gaja Supply Chain Disruption',
+      similarity_pct: 80,
+      key_matches: [
+        'Massive disruption of essential supply chains',
+        'Loss of communication in coastal hamlets',
+        'Hospital supply shortages due to road blockages'
+      ],
+      retrieved_strategy: 'Air-dropping essential medical supplies and food packets to isolated coastal zones; establishment of localized VHF radio communication hubs.',
+      historical_outcome: 'Maintained basic food security for 15,000 isolated individuals; zero fatalities due to medical supply stockouts.',
+      ai_refinement: 'Establish automated supply chain routing using real-time satellite imagery to identify intact secondary road networks for ground supply delivery.'
     }
   ];
 
@@ -286,6 +312,32 @@ async function populateAllDetailedKnowledge() {
       effectiveness_score: 81,
       outcome: 'Coordinated army and navy response rescued 10,000 individuals',
       lessons_learned: 'Multi-agency coordination is critical when river overtopping exceeds local response capacity.'
+    },
+    {
+      id: 'sim-2012-10-31',
+      title: 'October 2012 Cyclone Nilam Impact',
+      rainfall_mm_hr: 40,
+      dam_discharge_m3s: 150,
+      canal_blockage_pct: 30,
+      affected_zones_count: 4,
+      predicted_submerged_area_km2: 1.2,
+      estimated_affected_people: 25000,
+      effectiveness_score: 82,
+      outcome: 'Cleared major arterial roads within 8h and restored critical water pump operations',
+      lessons_learned: 'Pre-positioning tree-clearing equipment along critical arterial routes significantly accelerates recovery.'
+    },
+    {
+      id: 'sim-2018-11-16',
+      title: 'November 2018 Cyclone Gaja Disruptions',
+      rainfall_mm_hr: 50,
+      dam_discharge_m3s: 250,
+      canal_blockage_pct: 35,
+      affected_zones_count: 5,
+      predicted_submerged_area_km2: 2.0,
+      estimated_affected_people: 40000,
+      effectiveness_score: 87,
+      outcome: 'Successfully air-dropped supplies and maintained zero fatalities from medical stockouts',
+      lessons_learned: 'VHF radio networks remain the most reliable communication fallback during severe cyclones.'
     }
   ];
 
@@ -413,6 +465,33 @@ async function populateAllDetailedKnowledge() {
       trauma_center_active: true,
       status: 'strained',
       coordinates: [13.0060, 80.2570]
+    },
+    {
+      id: 'hosp-06',
+      name: 'Rajiv Gandhi Government General Hospital',
+      total_beds: 2700,
+      available_icu_beds: 45,
+      trauma_center_active: true,
+      status: 'operational',
+      coordinates: [13.0810, 80.2780]
+    },
+    {
+      id: 'hosp-07',
+      name: 'Sri Ramachandra Medical Centre (Porur)',
+      total_beds: 1500,
+      available_icu_beds: 30,
+      trauma_center_active: true,
+      status: 'operational',
+      coordinates: [13.0390, 80.1480]
+    },
+    {
+      id: 'hosp-08',
+      name: 'Stanley Medical College Hospital',
+      total_beds: 1200,
+      available_icu_beds: 20,
+      trauma_center_active: true,
+      status: 'strained',
+      coordinates: [13.1060, 80.2860]
     }
   ];
 
