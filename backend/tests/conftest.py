@@ -6,7 +6,6 @@ import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import event
-from sqlalchemy.engine import Engine
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.db.base import Base
@@ -21,16 +20,28 @@ test_engine = create_async_engine(
     echo=False,
 )
 
+# Sample EWKB Hex representation of Point(80.2208, 12.9785)
+SAMPLE_EWKB_HEX = "0101000020E6100000E17A14AE470E5440F6285C8FC2F42940"
+
 
 @event.listens_for(test_engine.sync_engine, "connect")
 def _register_sqlite_spatial_stubs(dbapi_connection, connection_record):
-    """Register SQLite C function stubs on raw stdlib sqlite3 connection."""
+    """Register SQLite C function stubs for GeoAlchemy2 PostGIS functions."""
     raw_sqlite_conn = getattr(dbapi_connection, "_conn", dbapi_connection)
     if hasattr(raw_sqlite_conn, "create_function"):
         raw_sqlite_conn.create_function("GeomFromEWKT", 1, lambda val: val)
         raw_sqlite_conn.create_function("ST_GeomFromEWKT", 1, lambda val: val)
         raw_sqlite_conn.create_function("ST_GeomFromText", 1, lambda val: val)
-        raw_sqlite_conn.create_function("ST_AsText", 1, lambda val: val)
+        raw_sqlite_conn.create_function("AsEWKB", 1, lambda val: SAMPLE_EWKB_HEX)
+        raw_sqlite_conn.create_function("ST_AsEWKB", 1, lambda val: SAMPLE_EWKB_HEX)
+        raw_sqlite_conn.create_function("ST_AsBinary", 1, lambda val: SAMPLE_EWKB_HEX)
+        raw_sqlite_conn.create_function("ST_AsGeoJSON", 1, lambda val: '{"type":"Point","coordinates":[80.2208,12.9785]}')
+        raw_sqlite_conn.create_function("ST_AsText", 1, lambda val: "POINT(80.2208 12.9785)")
+        raw_sqlite_conn.create_function("CheckSpatialIndex", 2, lambda a, b: None)
+        raw_sqlite_conn.create_function("DisableSpatialIndex", 2, lambda a, b: None)
+        raw_sqlite_conn.create_function("EnableSpatialIndex", 2, lambda a, b: None)
+        raw_sqlite_conn.create_function("RecoverGeometryColumn", 5, lambda *args: None)
+        raw_sqlite_conn.create_function("DiscardGeometryColumn", 2, lambda *args: None)
 
 
 TestingSessionLocal = async_sessionmaker(

@@ -4,6 +4,7 @@ import uuid
 from typing import List, Optional
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.core.exceptions import NotFoundException
 from app.models.simulation import Simulation, SimulationResult
@@ -56,8 +57,9 @@ class SimulationService:
         sim.status = "COMPLETED"
         session.add(result_entry)
         await session.commit()
-        await session.refresh(sim)
-        return sim
+
+        # Re-fetch simulation with eagerly loaded results relationship
+        return await cls.get_simulation_by_id(session, sim.id)
 
     @classmethod
     async def get_simulation_by_id(
@@ -65,7 +67,7 @@ class SimulationService:
     ) -> Simulation:
         """Fetch simulation metadata and results by ID."""
         result = await session.execute(
-            select(Simulation).where(Simulation.id == sim_id)
+            select(Simulation).options(selectinload(Simulation.results)).where(Simulation.id == sim_id)
         )
         sim = result.scalars().first()
         if not sim:
@@ -75,5 +77,7 @@ class SimulationService:
     @classmethod
     async def list_simulations(cls, session: AsyncSession) -> List[Simulation]:
         """List all historical simulation runs."""
-        result = await session.execute(select(Simulation).order_by(Simulation.created_at.desc()))
+        result = await session.execute(
+            select(Simulation).options(selectinload(Simulation.results)).order_by(Simulation.created_at.desc())
+        )
         return list(result.scalars().all())
