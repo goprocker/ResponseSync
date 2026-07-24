@@ -264,10 +264,10 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
             ? [Number(zone.center[0]), Number(zone.center[1])]
             : validCoords[0];
 
-          const expandedCoords = validCoords.map(([lat, lng]) => [
+          const expandedCoords: [number, number][] = validCoords.map(([lat, lng]): [number, number] => [
             center[0] + (lat - center[0]) * scale,
             center[1] + (lng - center[1]) * scale
-          ]).filter(([lat, lng]) => !isNaN(lat) && !isNaN(lng)) as [number, number][];
+          ]).filter((coord): coord is [number, number] => !isNaN(coord[0]) && !isNaN(coord[1]));
 
           if (expandedCoords.length < 3) return;
 

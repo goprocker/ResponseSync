@@ -63,18 +63,9 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
     : agentLogs.filter(log => log.agentName === selectedAgentFilter);
 
   const availableAgents = [
-    'Weather Agent',
-    'Hydrology Agent',
-    'Traffic Agent',
-    'Infrastructure Agent',
-    'Citizen Intelligence Agent',
-    'Risk Prediction Agent',
-    'Simulation Agent',
-    'Resource Planner Agent',
-    'Evacuation Planner Agent',
-    'Decision Agent',
-    'Explainability Agent',
-    'Coordinator Agent'
+    'Hydro-Risk Ingestion Agent',
+    'Decision & Resource Agent',
+    'Command & Dispatch Agent'
   ];
 
   return (
@@ -88,11 +79,11 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-[0.2em] bg-brand/15 text-[#e0e0e6] border border-brand/30 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-[#e0e0e6]" />
-              12-Agent AI Command OS
+              3-Agent AI Command OS
             </span>
             <span className="text-[10px] text-brand font-mono flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              AUTONOMOUS_LOOP_ACTIVE
+              AUTONOMOUS_PIPELINE_ACTIVE
             </span>
           </div>
 
@@ -100,7 +91,7 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
             Disaster Management Command & Control HQ
           </h2>
           <p className="text-xs text-[#888899] max-w-2xl leading-relaxed">
-            Continuously synchronizing weather radars, satellite imagery, IoT water depth sensors, traffic corridors, and citizen emergency calls into actionable, explainable AI decisions.
+            3-Agent Autonomous Pipeline: 1. Hydro-Risk Ingestion Agent → 2. Decision & Resource Agent → 3. Command & Dispatch Agent. Grounded in live sensor telemetry and Supabase Disaster Knowledge Base.
           </p>
         </div>
 
@@ -111,7 +102,7 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
             className="flex items-center justify-center gap-2 px-5 py-3 bg-brand hover:bg-brand-deep text-black font-bold uppercase tracking-wider text-xs rounded shadow-lg transition-all cursor-pointer disabled:opacity-50"
           >
             <Cpu className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
-            <span>{isSyncing ? 'Executing Loop...' : 'Run 12 Agents'}</span>
+            <span>{isSyncing ? 'Executing Pipeline...' : 'Run 3 Autonomous Agents'}</span>
           </button>
         </div>
       </div>
@@ -125,14 +116,14 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
             <div className="flex items-center gap-2">
               <Activity className="w-4 h-4 text-[#e0e0e6]" />
               <h3 className="font-bold text-[#e0e0e6] text-sm uppercase tracking-wider font-sans">
-                Multi-Agent Execution Stream
+                3-Agent Execution Stream
               </h3>
             </div>
             <span className="text-[10px] text-[#888] font-mono">{filteredLogs.length} EVENTS</span>
           </div>
 
           {/* Agent Filter Chips */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-3">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-3 no-scrollbar">
             <button
               onClick={() => setSelectedAgentFilter('all')}
               className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer ${
@@ -141,7 +132,7 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
                   : 'bg-[#050507] text-[#888] hover:text-[#e0e0e6] border border-white/5'
               }`}
             >
-              All 12 Agents
+              All 3 Agents
             </button>
             {availableAgents.map((agent) => (
               <button
