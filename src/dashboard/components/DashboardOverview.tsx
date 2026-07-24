@@ -203,7 +203,7 @@ export default function DashboardOverview({
           </div>
 
           {/* Incidents Stream */}
-          <div className="flex-1 overflow-y-auto space-y-3.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex-1 overflow-y-auto space-y-3.5 pr-1">
             {reports.slice(0, 5).map((report) => (
               <div 
                 key={report.id} 
@@ -352,7 +352,7 @@ export default function DashboardOverview({
           </div>
 
           {/* Scrollable list */}
-          <div className="flex-1 overflow-y-auto space-y-3 pr-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex-1 overflow-y-auto space-y-3 pr-1">
             {(agentLogs && agentLogs.length > 0 ? agentLogs : [
               { id: '1', timestamp: '10:25 AM', agentName: 'Coordinator Agent', action: 'System Monitoring Active', details: 'Continuous telemetry stream ingest across 12 production agents', severity: 'info' }
             ]).map((log, i) => (

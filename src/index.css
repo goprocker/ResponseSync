@@ -88,3 +88,42 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.4);
 }
+
+/* Custom Theme-Aligned Cyber-Amber & Dark Ink Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #08080c;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(210, 95, 56, 0.35);
+  border-radius: 3px;
+  border: 1px solid rgba(210, 95, 56, 0.4);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(210, 95, 56, 0.75);
+  border-color: #d25f38;
+  box-shadow: 0 0 8px rgba(210, 95, 56, 0.5);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #d25f38;
+}
+
+::-webkit-scrollbar-corner {
+  background: #08080c;
+}
+
+/* Firefox Custom Scrollbar Support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(210, 95, 56, 0.4) #08080c;
+}
+

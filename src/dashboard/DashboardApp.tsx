@@ -348,7 +348,7 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
         </div>
 
         {/* Sidebar Navigation Links */}
-        <nav className="flex-1 p-3 space-y-1 overflow-y-auto no-scrollbar">
+        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -479,7 +479,7 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
         </header>
 
         {/* 3. Main Workspace Screen */}
-        <main className={`flex-1 min-h-0 relative overflow-hidden ${activeTab === 'twin_map' ? 'p-0' : 'p-6 overflow-y-auto no-scrollbar'}`}>
+        <main className={`flex-1 min-h-0 relative overflow-hidden ${activeTab === 'twin_map' ? 'p-0' : 'p-6 overflow-y-auto'}`}>
           
           {/* Tab Render Router */}
           {activeTab === 'dashboard' && (

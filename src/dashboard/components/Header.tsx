@@ -90,7 +90,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Navigation Tabs */}
-        <nav className="flex items-center gap-1 bg-[#050507] p-0.5 rounded-none border border-white/10 overflow-x-auto w-full lg:w-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        <nav className="flex items-center gap-1 bg-[#050507] p-0.5 rounded-none border border-white/10 overflow-x-auto w-full lg:w-auto">
           <button
             onClick={() => setActiveTab('twin_map')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-none text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${

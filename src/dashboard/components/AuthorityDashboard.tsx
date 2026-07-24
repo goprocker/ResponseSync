@@ -132,7 +132,7 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
           </div>
 
           {/* Agent Filter Chips */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-3 no-scrollbar">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-3">
             <button
               onClick={() => setSelectedAgentFilter('all')}
               className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer ${
