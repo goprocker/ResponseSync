@@ -2,31 +2,67 @@ import React, { useState, useEffect, useCallback } from 'react';
 import LandingPage from './landing/LandingPage';
 import DashboardApp from './dashboard/DashboardApp';
 
-export type DashboardTab = 'twin_map' | 'multi_agent' | 'simulation' | 'citizen_portal' | 'analytics';
+export type DashboardTab =
+  | 'dashboard'
+  | 'incidents'
+  | 'twin_map'
+  | 'resources'
+  | 'shelters'
+  | 'hospitals'
+  | 'multi_agent'
+  | 'simulation'
+  | 'citizen_portal'
+  | 'analytics'
+  | 'settings';
 
 function getRouteFromPath(path: string): { view: 'landing' | 'dashboard'; tab: DashboardTab } {
   const cleanPath = path.toLowerCase().replace(/\/$/, '') || '/';
 
   switch (cleanPath) {
-    case '/citizen':
-      return { view: 'dashboard', tab: 'citizen_portal' };
+    case '/dashboard':
+      return { view: 'dashboard', tab: 'dashboard' };
+    case '/incidents':
+      return { view: 'dashboard', tab: 'incidents' };
+    case '/twin':
+    case '/map':
+      return { view: 'dashboard', tab: 'twin_map' };
+    case '/resources':
+      return { view: 'dashboard', tab: 'resources' };
+    case '/shelters':
+      return { view: 'dashboard', tab: 'shelters' };
+    case '/hospitals':
+      return { view: 'dashboard', tab: 'hospitals' };
     case '/authority':
     case '/command':
       return { view: 'dashboard', tab: 'multi_agent' };
     case '/simulation':
       return { view: 'dashboard', tab: 'simulation' };
+    case '/citizen':
+      return { view: 'dashboard', tab: 'citizen_portal' };
     case '/analytics':
     case '/fusion':
       return { view: 'dashboard', tab: 'analytics' };
-    case '/dashboard':
-    case '/twin':
-    case '/map':
-      return { view: 'dashboard', tab: 'twin_map' };
+    case '/settings':
+      return { view: 'dashboard', tab: 'settings' };
     case '/':
     default:
-      return { view: 'landing', tab: 'twin_map' };
+      return { view: 'landing', tab: 'dashboard' };
   }
 }
+
+const tabPathMap: Record<DashboardTab, string> = {
+  dashboard: '/dashboard',
+  incidents: '/incidents',
+  twin_map: '/map',
+  resources: '/resources',
+  shelters: '/shelters',
+  hospitals: '/hospitals',
+  multi_agent: '/authority',
+  simulation: '/simulation',
+  citizen_portal: '/citizen',
+  analytics: '/analytics',
+  settings: '/settings',
+};
 
 export default function App() {
   const [route, setRoute] = useState(() => getRouteFromPath(window.location.pathname));
@@ -49,13 +85,6 @@ export default function App() {
   const handleBackToLanding = useCallback(() => navigateTo('/'), [navigateTo]);
 
   const handleNavigateTab = useCallback((tab: DashboardTab) => {
-    const tabPathMap: Record<DashboardTab, string> = {
-      twin_map: '/dashboard',
-      multi_agent: '/authority',
-      simulation: '/simulation',
-      citizen_portal: '/citizen',
-      analytics: '/analytics'
-    };
     navigateTo(tabPathMap[tab] || '/dashboard');
   }, [navigateTo]);
 
