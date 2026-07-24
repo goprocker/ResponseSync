@@ -7,7 +7,7 @@ import {
   EmergencyShelter,
   CitizenReport,
   EvacuationRoute
-} from '../types';
+} from '../../shared/types';
 import {
   Layers,
   Clock,
@@ -430,22 +430,22 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
   ]);
 
   return (
-    <div className="relative w-full h-[calc(100vh-70px)] min-h-[550px] bg-[#050507] flex flex-col overflow-hidden">
+    <div className="relative w-full h-[calc(100vh-70px)] min-h-[550px] bg-[#040806] flex flex-col overflow-hidden">
       
       {/* Map Header Overlay Bar */}
       <div className="absolute top-3 left-3 right-3 z-20 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
         
-        {/* Floating Layer Controls */}
-        <div className="flex items-center gap-1.5 bg-[#08080ccc] p-1.5 rounded-lg border border-[#ffffff12] shadow-xl backdrop-blur-md overflow-x-auto max-w-full pointer-events-auto">
-          <span className="text-[10px] uppercase font-mono font-bold text-amber-500 px-1.5 flex items-center gap-1 shrink-0">
-            <Layers className="w-3 h-3 text-amber-500" />
+        {/* Layer Toggles */}
+        <div className="flex flex-wrap items-center gap-1.5 bg-[#040806] p-1.5 rounded-none border border-[#10b98125] shadow-none backdrop-blur-md pointer-events-auto">
+          <span className="text-[9px] uppercase tracking-[0.2em] font-mono text-[#10b981]/60 px-2.5 flex items-center gap-1">
+            <Layers className="w-3.5 h-3.5 text-emerald-100" />
             Layers:
           </span>
 
           <button
             onClick={() => setShowZones(!showZones)}
-            className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              showZones ? 'bg-amber-500 text-black' : 'bg-[#101018] text-[#888] border border-[#ffffff12]'
+            className={`px-3 py-1 rounded-none text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              showZones ? 'bg-[#10b981] text-black' : 'bg-[#050f0b] text-[#10b981]/60 border border-[#10b98115]'
             }`}
           >
             Risk Zones
@@ -453,8 +453,8 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
 
           <button
             onClick={() => setShowInundation(!showInundation)}
-            className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              showInundation ? 'bg-blue-500 text-white' : 'bg-[#101018] text-[#888] border border-[#ffffff12]'
+            className={`px-3 py-1 rounded-none text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              showInundation ? 'bg-[#10b981] text-black' : 'bg-[#050f0b] text-[#10b981]/60 border border-[#10b98115]'
             }`}
           >
             Flood Inundation
@@ -462,8 +462,8 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
 
           <button
             onClick={() => setShowSensors(!showSensors)}
-            className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              showSensors ? 'bg-emerald-500 text-black' : 'bg-[#101018] text-[#888] border border-[#ffffff12]'
+            className={`px-3 py-1 rounded-none text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              showSensors ? 'bg-[#10b981] text-black' : 'bg-[#050f0b] text-[#10b981]/60 border border-[#10b98115]'
             }`}
           >
             IoT Sensors
@@ -471,8 +471,8 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
 
           <button
             onClick={() => setShowResources(!showResources)}
-            className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              showResources ? 'bg-purple-500 text-white' : 'bg-[#101018] text-[#888] border border-[#ffffff12]'
+            className={`px-3 py-1 rounded-none text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              showResources ? 'bg-[#10b981] text-black' : 'bg-[#050f0b] text-[#10b981]/60 border border-[#10b98115]'
             }`}
           >
             Fleet Units
@@ -480,8 +480,8 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
 
           <button
             onClick={() => setShowShelters(!showShelters)}
-            className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              showShelters ? 'bg-yellow-500 text-black' : 'bg-[#101018] text-[#888] border border-[#ffffff12]'
+            className={`px-3 py-1 rounded-none text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              showShelters ? 'bg-[#10b981] text-black' : 'bg-[#050f0b] text-[#10b981]/60 border border-[#10b98115]'
             }`}
           >
             Shelters
@@ -489,8 +489,8 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
 
           <button
             onClick={() => setShowReports(!showReports)}
-            className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              showReports ? 'bg-red-500 text-white' : 'bg-[#101018] text-[#888] border border-[#ffffff12]'
+            className={`px-3 py-1 rounded-none text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              showReports ? 'bg-[#10b981] text-black' : 'bg-[#050f0b] text-[#10b981]/60 border border-[#10b98115]'
             }`}
           >
             Citizen SOS
@@ -498,39 +498,39 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
         </div>
 
         {/* Time Horizon Slider */}
-        <div className="flex items-center gap-2 bg-[#050507cc] p-2 rounded-lg border border-[#ffffff20] shadow-2xl backdrop-blur-md pointer-events-auto">
-          <Clock className="w-3.5 h-3.5 text-[#ff4e00] ml-1" />
-          <span className="text-[10px] uppercase tracking-[0.2em] font-mono text-[#888] hidden sm:inline">Timeline:</span>
+        <div className="flex items-center gap-1.5 bg-[#040806] p-1.5 rounded-none border border-[#10b98125] shadow-none backdrop-blur-md pointer-events-auto">
+          <Clock className="w-3.5 h-3.5 text-[#10b981] ml-1" />
+          <span className="text-[9px] uppercase tracking-[0.2em] font-mono text-[#10b981]/60 hidden sm:inline">Timeline:</span>
           
-          <div className="flex items-center bg-[#0a0a0f] p-0.5 rounded border border-[#ffffff15]">
+          <div className="flex items-center bg-[#040806] p-0.5 rounded-none border border-[#10b98115]">
             <button
               onClick={() => setTimeHorizon('live')}
-              className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold tracking-wider transition-all cursor-pointer ${
-                timeHorizon === 'live' ? 'bg-[#ff4e00] text-black' : 'text-[#888] hover:text-white'
+              className={`px-3 py-1 rounded-none text-[10px] font-mono font-bold tracking-wider transition-all cursor-pointer ${
+                timeHorizon === 'live' ? 'bg-[#10b981] text-black' : 'text-[#10b981] hover:text-emerald-100'
               }`}
             >
               NOW
             </button>
             <button
               onClick={() => setTimeHorizon('30m')}
-              className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold tracking-wider transition-all cursor-pointer ${
-                timeHorizon === '30m' ? 'bg-[#ff4e00] text-black' : 'text-[#888] hover:text-white'
+              className={`px-3 py-1 rounded-none text-[10px] font-mono font-bold tracking-wider transition-all cursor-pointer ${
+                timeHorizon === '30m' ? 'bg-[#10b981] text-black' : 'text-[#10b981] hover:text-emerald-100'
               }`}
             >
               +30m
             </button>
             <button
               onClick={() => setTimeHorizon('1h')}
-              className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold tracking-wider transition-all cursor-pointer ${
-                timeHorizon === '1h' ? 'bg-[#ff4e00] text-black' : 'text-[#888] hover:text-white'
+              className={`px-3 py-1 rounded-none text-[10px] font-mono font-bold tracking-wider transition-all cursor-pointer ${
+                timeHorizon === '1h' ? 'bg-[#10b981] text-black' : 'text-[#10b981] hover:text-emerald-100'
               }`}
             >
               +1h
             </button>
             <button
               onClick={() => setTimeHorizon('2h')}
-              className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold tracking-wider transition-all cursor-pointer ${
-                timeHorizon === '2h' ? 'bg-[#ff4e00] text-black' : 'text-[#888] hover:text-white'
+              className={`px-3 py-1 rounded-none text-[10px] font-mono font-bold tracking-wider transition-all cursor-pointer ${
+                timeHorizon === '2h' ? 'bg-[#10b981] text-black' : 'text-[#10b981] hover:text-emerald-100'
               }`}
             >
               +2h
@@ -545,19 +545,19 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
 
       {/* Selected Item Inspector Panel */}
       {selectedItem && (
-        <div className="absolute bottom-12 left-4 right-4 md:left-auto md:right-4 md:w-96 z-20 bg-[#0d0d14] border border-[#ff4e0040] p-4 rounded-lg shadow-2xl backdrop-blur-md text-[#e0e0e6] animate-in slide-in-from-bottom-5">
-          <div className="flex items-start justify-between border-b border-[#ffffff15] pb-3 mb-3">
+        <div className="absolute bottom-12 left-4 right-4 md:left-auto md:right-4 md:w-96 z-20 bg-[#020503] border border-[#10b98125] p-3 rounded-none shadow-none text-emerald-200 animate-in slide-in-from-bottom-5">
+          <div className="flex items-start justify-between border-b border-[#10b98115] pb-2.5 mb-2.5">
             <div>
-              <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#ff4e00] px-2 py-0.5 bg-[#ff4e00]/15 rounded border border-[#ff4e00]/30">
+              <span className="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-emerald-100 px-1.5 py-0.5 bg-[#10b981]/10 rounded-none border border-[#10b98140]">
                 {selectedItem.type.toUpperCase()} INSPECTOR
               </span>
-              <h3 className="text-base font-bold text-white mt-1.5 font-sans">
+              <h3 className="text-sm font-bold text-emerald-100 mt-1.5 font-sans">
                 {selectedItem.data.name || selectedItem.data.locationName || 'Selected Item'}
               </h3>
             </div>
             <button
               onClick={() => setSelectedItem(null)}
-              className="text-[#888] hover:text-white p-1 rounded hover:bg-[#ffffff10] cursor-pointer"
+              className="text-[#10b981] hover:text-emerald-100 p-1 rounded-none hover:bg-[#10b981]/5 cursor-pointer"
             >
               ✕
             </button>
@@ -565,100 +565,100 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
 
           {/* Details by Type */}
           {selectedItem.type === 'zone' && (
-            <div className="space-y-2 text-xs font-mono">
-              <div className="flex justify-between py-1 border-b border-[#ffffff10]">
-                <span className="text-[#888]">RISK SCORE:</span>
-                <span className="font-bold text-[#ff4e00]">{selectedItem.data.riskScore}/100</span>
+            <div className="space-y-1.5 text-xs font-mono">
+              <div className="flex justify-between py-1 border-b border-[#10b98115]">
+                <span className="text-[#10b981]/60">RISK SCORE:</span>
+                <span className="font-bold text-emerald-100">{selectedItem.data.riskScore}/100</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-[#ffffff10]">
-                <span className="text-[#888]">CURRENT WATER DEPTH:</span>
-                <span className="font-bold text-blue-400">{selectedItem.data.currentWaterLevelMeters} m</span>
+              <div className="flex justify-between py-1 border-b border-[#10b98115]">
+                <span className="text-[#10b981]/60">CURRENT WATER DEPTH:</span>
+                <span className="font-bold text-emerald-100">{selectedItem.data.currentWaterLevelMeters} m</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-[#ffffff10]">
-                <span className="text-[#888]">PREDICTED +1H DEPTH:</span>
-                <span className="font-bold text-amber-400">{selectedItem.data.predictedWaterLevel1h} m</span>
+              <div className="flex justify-between py-1 border-b border-[#10b98115]">
+                <span className="text-[#10b981]/60">PREDICTED +1H DEPTH:</span>
+                <span className="font-bold text-emerald-100">{selectedItem.data.predictedWaterLevel1h} m</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-[#ffffff10]">
-                <span className="text-[#888]">POPULATION AT RISK:</span>
-                <span className="font-bold text-white">{selectedItem.data.populationAtRisk?.toLocaleString()}</span>
+              <div className="flex justify-between py-1 border-b border-[#10b98115]">
+                <span className="text-[#10b981]/60">POPULATION AT RISK:</span>
+                <span className="font-bold text-emerald-100">{selectedItem.data.populationAtRisk?.toLocaleString()}</span>
               </div>
               <div className="flex justify-between py-1">
-                <span className="text-[#888]">LEAD TIME TO INUNDATION:</span>
-                <span className="font-bold text-[#ff4e00]">{selectedItem.data.estimatedTimeToInundationMin} MINS</span>
+                <span className="text-[#10b981]/60">LEAD TIME TO INUNDATION:</span>
+                <span className="font-bold text-emerald-100">{selectedItem.data.estimatedTimeToInundationMin} MINS</span>
               </div>
             </div>
           )}
 
           {selectedItem.type === 'sensor' && (
-            <div className="space-y-2 text-xs font-mono">
-              <div className="flex justify-between py-1 border-b border-[#ffffff10]">
-                <span className="text-[#888]">SENSOR ID:</span>
-                <span className="font-bold text-white">{selectedItem.data.id}</span>
+            <div className="space-y-1.5 text-xs font-mono">
+              <div className="flex justify-between py-1 border-b border-[#10b98115]">
+                <span className="text-[#10b981]/60">SENSOR ID:</span>
+                <span className="font-bold text-emerald-100">{selectedItem.data.id}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-[#ffffff10]">
-                <span className="text-[#888]">TELEMETRY READING:</span>
-                <span className="font-bold text-emerald-400">{selectedItem.data.currentValue} {selectedItem.data.unit}</span>
+              <div className="flex justify-between py-1 border-b border-[#10b98115]">
+                <span className="text-[#10b981]/60">TELEMETRY READING:</span>
+                <span className="font-bold text-emerald-200">{selectedItem.data.currentValue} {selectedItem.data.unit}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-[#ffffff10]">
-                <span className="text-[#888]">CRITICAL THRESHOLD:</span>
-                <span className="text-[#ff4e00]">{selectedItem.data.thresholdCritical} {selectedItem.data.unit}</span>
+              <div className="flex justify-between py-1 border-b border-[#10b98115]">
+                <span className="text-[#10b981]/60">CRITICAL THRESHOLD:</span>
+                <span className="text-emerald-100">{selectedItem.data.thresholdCritical} {selectedItem.data.unit}</span>
               </div>
               <div className="flex justify-between py-1">
-                <span className="text-[#888]">STATUS:</span>
-                <span className="text-emerald-400 font-bold uppercase">{selectedItem.data.batteryPct}% BAT | {selectedItem.data.signalPct}% SIG</span>
+                <span className="text-[#10b981]/60">STATUS:</span>
+                <span className="text-emerald-100 font-bold uppercase">{selectedItem.data.batteryPct}% BAT | {selectedItem.data.signalPct}% SIG</span>
               </div>
             </div>
           )}
 
           {selectedItem.type === 'resource' && (
-            <div className="space-y-2 text-xs font-mono">
-              <div className="flex justify-between py-1 border-b border-[#ffffff10]">
-                <span className="text-[#888]">FLEET UNIT:</span>
-                <span className="font-bold text-white">{selectedItem.data.name}</span>
+            <div className="space-y-1.5 text-xs font-mono">
+              <div className="flex justify-between py-1 border-b border-[#10b98115]">
+                <span className="text-[#10b981]/60">FLEET UNIT:</span>
+                <span className="font-bold text-emerald-100">{selectedItem.data.name}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-[#ffffff10]">
-                <span className="text-[#888]">STATUS:</span>
-                <span className="font-bold text-emerald-400 uppercase">{selectedItem.data.status}</span>
+              <div className="flex justify-between py-1 border-b border-[#10b98115]">
+                <span className="text-[#10b981]/60">STATUS:</span>
+                <span className="font-bold text-emerald-100 uppercase">{selectedItem.data.status}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-[#ffffff10]">
-                <span className="text-[#888]">CREW SIZE:</span>
-                <span className="text-[#ccc]">{selectedItem.data.crewCount} Personnel</span>
+              <div className="flex justify-between py-1 border-b border-[#10b98115]">
+                <span className="text-[#10b981]/60">CREW SIZE:</span>
+                <span className="text-[#10b981]">{selectedItem.data.crewCount} Personnel</span>
               </div>
               <div className="flex justify-between py-1">
-                <span className="text-[#888]">EQUIPMENT:</span>
-                <span className="text-[#ccc] text-right">{selectedItem.data.equipment?.join(', ')}</span>
+                <span className="text-[#10b981]/60">EQUIPMENT:</span>
+                <span className="text-[#10b981] text-right">{selectedItem.data.equipment?.join(', ')}</span>
               </div>
             </div>
           )}
 
           {selectedItem.type === 'shelter' && (
-            <div className="space-y-2 text-xs font-mono">
-              <div className="flex justify-between py-1 border-b border-[#ffffff10]">
-                <span className="text-[#888]">ADDRESS:</span>
-                <span className="text-[#ccc]">{selectedItem.data.address}</span>
+            <div className="space-y-1.5 text-xs font-mono">
+              <div className="flex justify-between py-1 border-b border-[#10b98115]">
+                <span className="text-[#10b981]/60">ADDRESS:</span>
+                <span className="text-[#10b981]">{selectedItem.data.address}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-[#ffffff10]">
-                <span className="text-[#888]">CAPACITY UTILIZATION:</span>
-                <span className="font-bold text-amber-400">{selectedItem.data.currentOccupancy} / {selectedItem.data.totalCapacity}</span>
+              <div className="flex justify-between py-1 border-b border-[#10b98115]">
+                <span className="text-[#10b981]/60">CAPACITY UTILIZATION:</span>
+                <span className="font-bold text-emerald-100">{selectedItem.data.currentOccupancy} / {selectedItem.data.totalCapacity}</span>
               </div>
               <div className="flex justify-between py-1">
-                <span className="text-[#888]">RATIONS:</span>
-                <span className="text-emerald-400 font-bold">{selectedItem.data.foodSuppliesDays} Days Food Supply</span>
+                <span className="text-[#10b981]/60">RATIONS:</span>
+                <span className="text-emerald-100 font-bold">{selectedItem.data.foodSuppliesDays} Days Supply</span>
               </div>
             </div>
           )}
 
           {selectedItem.type === 'report' && (
-            <div className="space-y-2 text-xs font-mono">
-              <div className="flex justify-between py-1 border-b border-[#ffffff10]">
-                <span className="text-[#888]">INCIDENT CATEGORY:</span>
-                <span className="font-bold text-[#ff4e00] uppercase">{selectedItem.data.category}</span>
+            <div className="space-y-1.5 text-xs font-mono">
+              <div className="flex justify-between py-1 border-b border-[#10b98115]">
+                <span className="text-[#10b981]/60">INCIDENT CATEGORY:</span>
+                <span className="font-bold text-emerald-100 uppercase">{selectedItem.data.category}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-[#ffffff10]">
-                <span className="text-[#888]">CREDIBILITY:</span>
-                <span className="font-bold text-emerald-400">{selectedItem.data.aiValidationScore}% AI Verified</span>
+              <div className="flex justify-between py-1 border-b border-[#10b98115]">
+                <span className="text-[#10b981]/60">CREDIBILITY:</span>
+                <span className="font-bold text-emerald-100">{selectedItem.data.aiValidationScore}% AI Verified</span>
               </div>
-              <p className="text-[#ccc] font-sans italic bg-[#151520] p-2.5 rounded border border-[#ffffff10]">
+              <p className="text-emerald-100 font-sans italic bg-[#050f0b]/50 p-2 rounded-none border border-[#10b98115]">
                 "{selectedItem.data.description}"
               </p>
             </div>
@@ -668,23 +668,23 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
       )}
 
       {/* Legend Footer Bar */}
-      <div className="bg-[#0a0a0f] border-t border-[#ffffff15] px-6 h-10 flex flex-wrap items-center justify-between text-[10px] font-mono text-[#555] z-20">
+      <div className="bg-[#040806] border-t border-[#10b98125] px-6 h-9 flex flex-wrap items-center justify-between text-[10px] font-mono text-[#10b981]/60 z-20">
         <div className="flex items-center space-x-6">
           <div className="flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-[#ff4e00]"></span>
+            <span className="w-2 h-2 rounded-none bg-neutral-400"></span>
             <span>HIGH_RISK_ZONE</span>
           </div>
           <div className="flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+            <span className="w-2 h-2 rounded-none bg-neutral-600"></span>
             <span>FLOOD_INUNDATION</span>
           </div>
           <div className="flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>RESCUE_UNITS_DEPLOYED</span>
+            <span className="w-2 h-2 rounded-none bg-[#10b981]"></span>
+            <span>RESCUE_UNITS</span>
           </div>
         </div>
         <div>
-          <span className="text-[#888]">COORDINATES:</span> <span className="text-white">12.9784° N, 80.2185° E</span>
+          <span className="text-[#10b981]/60">COORDINATES:</span> <span className="text-emerald-100">12.9784° N, 80.2185° E</span>
         </div>
       </div>
 

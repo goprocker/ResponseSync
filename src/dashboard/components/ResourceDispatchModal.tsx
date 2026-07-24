@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { EmergencyResource, ZoneRisk } from '../types';
+import { EmergencyResource, ZoneRisk } from '../../shared/types';
 import { ShieldAlert, X, Send, LifeBuoy, Ambulance, Flame, Siren } from 'lucide-react';
 
 interface ResourceDispatchModalProps {
@@ -31,17 +31,17 @@ export const ResourceDispatchModal: React.FC<ResourceDispatchModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="bg-[#0d0d14] border border-[#ffffff15] w-full max-w-lg rounded-lg shadow-2xl p-6 text-[#e0e0e6] font-sans space-y-5">
+    <div className="fixed inset-0 z-50 bg-[#040806]/80 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="bg-[#040806] border border-[#10b98125] w-full max-w-lg rounded-none shadow-none p-6 text-[#e0e0e6] font-sans space-y-5">
         
-        <div className="flex items-center justify-between border-b border-[#ffffff15] pb-3">
+        <div className="flex items-center justify-between border-b border-[#10b98125] pb-3">
           <div className="flex items-center gap-2">
-            <ShieldAlert className="w-4 h-4 text-[#ff4e00]" />
-            <h3 className="font-bold text-white text-sm uppercase tracking-wider font-sans">
+            <ShieldAlert className="w-4 h-4 text-emerald-100" />
+            <h3 className="font-bold text-emerald-100 text-sm uppercase tracking-wider font-sans">
               Dispatch Emergency Fleet Unit
             </h3>
           </div>
-          <button onClick={onClose} className="text-[#888] hover:text-white p-1 rounded hover:bg-[#ffffff10]">
+          <button onClick={onClose} className="text-[#888] hover:text-emerald-100 p-1 rounded hover:bg-[#ffffff10]">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -52,7 +52,7 @@ export const ResourceDispatchModal: React.FC<ResourceDispatchModalProps> = ({
             <select
               value={selectedResourceId}
               onChange={(e) => setSelectedResourceId(e.target.value)}
-              className="w-full bg-[#151520] border border-[#ffffff15] text-[#ff4e00] font-mono font-bold rounded p-2.5 focus:outline-none"
+              className="w-full bg-[#040806] border border-[#10b98125] text-emerald-100 font-mono font-bold rounded p-2.5 focus:outline-none"
             >
               {resources.map((res) => (
                 <option key={res.id} value={res.id}>
@@ -67,7 +67,7 @@ export const ResourceDispatchModal: React.FC<ResourceDispatchModalProps> = ({
             <select
               value={targetZoneId}
               onChange={(e) => setTargetZoneId(e.target.value)}
-              className="w-full bg-[#151520] border border-[#ffffff15] text-white font-mono font-bold rounded p-2.5 focus:outline-none"
+              className="w-full bg-[#040806] border border-[#10b98125] text-emerald-100 font-mono font-bold rounded p-2.5 focus:outline-none"
             >
               {zones.map((zone) => (
                 <option key={zone.id} value={zone.id}>
@@ -77,7 +77,7 @@ export const ResourceDispatchModal: React.FC<ResourceDispatchModalProps> = ({
             </select>
           </div>
 
-          <div className="bg-[#151520] p-3 rounded border border-[#ffffff10] text-[#aaa] font-sans leading-relaxed">
+          <div className="bg-[#040806] p-3 rounded border border-[#10b98115] text-[#aaa] font-sans leading-relaxed">
             Dispatching unit will automatically broadcast routing instructions via encrypted VHF & 4G telemetry to the field squad.
           </div>
 
@@ -85,13 +85,13 @@ export const ResourceDispatchModal: React.FC<ResourceDispatchModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-transparent hover:bg-[#ffffff08] border border-[#ffffff20] text-[#ccc] font-bold uppercase text-xs rounded cursor-pointer"
+              className="px-4 py-2 bg-transparent hover:bg-[#ffffff08] border border-[#10b98125] text-[#ccc] font-bold uppercase text-xs rounded cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 bg-[#ff4e00] hover:bg-[#ff6a2b] text-black font-bold uppercase tracking-wider text-xs rounded shadow-lg shadow-[#ff4e00]/20 cursor-pointer flex items-center gap-1.5"
+              className="px-5 py-2 bg-[#10b981] hover:bg-[#0fa06e] text-black font-bold uppercase tracking-wider text-xs rounded shadow-lg shadow-none cursor-pointer flex items-center gap-1.5"
             >
               <Send className="w-3.5 h-3.5 fill-black" />
               Confirm Fleet Dispatch
