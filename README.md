@@ -1,663 +1,526 @@
 <div align="center">
   <h1>ResponSync ⚡</h1>
-  <p><strong>AI-Powered Emergency Response & Disaster Management Platform</strong></p>
-  <p>Real-time disaster coordination with multi-agent AI intelligence, geospatial analysis, and live citizen reporting.</p>
+  <p><strong>AI-Powered Digital Twin for Predictive Disaster Response</strong></p>
+  <p>Real-time city simulation with multi-agent AI orchestration, satellite intelligence, and live citizen reporting — purpose-built for Chennai's flood corridor.</p>
 
   <p>
     <img src="https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
     <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-    <img src="https://img.shields.io/badge/Vite_8-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
-    <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
-    <img src="https://img.shields.io/badge/Python_3.12+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
-    <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+    <img src="https://img.shields.io/badge/Vite_6-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+    <img src="https://img.shields.io/badge/Express_4-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
+    <img src="https://img.shields.io/badge/Tailwind_CSS_4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind" />
     <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" />
     <img src="https://img.shields.io/badge/PostGIS-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostGIS" />
     <img src="https://img.shields.io/badge/Google_Gemini-8E75B2?style=for-the-badge&logo=google&logoColor=white" alt="Gemini" />
-    <img src="https://img.shields.io/badge/SQLAlchemy_2.0-D71F00?style=for-the-badge&logo=sqlalchemy&logoColor=white" alt="SQLAlchemy" />
+    <img src="https://img.shields.io/badge/Leaflet-199900?style=for-the-badge&logo=leaflet&logoColor=white" alt="Leaflet" />
   </p>
 </div>
 
 <br />
 
-📖 Project Overview
+## 📖 Project Overview
 
-ResponSync is a production-grade, full-stack emergency response platform that transforms how disaster situations are managed — from citizen reporting to AI-driven resource allocation.
+ResponSync is a full-stack **AI Decision Digital Twin** — a live virtual city representation that fuses real-time weather, IoT sensor telemetry, satellite radar, citizen reports, and explainable AI into a single command platform for predictive flood response.
 
-Traditional disaster management relies on fragmented communication, delayed response chains, and manual resource coordination. ResponSync eliminates these bottlenecks by combining real-time geospatial intelligence, multi-agent AI orchestration, and live citizen hazard reporting into a unified command platform.
+The platform is purpose-built for the **Chennai Velachery–Adyar flood corridor**, the most flood-prone urban zone in South India. It combines a 3-agent AI orchestration pipeline (powered by Google Gemini) with real-time geospatial intelligence to autonomously assess threats, simulate cascading impacts, optimize evacuation routes, and dispatch resources — all while providing transparent, explainable reasoning to emergency coordinators.
 
-Powered by Google Gemini and a multi-agent architecture (Threat Assessment → Strategic Planning → Explainability), ResponSync autonomously analyzes incoming reports, predicts risk propagation, optimizes evacuation routes, and dispatches resources — all while providing transparent, explainable reasoning to emergency coordinators.
+> **Pilot Area:** Chennai Velachery & Adyar Corridor — covering Velachery South (Vijaya Nagar), Guindy Railway Subway, Kotturpuram Adyar River Bank, and Taramani 100ft Canal Link.
 
-✨ Key Features
+---
 
-🚨 Citizen Hazard Reporting: Citizens submit geo-tagged emergency reports (floods, road blocks, medical emergencies) with severity levels and real-time status tracking through a complete lifecycle (Pending → Verified → Dispatched → Resolved).
+## ✨ Key Features
 
-🤖 Multi-Agent AI Orchestration: Three specialized Gemini agents work in concert — a Threat Assessment Agent analyzes incoming data, a Strategic Planner Agent generates optimized response plans, and an Explainability Agent translates AI decisions into human-readable reasoning.
+### 🗺️ Digital Twin Map
+Interactive Leaflet map rendering the live city state — risk zones with dynamic severity shading, IoT sensor nodes (water level gauges, rain gauges, flow rate sensors), emergency resources, shelters, hospitals, and citizen report markers. Real-time flood polygon overlays from Sentinel-1 SAR satellite data.
 
-🗺️ Geospatial Intelligence: Full PostGIS/GeoAlchemy2 integration for spatial queries — risk zone detection, nearest-shelter routing, hospital proximity analysis, and evacuation zone management with real-time geographic coordinates.
+### 🤖 3-Agent AI Orchestration Pipeline
+Three specialized Gemini agents work in concert across a coordinated pipeline:
 
-🏥 Hospital & Shelter Management: Track hospital capacity (bed counts, emergency status), shelter availability, and resource deployment status across the disaster zone with live updates.
+| Agent | Role | Output & Responsibilities |
+|-------|------|---------------------------|
+| **Hydro-Risk Ingestion Agent** | Ingest weather radar, river discharge, IoT sensors & citizen SOS calls | Calculates short-term inundation probabilities and water rise rates across Velachery, Guindy, and Kotturpuram. |
+| **Decision & Resource Agent** | Vector similarity matching against historical disasters & fleet routing | Matches Supabase Knowledge Base, formulates fleet allocation (boats, pumps, buses), and calculates safe detours. |
+| **Command & Dispatch Agent** | XAI confidence audit & multi-agency dispatch broadcast | Synthesizes multi-agent rationale with Explainable AI confidence scores and formats broadcast alerts. |
 
-📊 Disaster Simulation Engine: Run predictive simulations with configurable parameters (population, severity, affected area) to forecast resource needs, generate risk scores, and plan preemptive evacuations.
+### 🌊 What-If Disaster Simulation Studio
+Run predictive simulations across multiple disaster types (flood, cyclone, earthquake, wildfire, landslide, tsunami) with configurable parameters — rainfall intensity, dam discharge rate, canal blockage percentage, bridge closures, and high tide overlap. Outputs include risk timelines, affected population estimates, and resource deployment plans.
 
-🌦️ Weather Intelligence: Real-time OpenWeather API integration for weather monitoring, flood risk assessment, and environmental condition tracking in affected zones.
+### 🔍 Historical Scenario Matching (RAG)
+Retrieval-Augmented Generation engine that matches current conditions against a knowledge base of historical Chennai disasters (2015 Cloudburst, 2021 Cyclone Nivar, 2023 Cyclone Michaung). Returns similarity scores, extracted strategies, and AI-refined recommendations.
 
-⚡ Resource Matching & Dispatch: Intelligent matching service that optimizes deployment of rescue boats, ambulances, fire trucks, food supplies, and personnel based on proximity, urgency, and availability.
+### 💬 Explainable AI (XAI) Deep Dive
+Every AI recommendation includes full reasoning chains — core rationale, supporting evidence data points, confidence percentages, risk explanations, and alternative risk assessments. Coordinators can drill into any recommendation to understand *why* the AI made a specific decision.
 
-📡 Real-time Health Monitoring: Live fullstack integration dashboard with backend health checks, service status monitoring, latency tracking, and automatic reconnection.
+### 🚨 Citizen Hazard Reporting Portal
+Citizens submit geo-tagged emergency reports (waterlogging, trapped citizens, road blocks, medical emergencies, power outages, infrastructure damage) with AI-powered validation scoring and automatic category classification via Gemini.
 
-🏗️ System Architecture
+### 📡 Satellite Intelligence Feeds
+- **ESA Sentinel-1 SAR** — C-Band synthetic aperture radar for flood extent mapping with backscatter intensity analysis
+- **NASA FIRMS** — Near-real-time thermal anomaly detection for flood water reflectance and structural submergence
 
-ResponSync follows a fully decoupled, production-grade architecture with a React SPA frontend communicating through a Vite dev proxy to a FastAPI async backend, backed by Supabase PostgreSQL with PostGIS extensions and AI-powered by Google Gemini.
+### ⚡ Real-Time SSE Broadcast Engine
+Server-Sent Events push engine for live updates — new citizen reports, agent activity logs, automated alerts, FCM push notifications, and SMS gateway broadcasts propagate instantly to all connected dashboard clients.
 
-High-Level Architecture
+### 🔐 JWT Authentication & RBAC
+Role-based access control with five agency profiles: TNSDMA Authority, Fire & Rescue, Traffic Police, Emergency Medical, and Citizen. Each role has scoped permissions for dispatching, broadcasting, and report management.
 
+### 🛣️ Flood-Aware Evacuation Routing
+Dynamic routing via OSRM with real-time hazard avoidance — automatically detours around submerged subways, breached sluice zones, and waterlogged concourses. Returns polyline waypoints, safety scores, and turn-by-turn instructions.
+
+### 📲 Push Notification & SMS Gateway
+FCM push notification service for device-targeted alerts and C-DOT government SMS gateway integration for mass emergency broadcasts with delivery tracking.
+
+---
+
+## 🏗️ System Architecture
+
+ResponSync is a **TypeScript monolith** — a unified Express server hosts both the API backend and the Vite-powered React SPA in middleware mode. No separate frontend/backend processes in development.
+
+### High-Level Architecture
+
+```mermaid
 flowchart TD
-    %% Define Nodes
-    User([👤 Citizen / Authority])
+    User(["👤 Citizen / Authority"])
 
     subgraph Client ["🖥️ Frontend SPA"]
-        UI["React 19 + Vite 8<br/>TypeScript"]
-        Dashboard["Integration Dashboard<br/>Health Monitor"]
+        Landing["Landing Page<br/>Portal Router"]
+        Dashboard["Dashboard App<br/>Tab Navigation"]
+        TwinMap["Digital Twin Map<br/>Leaflet + Risk Zones"]
+        MultiAgent["Authority Dashboard<br/>3-Agent Pipeline"]
+        SimStudio["Simulation Studio<br/>What-If Engine"]
+        CitizenPortal["Citizen Portal<br/>Report Submission"]
+        Analytics["Analytics Hub<br/>Fusion Dashboard"]
     end
 
-    subgraph Gateway ["🔀 API Gateway"]
-        Proxy["Vite Dev Proxy<br/>:5173 → :8000"]
-        CORS["CORS Middleware"]
-        Logger["Request Logging<br/>Middleware"]
+    subgraph Server ["⚡ Express Backend (TypeScript)"]
+        SSE["SSE Broadcast<br/>Engine"]
+        Auth["JWT Auth<br/>RBAC Middleware"]
+        API["REST API<br/>Routes"]
     end
 
-    subgraph API ["⚡ FastAPI Backend"]
-        Router["API Router<br/>/api/v1/*"]
-        Health["Health Check<br/>/health"]
-        Endpoints["Endpoint Handlers<br/>Reports · Resources · Shelters"]
+    subgraph AI ["🤖 AI Agent Layer"]
+        Pipeline["3-Agent<br/>Orchestration Pipeline"]
+        Simulation["What-If<br/>Simulation Engine"]
+        ScenarioMatch["Historical<br/>Scenario Matcher"]
+        XAI["Explainability<br/>Engine"]
+        Validation["Citizen Report<br/>AI Validator"]
     end
 
-    subgraph Services ["🧩 Business Logic"]
-        ReportSvc["Report Service"]
-        WeatherSvc["Weather Service"]
-        MatchSvc["Matching Service"]
-        SimSvc["Simulation Service"]
-    end
-
-    subgraph Intelligence ["🤖 AI Agent Layer"]
-        Orchestrator["Agent Orchestrator"]
-        ThreatAgent["Threat Assessment<br/>Agent"]
-        PlannerAgent["Strategic Planner<br/>Agent"]
-        ExplainAgent["Explainability<br/>Agent"]
+    subgraph External ["🌐 External Services"]
+        Gemini["Google Gemini<br/>2.5 Flash"]
+        OSRM["OSRM<br/>Route Engine"]
+        OpenWeather["OpenWeather<br/>API"]
+        Sentinel["ESA Sentinel-1<br/>SAR"]
+        FIRMS["NASA FIRMS<br/>Hotspots"]
     end
 
     subgraph Data ["🗄️ Data Layer"]
-        ORM["SQLAlchemy 2.0<br/>(Async)"]
-        Geo["GeoAlchemy2<br/>PostGIS"]
-        Alembic["Alembic<br/>Migrations"]
+        Supabase[("Supabase<br/>PostgreSQL + PostGIS")]
+        InMemory["In-Memory<br/>Fallback Cache"]
     end
 
-    subgraph Storage ["☁️ Cloud Infrastructure"]
-        DB[("Supabase<br/>PostgreSQL")]
-        PostGIS[("PostGIS<br/>Spatial Index")]
-    end
+    User --> Landing & Dashboard
+    Landing --> Dashboard
+    Dashboard --> TwinMap & MultiAgent & SimStudio & CitizenPortal & Analytics
 
-    subgraph External ["🌐 External APIs"]
-        Gemini["Google Gemini<br/>GenAI SDK"]
-        OpenWeather["OpenWeather API"]
-        Mapbox["Mapbox GL<br/>Geocoding"]
-    end
+    Dashboard -->|SSE| SSE
+    Dashboard -->|REST| API
+    API --> Auth
+    API --> Pipeline & Simulation & ScenarioMatch & XAI & Validation
 
-    %% Connections
-    User -->|Submits Reports| UI
-    User -->|Views Dashboard| Dashboard
-    UI --> Proxy
-    Dashboard --> Proxy
-    Proxy --> CORS --> Logger --> Router
-    Proxy --> Health
+    Pipeline --> Gemini
+    Simulation --> Gemini
+    ScenarioMatch --> Gemini
+    XAI --> Gemini
+    Validation --> Gemini
 
-    Router --> Endpoints
-    Endpoints --> ReportSvc & WeatherSvc & MatchSvc & SimSvc
+    API --> OSRM & OpenWeather & Sentinel & FIRMS
+    API --> Supabase & InMemory
+```
 
-    ReportSvc --> Orchestrator
-    SimSvc --> Orchestrator
-    Orchestrator --> ThreatAgent & PlannerAgent & ExplainAgent
-    ThreatAgent & PlannerAgent & ExplainAgent --> Gemini
+### 3-Agent AI Pipeline Flow
 
-    WeatherSvc --> OpenWeather
-    MatchSvc --> Geo
-
-    ReportSvc & MatchSvc & SimSvc --> ORM
-    ORM --> DB
-    Geo --> PostGIS
-    Alembic --> DB
-
-Multi-Agent AI Workflow
-
-The intelligence layer uses a coordinated multi-agent pipeline where each agent has a specialized role in the decision chain:
-
+```mermaid
 sequenceDiagram
-    participant C as 🚨 Citizen Report
-    participant O as 🎯 Orchestrator
-    participant T as 🔍 Threat Agent
-    participant P as 📋 Planner Agent
-    participant E as 💬 Explainability Agent
-    participant G as 🤖 Gemini API
-    participant D as 🗄️ Database
+    participant UI as 🖥️ Dashboard
+    participant API as ⚡ Express Server
+    participant G as 🤖 Gemini 2.5 Flash
 
-    C->>O: New hazard report received
-    O->>D: Fetch context (nearby reports, resources, weather)
-    D-->>O: Contextual data
+    UI->>API: POST /api/ai/multiagent-run (zones, sensors, weather)
+    
+    Note over API: Agent 1: Ingestion & Telemetry
+    API->>G: Hydro-Risk Ingestion Agent
+    G-->>API: Inundation probability & water rise rate
+    
+    Note over API: Agent 2: Decision & Strategy
+    API->>G: Decision & Resource Agent
+    G-->>API: Historical matching & fleet dispatch strategy
 
-    O->>T: Analyze threat level & propagation risk
-    T->>G: Threat assessment prompt + context
-    G-->>T: Risk score, affected zones, urgency
-    T-->>O: Threat analysis result
+    Note over API: Agent 3: Synthesis & Audit
+    API->>G: Command & Dispatch Agent
+    G-->>API: XAI confidence audit & multi-agency dispatch broadcast
 
-    O->>P: Generate strategic response plan
-    P->>G: Planning prompt + threat data + resources
-    G-->>P: Optimized plan (evacuations, dispatch, priorities)
-    P-->>O: Strategic plan
+    API-->>UI: Full pipeline result (3-agent execution payload)
+```
 
-    O->>E: Explain AI decisions in human terms
-    E->>G: Explain prompt + threat + plan data
-    G-->>E: Transparent reasoning & justifications
-    E-->>O: Explainable summary
+---
 
-    O->>D: Store final assessment + plan
-    O-->>C: Response dispatched ✅
+## 🗄️ Database Schema
 
-Request Lifecycle
+The data model runs on **Supabase PostgreSQL with PostGIS** extensions. Schema is defined in [`supabase_schema.sql`](file:///x:/downloads/responsesync/supabase_schema.sql). The application falls back to an in-memory cache when Supabase credentials are not configured.
 
-flowchart LR
-    A["HTTP Request"] --> B["CORS Middleware"]
-    B --> C["Logging Middleware"]
-    C --> D["FastAPI Router"]
-    D --> E{"Route Match?"}
-    E -->|Yes| F["Endpoint Handler"]
-    E -->|No| G["404 Response"]
-    F --> H["Pydantic Validation"]
-    H -->|Valid| I["Service Layer"]
-    H -->|Invalid| J["422 Validation Error"]
-    I --> K["SQLAlchemy ORM"]
-    K --> L[("Supabase DB")]
-    L --> K
-    K --> I
-    I --> F
-    F --> M["Pydantic Response"]
-    M --> N["JSON Response"]
-
-    style A fill:#4A90D9,color:#fff
-    style L fill:#3ECF8E,color:#fff
-    style N fill:#009688,color:#fff
-
-🗄️ Database Schema
-
-The data model is defined with SQLAlchemy 2.0 ORM and runs on PostgreSQL with PostGIS spatial extensions. The schema captures users, hazard reports, emergency resources, shelters, hospitals, risk zones, evacuation routes, weather data, simulation runs, and AI knowledge bases.
-
+```mermaid
 erDiagram
     USER ||--o{ REPORT : "submits"
-    USER ||--o{ SIMULATION : "runs"
-
-    REPORT ||--o{ RESOURCE : "triggers dispatch"
     REPORT }o--|| RISK_ZONE : "located in"
-
     RISK_ZONE ||--o{ EVACUATION_ROUTE : "evacuates from"
-    RISK_ZONE ||--o{ SHELTER : "routes to"
-
-    SHELTER ||--o{ RESOURCE : "hosts"
-    HOSPITAL ||--o{ RESOURCE : "requests"
-
-    WEATHER }o--|| RISK_ZONE : "affects"
-    KNOWLEDGE_BASE }o--|| SIMULATION : "informs"
-
-    USER {
-        uuid id PK
-        string email UK
-        string password_hash
-        enum role "CITIZEN | AUTHORITY | ADMIN"
-        string phone
-        point location "PostGIS POINT"
-        datetime created_at
-    }
+    EVACUATION_ROUTE }o--|| SHELTER : "routes to"
+    RESOURCE }o--o| RISK_ZONE : "assigned to"
+    DECISION_KNOWLEDGE ||--|| SIMULATION : "informs"
 
     REPORT {
-        uuid id PK
-        uuid user_id FK
-        enum category "FLOOD | ROAD_BLOCKED | MEDICAL | SHELTER | HAZARD"
-        enum severity "LOW | MEDIUM | HIGH | CRITICAL"
-        enum status "PENDING → VERIFIED → DISPATCHED → RESOLVED"
-        text description
-        point location "PostGIS POINT"
-        datetime created_at
-    }
-
-    RESOURCE {
-        uuid id PK
-        enum type "RESCUE_BOAT | AMBULANCE | FIRE_TRUCK | FOOD | PERSONNEL"
-        enum status "AVAILABLE | DEPLOYED | MAINTENANCE"
-        point current_location "PostGIS POINT"
-        uuid assigned_report FK
-    }
-
-    SHELTER {
-        uuid id PK
-        string name
-        int capacity
-        int current_occupancy
-        point location "PostGIS POINT"
-        boolean is_active
-    }
-
-    HOSPITAL {
-        uuid id PK
-        string name
-        int total_beds
-        int available_beds
-        enum emergency_status "NORMAL | BUSY | FULL"
-        point location "PostGIS POINT"
+        text id PK
+        text reporter_name
+        text hazard_type "waterlogging | road_submerged | trapped_citizens | medical | power_outage"
+        text severity "critical | high | medium | low"
+        text status "pending | verified | in_progress | resolved"
+        geometry geom "PostGIS POINT(4326)"
+        int ai_validation_score
+        text ai_summary
     }
 
     RISK_ZONE {
-        uuid id PK
-        string zone_name
-        enum risk_level "SAFE | LOW | MODERATE | HIGH | SEVERE"
-        polygon boundary "PostGIS POLYGON"
-        float flood_probability
+        text id PK
+        text name
+        float risk_score "0–100"
+        text priority_level "CRITICAL | HIGH | MEDIUM | LOW"
+        int population_at_risk
+        float predicted_water_level_30m
+        text status "safe | monitoring | warning | evacuating | submerged"
+        geometry boundary_geom "PostGIS POLYGON(4326)"
     }
 
-    EVACUATION_ROUTE {
-        uuid id PK
-        uuid risk_zone_id FK
-        uuid destination_shelter_id FK
-        linestring path "PostGIS LINESTRING"
-        float distance_km
-        int estimated_time_min
+    RESOURCE {
+        text id PK
+        text name
+        text type "boat | pump | ambulance | ndrf | bus | fire_truck"
+        text status "available | en_route | deployed | maintenance"
+        text assigned_zone_id FK
     }
 
-    WEATHER {
-        uuid id PK
-        point location "PostGIS POINT"
-        float temperature
-        float rainfall_mm
-        float wind_speed
-        string conditions
-        datetime recorded_at
+    SHELTER {
+        text id PK
+        text name
+        int capacity
+        int current_occupancy
+        text status "open | filling_fast | full | closed"
+        boolean has_medical_unit
+    }
+
+    HOSPITAL {
+        text id PK
+        text name
+        int total_beds
+        int available_icu_beds
+        text status "operational | strained | diverting | flooded"
+        boolean trauma_center_active
     }
 
     SIMULATION {
-        uuid id PK
-        uuid user_id FK
-        string scenario_name
-        json parameters
-        json results
-        float risk_score
-        datetime created_at
+        text id PK
+        text title
+        float rainfall_mm_hr
+        float dam_discharge_m3s
+        int effectiveness_score
+        text outcome
+        text lessons_learned
     }
 
-    KNOWLEDGE_BASE {
-        uuid id PK
-        string topic
-        text content
-        string source
-        datetime created_at
+    DECISION_KNOWLEDGE {
+        text id PK
+        text historical_event
+        int similarity_pct
+        text retrieved_strategy
+        text ai_refinement
     }
 
-📁 Project Structure
+    EVACUATION_ROUTE {
+        text id PK
+        text origin_name
+        text destination_shelter_name
+        int safety_score_pct
+        text[] hazards_avoided
+    }
+```
 
-responsync/
-├── 📦 package.json                # Root frontend dependencies & scripts
-├── 🔧 vite.config.ts             # Vite dev server + proxy configuration
-├── 📝 tsconfig.json              # TypeScript configuration
-├── 🚫 .gitignore                 # Git exclusion rules
+---
+
+## 📁 Project Structure
+
+```
+responsesync/
+├── 📦 package.json                # Dependencies & scripts (dev/build/start)
+├── 🔧 vite.config.ts             # Vite + React + Tailwind CSS v4 plugin
+├── 📝 tsconfig.json              # TypeScript configuration (ES2022, bundler)
+├── 🌐 index.html                 # SPA entry — Leaflet CSS, Google Fonts
+├── 📋 supabase_schema.sql        # Full PostgreSQL/PostGIS schema + seed data
+├── 🔑 .env.example               # Environment variables template
+├── 📖 metadata.json              # Project metadata & capabilities
 │
-├── src/                           # ── FRONTEND (React 19 + TypeScript) ──
-│   ├── main.tsx                   # React DOM entry point
-│   ├── App.tsx                    # Root component — Integration Dashboard
-│   ├── App.css                    # Application styles
-│   ├── index.css                  # Global CSS reset & variables
-│   └── assets/                    # Static assets (images, icons)
+├── src/
+│   ├── main.tsx                   # React DOM mount point
+│   ├── App.tsx                    # Root component — URL-based routing
+│   ├── index.css                  # Global styles (Tailwind v4 + CSS vars)
+│   │
+│   ├── landing/                   # ── LANDING PAGE ──
+│   │   └── LandingPage.tsx        # Public landing with portal routing
+│   │
+│   ├── dashboard/                 # ── DASHBOARD APP ──
+│   │   ├── DashboardApp.tsx       # Tab-based layout (5 views)
+│   │   └── components/
+│   │       ├── Header.tsx                 # Navigation header + role switcher
+│   │       ├── DigitalTwinMap.tsx          # Leaflet map — zones, sensors, resources
+│   │       ├── AuthorityDashboard.tsx      # 3-agent AI pipeline control
+│   │       ├── SimulationStudio.tsx        # What-if disaster simulator
+│   │       ├── CascadingImpactView.tsx     # Multi-disaster cascading analysis
+│   │       ├── CitizenPortal.tsx           # Report submission & tracking
+│   │       ├── DashboardOverview.tsx       # KPI overview panel
+│   │       ├── AnalyticsHub.tsx            # Analytics fusion dashboard
+│   │       ├── IncidentsPanel.tsx          # Incident list & status tracker
+│   │       ├── ResourcesPanel.tsx          # Resource fleet status
+│   │       ├── SheltersPanel.tsx           # Shelter capacity tracker
+│   │       ├── HospitalsPanel.tsx          # Hospital bed availability
+│   │       ├── SettingsPanel.tsx           # App settings
+│   │       ├── ExplainabilityModal.tsx     # XAI reasoning deep-dive modal
+│   │       ├── ResourceDispatchModal.tsx   # Resource dispatch action modal
+│   │       └── AlertNotificationBanner.tsx # Real-time alert banner
+│   │
+│   ├── hooks/                     # ── REACT HOOKS ──
+│   │   ├── useSSEStream.ts        # SSE EventSource consumer
+│   │   └── useEvacuationRoute.ts  # OSRM-powered route calculator
+│   │
+│   ├── shared/                    # ── SHARED TYPES & DATA ──
+│   │   ├── types.ts               # TypeScript interfaces (18 domain types)
+│   │   ├── cascadingTypes.ts      # Multi-disaster cascading impact types
+│   │   ├── cascadingData.ts       # Cascading impact mock data
+│   │   └── mockDigitalTwinData.ts # Digital twin seed data
+│   │
+│   └── backend/                   # ── EXPRESS BACKEND (TypeScript) ──
+│       ├── server.ts              # Express server — all API routes + Vite middleware
+│       ├── authMiddleware.ts      # JWT auth, RBAC, role permissions
+│       ├── notificationsService.ts # FCM push + SMS gateway service
+│       └── satelliteService.ts    # Sentinel-1 SAR + NASA FIRMS data service
 │
-├── public/                        # Static public files
-├── dist/                          # Production build output
+├── scripts/                       # ── UTILITY SCRIPTS ──
+│   ├── populate_db.ts             # Supabase database seeder
+│   └── check_supabase.ts         # Supabase connection health check
 │
-└── backend/                       # ── BACKEND (FastAPI + Python 3.12) ──
-    ├── requirements.txt           # Python dependencies
-    ├── alembic.ini                # Alembic migration configuration
-    ├── .env.example               # Environment variables template
-    │
-    ├── alembic/                   # Database migration scripts
-    │   ├── env.py                 # Migration environment config
-    │   ├── script.py.mako         # Migration template
-    │   └── versions/              # Versioned migration files
-    │
-    ├── app/
-    │   ├── main.py                # FastAPI app factory & lifespan
-    │   │
-    │   ├── api/                   # API routing layer
-    │   │   ├── router.py          # Central router aggregator
-    │   │   └── endpoints/         # Route handlers
-    │   │       └── health.py      # Health check endpoint
-    │   │
-    │   ├── core/                  # Application foundation
-    │   │   ├── config.py          # Pydantic Settings (env management)
-    │   │   ├── exceptions.py      # Custom exception handlers
-    │   │   └── logging.py         # Structured logging setup
-    │   │
-    │   ├── db/                    # Database infrastructure
-    │   │   ├── base.py            # SQLAlchemy declarative base
-    │   │   ├── database.py        # Async engine factory
-    │   │   └── session.py         # Session dependency injection
-    │   │
-    │   ├── models/                # SQLAlchemy ORM models
-    │   │   ├── enums.py           # UserRole, Severity, Status enums
-    │   │   ├── user.py            # User model
-    │   │   ├── report.py          # Hazard report model
-    │   │   ├── resource.py        # Emergency resource model
-    │   │   ├── shelter.py         # Shelter model
-    │   │   ├── hospital.py        # Hospital model
-    │   │   ├── risk_zone.py       # Risk zone (PostGIS polygon)
-    │   │   ├── evacuation.py      # Evacuation route model
-    │   │   ├── weather.py         # Weather data model
-    │   │   ├── simulation.py      # Simulation run model
-    │   │   └── knowledge.py       # Knowledge base model
-    │   │
-    │   ├── schemas/               # Pydantic v2 request/response schemas
-    │   │   ├── common.py          # Shared schema utilities
-    │   │   ├── health.py          # Health check schemas
-    │   │   ├── user.py            # User CRUD schemas
-    │   │   ├── report.py          # Report schemas
-    │   │   ├── resource.py        # Resource schemas
-    │   │   ├── shelter.py         # Shelter schemas
-    │   │   ├── hospital.py        # Hospital schemas
-    │   │   ├── risk_zone.py       # Risk zone schemas
-    │   │   ├── evacuation.py      # Evacuation schemas
-    │   │   ├── weather.py         # Weather schemas
-    │   │   ├── simulation.py      # Simulation schemas
-    │   │   └── knowledge.py       # Knowledge base schemas
-    │   │
-    │   ├── services/              # Business logic layer
-    │   │   ├── report_service.py  # Report CRUD & lifecycle
-    │   │   ├── weather_service.py # OpenWeather API integration
-    │   │   ├── matching_service.py# Resource-to-report matching
-    │   │   └── simulation_service.py # Disaster simulation engine
-    │   │
-    │   ├── agents/                # AI Agent layer (Gemini)
-    │   │   ├── orchestrator.py    # Multi-agent coordinator
-    │   │   ├── threat_agent.py    # Threat assessment agent
-    │   │   ├── planner_agent.py   # Strategic planning agent
-    │   │   └── explainability_agent.py # Decision explainability
-    │   │
-    │   ├── middleware/            # ASGI middleware stack
-    │   │   ├── cors.py            # CORS configuration
-    │   │   └── logging.py         # Request/response logging
-    │   │
-    │   └── utils/                 # Helper utilities
-    │
-    └── tests/                     # Automated test suite
-        ├── conftest.py            # Shared fixtures
-        └── test_health.py         # Health endpoint tests
+└── docs/features/                 # ── FEATURE DOCUMENTATION ──
+    ├── 01_digital_twin_map.md
+    ├── 02_multi_agent_system.md
+    ├── 03_simulation_studio.md
+    ├── 04_scenario_matching.md
+    ├── 05_explainable_ai.md
+    ├── 06_citizen_portal.md
+    ├── 07_supabase_persistence.md
+    └── 08_realtime_sse_broadcasts.md
+```
 
-🚀 Quick Start
+---
 
-Prerequisites
+## 🚀 Quick Start
 
-Requirement
+### Prerequisites
 
-Version
+| Requirement | Version |
+|-------------|---------|
+| Node.js     | 20+     |
+| npm         | 10+     |
 
-Node.js
+> Supabase and external API keys are **optional** — the platform runs with in-memory data and realistic simulated feeds when credentials are not configured.
 
-20+
+### 1. Clone & Install
 
-Python
-
-3.12+
-
-PostgreSQL
-
-15+ with PostGIS extension
-
-Supabase
-
-Cloud project (or local)
-
-1. Clone & Install
-
-# Clone the repository
+```bash
 git clone https://github.com/NINJA981/ResponseSync.git
 cd ResponseSync
-
-Frontend Setup:
-
-# Install Node.js dependencies
 npm install
+```
 
-# Start the Vite dev server (port 5173)
+### 2. Configure Environment (Optional)
+
+```bash
+cp .env.example .env
+```
+
+Fill in any credentials you have available:
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `GEMINI_API_KEY` | Google Gemini API key for AI agent pipeline | Optional — AI features degrade gracefully |
+| `SUPABASE_URL` | Supabase project URL | Optional — falls back to in-memory store |
+| `SUPABASE_ANON_KEY` | Supabase anonymous key | Optional |
+| `OPENWEATHER_API_KEY` | OpenWeather API key for live weather | Optional — uses simulated weather data |
+| `MAPBOX_API_KEY` | Mapbox API key | Optional |
+| `JWT_SECRET` | Secret for JWT token signing | Optional — uses built-in default |
+
+### 3. Start the Development Server
+
+```bash
 npm run dev
-
-Backend Setup:
-
-# Navigate to backend
-cd backend
-
-# Create & activate virtual environment
-python -m venv .venv
-
-# Windows
-.venv\Scripts\activate
-# macOS / Linux
-source .venv/bin/activate
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-2. Configure Environment
-
-# Copy the environment template
-cp backend/.env.example backend/.env
-
-Fill in your credentials:
-
-Variable
-
-Description
-
-DATABASE_URL
-
-PostgreSQL async connection string (postgresql+asyncpg://...)
-
-SUPABASE_URL
-
-Supabase Project URL
-
-SUPABASE_KEY
-
-Supabase Anon Key
-
-GEMINI_API_KEY
-
-Google Gemini API Key
-
-OPENWEATHER_API_KEY
-
-OpenWeather API Key
-
-MAPBOX_API_KEY
-
-Mapbox GL API Key
-
-JWT_SECRET
-
-Secret key for JWT signing
-
-REDIS_URL
-
-Redis connection string (caching layer)
-
-3. Run Database Migrations
-
-cd backend
-alembic upgrade head
-
-4. Start the Backend Server
-
-cd backend
-uvicorn app.main:app --reload --port 8000
-
-5. Access the Platform
-
-Service
-
-URL
-
-Frontend Dashboard
-
-http://localhost:5173
-
-Backend API
-
-http://127.0.0.1:8000
-
-OpenAPI (Swagger)
-
-http://127.0.0.1:8000/docs
-
-ReDoc API Docs
-
-http://127.0.0.1:8000/redoc
-
-Health Check
-
-http://127.0.0.1:8000/health
-
-⚙️ Tech Stack Deep Dive
-
-Frontend
-
-Technology
-
-Purpose
-
-React 19
-
-UI component library with latest concurrent features
-
-TypeScript 6
-
-Type-safe frontend development
-
-Vite 8
-
-Lightning-fast dev server with HMR & proxy
-
-Oxlint
-
-Blazing-fast linter (Rust-based)
-
-Backend
-
-Technology
-
-Purpose
-
-FastAPI
-
-Async Python web framework with auto OpenAPI docs
-
-SQLAlchemy 2.0
-
-Async ORM with modern mapped column syntax
-
-GeoAlchemy2
-
-PostGIS integration for spatial queries
-
-Pydantic v2
-
-Data validation & serialization
-
-Alembic
-
-Database schema migrations
-
-httpx
-
-Async HTTP client for external APIs
-
-Google GenAI SDK
-
-Gemini LLM integration for AI agents
-
-Infrastructure
-
-Technology
-
-Purpose
-
-Supabase (PostgreSQL)
-
-Managed database with PostGIS extensions
-
-PostGIS
-
-Geospatial indexing & spatial queries
-
-Redis
-
-Caching layer & session management
-
-OpenWeather API
-
-Real-time weather data
-
-Mapbox GL
-
-Map rendering & geocoding
-
-🧪 Running Tests
-
-cd backend
-
-# Run all tests
-pytest
-
-# Run with verbose output
-pytest -v
-
-# Run specific test file
-pytest tests/test_health.py
-
-🗄 Database Migrations
-
-cd backend
-
-# Generate a new migration after model changes
-alembic revision --autogenerate -m "Add new table"
-
-# Apply pending migrations
-alembic upgrade head
-
-# Downgrade one revision
-alembic downgrade -1
-
-# View migration history
-alembic history
-
-🤝 Contributing
-
-Fork the repository
-
-Create a feature branch (git checkout -b feature/amazing-feature)
-
-Commit your changes (git commit -m 'feat: add amazing feature')
-
-Push to the branch (git push origin feature/amazing-feature)
-
-Open a Pull Request
-
-Note: Always create a new dedicated branch for major code changes.
-
-📄 License
+```
+
+This single command starts the unified Express + Vite server. Both the API backend and the React frontend are served from one process.
+
+### 4. Access the Platform
+
+| Service | URL |
+|---------|-----|
+| Landing Page | [http://localhost:3000](http://localhost:3000) |
+| Digital Twin Map | [http://localhost:3000/dashboard](http://localhost:3000/dashboard) |
+| Authority Command | [http://localhost:3000/authority](http://localhost:3000/authority) |
+| Citizen Portal | [http://localhost:3000/citizen](http://localhost:3000/citizen) |
+| Simulation Studio | [http://localhost:3000/simulation](http://localhost:3000/simulation) |
+| Analytics Hub | [http://localhost:3000/analytics](http://localhost:3000/analytics) |
+| Health Check API | [http://localhost:3000/api/health](http://localhost:3000/api/health) |
+
+---
+
+## 📡 API Reference
+
+### Authentication & RBAC
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/auth/login` | JWT login with role selection |
+| `GET` | `/api/auth/me` | Get current authenticated user |
+| `POST` | `/api/auth/switch-role` | Switch active agency role |
+
+### Core Data
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/health` | Server health + service status |
+| `GET` | `/api/weather` | Live weather (OpenWeather or simulated) |
+| `GET` | `/api/risk` | Aggregated risk zone summary |
+| `GET` | `/api/resources` | Resource fleet status |
+| `GET` | `/api/recommendations` | Active AI recommendations |
+| `GET` | `/api/events` | SSE stream (real-time push) |
+
+### Citizen Reports
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/reports` | List all citizen reports |
+| `POST` | `/api/reports` | Submit new hazard report |
+
+### AI Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/ai/multiagent-run` | Run full 3-agent pipeline |
+| `POST` | `/api/ai/simulation` | What-if disaster simulation |
+| `POST` | `/api/ai/validate-report` | AI report validation & scoring |
+| `POST` | `/api/ai/explainability` | XAI deep-dive reasoning |
+| `POST` | `/api/ai/scenario-match` | Historical scenario RAG matching |
+| `POST` | `/api/ai/cascading-impact` | Multi-disaster cascading impact prediction |
+| `POST` | `/api/ai/evacuation-route` | Flood-aware OSRM routing |
+
+### Notifications
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/notifications/fcm/register` | Register FCM push token |
+| `POST` | `/api/notifications/fcm/send` | Broadcast FCM push alert |
+| `POST` | `/api/notifications/sms/send` | Emergency SMS gateway dispatch |
+| `GET` | `/api/notifications/history` | Notification broadcast history |
+
+### Satellite Intelligence
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/gis/satellite/sentinel-sar` | Sentinel-1 SAR flood polygons |
+| `GET` | `/api/gis/satellite/nasa-firms` | NASA FIRMS thermal hotspots |
+| `GET` | `/api/gis/satellite/metadata` | Active satellite constellation status |
+
+### Infrastructure Data
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/shelters` | Emergency shelter list + capacity |
+| `GET` | `/api/evacuation` | Default evacuation route summary |
+| `GET` | `/api/decision-knowledge` | Historical decision knowledge base |
+| `GET` | `/api/simulations` | Past simulation history |
+
+---
+
+## ⚙️ Tech Stack
+
+### Frontend
+
+| Technology | Purpose |
+|-----------|---------|
+| React 19 | UI component library with concurrent rendering |
+| TypeScript ~5.8 | Type-safe development |
+| Vite 6 | Dev server with HMR (embedded in Express middleware mode) |
+| Tailwind CSS 4 | Utility-first styling via Vite plugin |
+| Leaflet 1.9 | Interactive map rendering for digital twin |
+| Lucide React | Icon library |
+| Motion (Framer) | Animation library |
+
+### Backend
+
+| Technology | Purpose |
+|-----------|---------|
+| Express 4 | HTTP server & API routing |
+| tsx | TypeScript execution for development |
+| JSON Web Token | JWT auth with role-based access control |
+| Google GenAI SDK | Gemini 2.5 Flash integration for 3-agent pipeline |
+| Supabase JS | PostgreSQL + PostGIS client |
+
+### Infrastructure
+
+| Technology | Purpose |
+|-----------|---------|
+| Supabase (PostgreSQL) | Managed database with PostGIS spatial extensions |
+| PostGIS | Geospatial indexing & spatial queries |
+| OSRM | Open Source Routing Machine for evacuation routes |
+| OpenWeather API | Real-time weather data |
+| ESA Sentinel-1 | SAR satellite flood detection |
+| NASA FIRMS | Near-real-time thermal anomaly feeds |
+
+---
+
+## 🔧 Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start unified dev server (Express + Vite) on port 3000 |
+| `npm run build` | Production build (Vite frontend + esbuild backend) |
+| `npm start` | Run production build |
+| `npm run preview` | Vite preview of frontend build |
+| `npm run lint` | TypeScript type checking (`tsc --noEmit`) |
+| `npm run clean` | Remove build artifacts |
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes using [Conventional Commits](https://www.conventionalcommits.org/) (`git commit -m 'feat(frontend): add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+> **Note:** Always create a new dedicated branch for major code changes.
+
+---
+
+## 📄 License
 
 MIT
 
 <div align="center">
-  <p><strong>ResponSync Emergency Response Platform</strong> © 2026</p>
+  <p><strong>ResponSync — AI Digital Twin for Predictive Disaster Response</strong> © 2026</p>
   <p>Built with ⚡ by <a href="https://github.com/NINJA981">NINJA981</a></p>
 </div>

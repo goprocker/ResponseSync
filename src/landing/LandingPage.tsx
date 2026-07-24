@@ -39,63 +39,63 @@ interface MapPinData {
 const MAP_PINS: MapPinData[] = [
   {
     id: 'pin-1',
-    name: 'Flood watch — North Ward',
+    name: 'Velachery Vijaya Nagar — Flood Watch',
     type: 'critical',
     left: '22%',
     top: '36%',
-    details: 'Water levels rising past 2.8m near riverbanks. Sluice gates open.',
+    details: 'Water depth 2.8ft near bus stand. Velachery Lake sluice overflow active.',
     sentAgo: '38s ago',
-    audience: '12,489 residents'
+    audience: '42,000 at-risk population'
   },
   {
     id: 'pin-2',
-    name: 'High Water — East Basin',
-    type: 'advisory',
+    name: 'Guindy Railway Subway — Submerged',
+    type: 'critical',
     left: '58%',
     top: '24%',
-    details: 'Estuary backflow observed. High tide peak at 11:15 AM.',
+    details: 'Subway water depth 1.9m. 2 stalled vehicles. GST road detour in effect.',
     sentAgo: '5m ago',
-    audience: '4,102 residents'
+    audience: '18,500 commuters'
   },
   {
     id: 'pin-3',
-    name: 'Road closure — Highway 41',
-    type: 'info',
+    name: 'Kotturpuram Riverbank — River Stage Warning',
+    type: 'advisory',
     left: '76%',
     top: '44%',
-    details: 'Traffic diverted due to water accumulation on low-lying subways.',
+    details: 'Adyar River discharge 1,450 m³/s. Estuarine backwater overlap detected.',
     sentAgo: '12m ago',
-    audience: 'All commuters'
+    audience: '24,600 residents'
   },
   {
     id: 'pin-4',
-    name: 'Power outage — West District',
-    type: 'critical',
+    name: 'Taramani 100ft Canal — Dewatering Operational',
+    type: 'info',
     left: '41%',
     top: '60%',
-    details: 'Substation offline. Emergency utility crews dispatched.',
+    details: '500HP high-capacity dewatering pump #1 deployed & discharging 120L/s.',
     sentAgo: '14m ago',
-    audience: '8,440 customers'
+    audience: '10,000 residents'
   },
   {
     id: 'pin-5',
-    name: 'Debris on road — South Overpass',
-    type: 'advisory',
+    name: 'NDRF Motorboat Fleet A — Rescue Active',
+    type: 'critical',
     left: '16%',
     top: '68%',
-    details: 'Fallen tree blocking left lane. Road crews en route.',
+    details: '4 motorboat units deployed to Vijaya Nagar. 480 citizens evacuated.',
     sentAgo: '22m ago',
-    audience: 'District 4 drivers'
+    audience: 'Sector 4 rescue'
   },
   {
     id: 'pin-6',
-    name: 'Boil water notice — Cedar Heights',
+    name: 'Velachery Relief Camp — Open',
     type: 'info',
     left: '64%',
     top: '72%',
-    details: 'Water pressure drop. Precautionary boil notice active.',
+    details: 'Capacity 1,200 beds. 480 occupied. Medical unit & food supply active.',
     sentAgo: '31m ago',
-    audience: '1,890 households'
+    audience: 'Relief camp #1'
   }
 ];
 
@@ -122,7 +122,7 @@ export default function LandingPage({ onLaunchDashboard }: LandingPageProps) {
               <div className="w-3 h-3 border-2 border-[#050507] rotate-45"></div>
             </div>
             <span className="text-lg font-bold tracking-tight text-white font-sans uppercase">
-              Ugo<span className="text-brand">Round</span>
+              RESPON<span className="text-brand">SYNC</span>
             </span>
           </a>
 
@@ -148,7 +148,6 @@ export default function LandingPage({ onLaunchDashboard }: LandingPageProps) {
             >
               Command OS
             </button>
-
             <a 
               href="#demo"
               className="group inline-flex items-center gap-1.5 rounded-full bg-brand py-1.5 pl-4 pr-2.5 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:bg-brand-deep"
@@ -214,19 +213,19 @@ export default function LandingPage({ onLaunchDashboard }: LandingPageProps) {
                   <span className="relative inline-block h-full w-full rounded-full bg-signal-critical"></span>
                 </span>
                 <span className="mono text-[10px] uppercase tracking-[0.2em] text-[#e0e0e6]/70">
-                  Multi-Hazard · Early Warning
+                  AI Digital Twin · Predictive Response
                 </span>
               </div>
 
               {/* Title */}
               <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05] text-white">
-                Alert and incident <br />
-                <span className="font-display italic font-normal text-brand">mapping</span> for your community.
+                Predictive disaster <br />
+                <span className="font-display italic font-normal text-brand">intelligence</span> for command teams.
               </h1>
 
               {/* Description */}
               <p className="mt-6 max-w-xl text-base sm:text-lg text-[#888] leading-relaxed">
-                UgoRound is a cloud-based GIS platform for public safety teams to instantly publish location-based warnings, manage incidents, and reach your community—anonymously, with no app download or sign-up required.
+                ResponSync combines real-time weather radar, Open-Meteo flood discharge telemetry, Sentinel-1 SAR satellite feeds, and citizen SOS calls into an explainable 3-Agent AI decision engine for South Chennai disaster command.
               </p>
 
               {/* Action Buttons */}
@@ -292,7 +291,7 @@ export default function LandingPage({ onLaunchDashboard }: LandingPageProps) {
                     <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/40"></span>
                   </div>
                   <div className="mono text-[9px] uppercase tracking-[0.18em] text-white/40">
-                    cloud.ugoround.com / map / north-ward
+                    responsync.ai / command / chennai-corridor
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="h-2 w-2 rounded-full bg-signal-critical animate-pulse"></span>
@@ -454,93 +453,83 @@ export default function LandingPage({ onLaunchDashboard }: LandingPageProps) {
             {/* Group 1 */}
             <span className="mx-6 inline-flex items-center gap-3 whitespace-nowrap text-sm">
               <span className="inline-block h-2.5 w-2.5 rounded-full bg-signal-critical shadow-[0_0_8px_#ef4444]"></span>
-              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">BLD-2401</span>
-              <span className="font-semibold text-white">Flood Watch</span>
+              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">FLD-2015</span>
+              <span className="font-semibold text-white">Chembarambakkam Discharge</span>
               <span className="text-[#444] font-bold">·</span>
-              <span className="text-[#aaa] text-xs font-sans">North Ward · 4 critical zones</span>
+              <span className="text-[#aaa] text-xs font-sans">Adyar Basin 1,450 m³/s · 4 critical zones</span>
               <span className="text-[#444] font-bold">·</span>
               <span className="mono text-[10px] text-[#666]">2m ago</span>
             </span>
 
             <span className="mx-6 inline-flex items-center gap-3 whitespace-nowrap text-sm">
-              <span className="inline-block h-2.5 w-2.5 rounded-full bg-signal-advisory shadow-[0_0_8px_#f59e0b]"></span>
-              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">TFC-1187</span>
-              <span className="font-semibold text-white">Road Closure</span>
-              <span className="text-[#444] font-bold">·</span>
-              <span className="text-[#aaa] text-xs font-sans">Hwy 41 · Traffic detour</span>
-              <span className="text-[#444] font-bold">·</span>
-              <span className="mono text-[10px] text-[#666]">9m ago</span>
-            </span>
-
-            <span className="mx-6 inline-flex items-center gap-3 whitespace-nowrap text-sm">
               <span className="inline-block h-2.5 w-2.5 rounded-full bg-signal-critical shadow-[0_0_8px_#ef4444]"></span>
-              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">PWR-0744</span>
-              <span className="font-semibold text-white">Power Outage</span>
+              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">INC-0012</span>
+              <span className="font-semibold text-white">Guindy Subway Submerged</span>
               <span className="text-[#444] font-bold">·</span>
-              <span className="text-[#aaa] text-xs font-sans">West District · Crews en route</span>
+              <span className="text-[#aaa] text-xs font-sans">1.9m depth · GST Road traffic detour</span>
               <span className="text-[#444] font-bold">·</span>
-              <span className="mono text-[10px] text-[#666]">14m ago</span>
-            </span>
-
-            <span className="mx-6 inline-flex items-center gap-3 whitespace-nowrap text-sm">
-              <span className="inline-block h-2.5 w-2.5 rounded-full bg-signal-info shadow-[0_0_8px_#3b82f6]"></span>
-              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">WTR-0991</span>
-              <span className="font-semibold text-white">Boil Water Notice</span>
-              <span className="text-[#444] font-bold">·</span>
-              <span className="text-[#aaa] text-xs font-sans">Cedar Heights · Precautionary alert</span>
-              <span className="text-[#444] font-bold">·</span>
-              <span className="mono text-[10px] text-[#666]">21m ago</span>
+              <span className="mono text-[10px] text-[#666]">5m ago</span>
             </span>
 
             <span className="mx-6 inline-flex items-center gap-3 whitespace-nowrap text-sm">
               <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#10b981] shadow-[0_0_8px_#10b981]"></span>
-              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">INC-5512</span>
-              <span className="font-semibold text-[#10b981]">All-Clear</span>
+              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">EMG-0108</span>
+              <span className="font-semibold text-[#10b981]">NDRF Boat Dispatch</span>
               <span className="text-[#444] font-bold">·</span>
-              <span className="text-[#aaa] text-xs font-sans">Riverbend Evacuation lifted</span>
+              <span className="text-[#aaa] text-xs font-sans">Velachery Vijaya Nagar · 480 rescued</span>
               <span className="text-[#444] font-bold">·</span>
-              <span className="mono text-[10px] text-[#666]">44m ago</span>
+              <span className="mono text-[10px] text-[#666]">12m ago</span>
+            </span>
+
+            <span className="mx-6 inline-flex items-center gap-3 whitespace-nowrap text-sm">
+              <span className="inline-block h-2.5 w-2.5 rounded-full bg-signal-info shadow-[0_0_8px_#3b82f6]"></span>
+              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">SAT-SAR1</span>
+              <span className="font-semibold text-white">Sentinel-1 Radar Ingest</span>
+              <span className="text-[#444] font-bold">·</span>
+              <span className="text-[#aaa] text-xs font-sans">Copernicus SAR backscatter flood polygon updated</span>
+              <span className="text-[#444] font-bold">·</span>
+              <span className="mono text-[10px] text-[#666]">18m ago</span>
+            </span>
+
+            <span className="mx-6 inline-flex items-center gap-3 whitespace-nowrap text-sm">
+              <span className="inline-block h-2.5 w-2.5 rounded-full bg-signal-advisory shadow-[0_0_8px_#f59e0b]"></span>
+              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">PMP-0500</span>
+              <span className="font-semibold text-white">500HP Dewatering Active</span>
+              <span className="text-[#444] font-bold">·</span>
+              <span className="text-[#aaa] text-xs font-sans">Taramani 100ft Canal · 120L/s flow</span>
+              <span className="text-[#444] font-bold">·</span>
+              <span className="mono text-[10px] text-[#666]">24m ago</span>
             </span>
 
             {/* Group 2 (Duplicate for loop continuity) */}
             <span className="mx-6 inline-flex items-center gap-3 whitespace-nowrap text-sm">
               <span className="inline-block h-2.5 w-2.5 rounded-full bg-signal-critical shadow-[0_0_8px_#ef4444]"></span>
-              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">BLD-2401</span>
-              <span className="font-semibold text-white">Flood Watch</span>
+              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">FLD-2015</span>
+              <span className="font-semibold text-white">Chembarambakkam Discharge</span>
               <span className="text-[#444] font-bold">·</span>
-              <span className="text-[#aaa] text-xs font-sans">North Ward · 4 critical zones</span>
+              <span className="text-[#aaa] text-xs font-sans">Adyar Basin 1,450 m³/s · 4 critical risk zones</span>
               <span className="text-[#444] font-bold">·</span>
               <span className="mono text-[10px] text-[#666]">2m ago</span>
             </span>
 
             <span className="mx-6 inline-flex items-center gap-3 whitespace-nowrap text-sm">
-              <span className="inline-block h-2.5 w-2.5 rounded-full bg-signal-advisory shadow-[0_0_8px_#f59e0b]"></span>
-              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">TFC-1187</span>
-              <span className="font-semibold text-white">Road Closure</span>
-              <span className="text-[#444] font-bold">·</span>
-              <span className="text-[#aaa] text-xs font-sans">Hwy 41 · Traffic detour</span>
-              <span className="text-[#444] font-bold">·</span>
-              <span className="mono text-[10px] text-[#666]">9m ago</span>
-            </span>
-
-            <span className="mx-6 inline-flex items-center gap-3 whitespace-nowrap text-sm">
               <span className="inline-block h-2.5 w-2.5 rounded-full bg-signal-critical shadow-[0_0_8px_#ef4444]"></span>
-              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">PWR-0744</span>
-              <span className="font-semibold text-white">Power Outage</span>
+              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">INC-0012</span>
+              <span className="font-semibold text-white">Guindy Subway Submerged</span>
               <span className="text-[#444] font-bold">·</span>
-              <span className="text-[#aaa] text-xs font-sans">West District · Crews en route</span>
+              <span className="text-[#aaa] text-xs font-sans">1.9m depth · GST Road traffic detour</span>
               <span className="text-[#444] font-bold">·</span>
-              <span className="mono text-[10px] text-[#666]">14m ago</span>
+              <span className="mono text-[10px] text-[#666]">5m ago</span>
             </span>
 
             <span className="mx-6 inline-flex items-center gap-3 whitespace-nowrap text-sm">
-              <span className="inline-block h-2.5 w-2.5 rounded-full bg-signal-info shadow-[0_0_8px_#3b82f6]"></span>
-              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">WTR-0991</span>
-              <span className="font-semibold text-white">Boil Water Notice</span>
+              <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#10b981] shadow-[0_0_8px_#10b981]"></span>
+              <span className="mono text-[10px] text-[#666] tracking-wider font-bold">EMG-0108</span>
+              <span className="font-semibold text-[#10b981]">NDRF Boat Dispatch</span>
               <span className="text-[#444] font-bold">·</span>
-              <span className="text-[#aaa] text-xs font-sans">Cedar Heights · Precautionary alert</span>
+              <span className="text-[#aaa] text-xs font-sans">Velachery Vijaya Nagar · 480 rescued</span>
               <span className="text-[#444] font-bold">·</span>
-              <span className="mono text-[10px] text-[#666]">21m ago</span>
+              <span className="mono text-[10px] text-[#666]">12m ago</span>
             </span>
           </div>
         </section>
@@ -906,7 +895,7 @@ export default function LandingPage({ onLaunchDashboard }: LandingPageProps) {
             </div>
             <div>
               <p className="text-[#888] text-base leading-relaxed max-w-xl">
-                Public safety teams across government, civic, and utility services run UgoRound as their first-to-know channel—because your community shouldn't need an app, an account, or understand English to stay safe.
+                Public safety teams across government, civic, and utility services run ResponSync as their first-to-know channel—because your community shouldn't need an app, an account, or understand English to stay safe.
               </p>
             </div>
           </div>
@@ -1013,7 +1002,7 @@ export default function LandingPage({ onLaunchDashboard }: LandingPageProps) {
                       </span>
                     </button>
                     <a 
-                      href="mailto:info@ugoround.com" 
+                      href="mailto:contact@responsync.ai" 
                       className="inline-flex items-center rounded-full border border-white/15 px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-[#ccc] transition-colors hover:text-white"
                     >
                       Book A Call
@@ -1075,11 +1064,11 @@ export default function LandingPage({ onLaunchDashboard }: LandingPageProps) {
               </div>
 
               <a 
-                href="mailto:info@ugoround.com" 
+                href="mailto:contact@responsync.ai" 
                 className="mt-8 inline-flex items-center gap-2 text-xs font-mono text-[#aaa] hover:text-white transition-colors"
               >
                 <Mail className="w-3.5 h-3.5 text-brand" />
-                info@ugoround.com
+                contact@responsync.ai
               </a>
             </div>
 
@@ -1116,14 +1105,14 @@ export default function LandingPage({ onLaunchDashboard }: LandingPageProps) {
           {/* Large Watermark */}
           <div className="mt-20 select-none">
             <p aria-hidden="true" className="bg-gradient-to-b from-white/10 to-transparent bg-clip-text text-[13vw] font-bold leading-none tracking-tighter text-transparent uppercase text-left">
-              ugoround<span className="font-display italic text-brand text-[15vw] lowercase font-normal leading-[0]">.</span>
+              responsync<span className="font-display italic text-brand text-[15vw] lowercase font-normal leading-[0]">.</span>
             </p>
           </div>
 
           {/* Bottom Bar */}
           <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-white/5 py-8 text-[11px] text-[#555] sm:flex-row sm:items-center">
             <div className="flex items-center gap-2">
-              <span>© {new Date().getFullYear()} UgoRound. All rights reserved.</span>
+              <span>© {new Date().getFullYear()} ResponSync. All rights reserved.</span>
             </div>
             <div className="flex flex-wrap items-center gap-4">
               <span className="mono inline-flex items-center gap-1.5 uppercase tracking-[0.18em] text-[#aaa]">

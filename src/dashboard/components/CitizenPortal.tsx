@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { EmergencyShelter, CitizenReport, EvacuationRoute } from '../../shared/types';
+import { EmergencyShelter, CitizenReport, EvacuationRoute } from '../../shared/types.js';
+import { CitizenReportSchema } from '../../services/schema.js';
 import {
   Users,
   Navigation,
@@ -81,6 +82,24 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const parseResult = CitizenReportSchema.safeParse({
+      reporterName: reportForm.reporterName || 'Anonymous Citizen',
+      phone: reportForm.phone,
+      locationName: reportForm.locationName,
+      lat: 12.9785,
+      lng: 80.2205,
+      hazardType: reportForm.category,
+      severity: reportForm.severity,
+      description: reportForm.description,
+      imageUrl: reportForm.imageUrl
+    });
+
+    if (!parseResult.success) {
+      alert(`Validation Error: ${parseResult.error.issues[0]?.message || 'Invalid form input'}`);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -243,6 +262,34 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
               <div className="text-[11px] font-mono text-[#e0e0e6] bg-brand/10 p-2 rounded border border-brand/30">
                 <strong>Hazards Avoided:</strong> {evacuationRoute.hazardsAvoided.join(' • ')}
               </div>
+
+              <button
+                onClick={() => {
+                  const destCoords = evacuationRoute.waypoints && evacuationRoute.waypoints.length > 0
+                    ? evacuationRoute.waypoints[evacuationRoute.waypoints.length - 1]
+                    : [12.9830, 80.2182];
+                  
+                  const launchMaps = (orig?: string) => {
+                    let url = `https://www.google.com/maps/dir/?api=1&destination=${destCoords[0]},${destCoords[1]}&travelmode=driving`;
+                    if (orig) url += `&origin=${orig}`;
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                  };
+
+                  if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                      (pos) => launchMaps(`${pos.coords.latitude},${pos.coords.longitude}`),
+                      () => launchMaps(),
+                      { timeout: 3500 }
+                    );
+                  } else {
+                    launchMaps();
+                  }
+                }}
+                className="w-full mt-2 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black font-mono text-xs font-bold uppercase tracking-wider rounded flex items-center justify-center gap-2 cursor-pointer transition-all shadow-md shadow-emerald-500/20"
+              >
+                <Navigation className="w-4 h-4 fill-black" />
+                <span>Open Direct Navigation in Google Maps ↗</span>
+              </button>
 
               {onNavigateToMap && (
                 <button

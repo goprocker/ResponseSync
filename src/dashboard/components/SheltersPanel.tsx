@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Zap, Heart, CheckCircle2, AlertCircle, Phone, MapPin } from 'lucide-react';
+import { Home, Zap, Heart, CheckCircle2, AlertCircle, Phone, MapPin, Navigation } from 'lucide-react';
 import { EmergencyShelter } from '../../shared/types';
 
 interface SheltersPanelProps {
@@ -99,12 +99,40 @@ export default function SheltersPanel({ shelters }: SheltersPanelProps) {
                 </div>
               </div>
 
-              {/* Contact info */}
-              <div className="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-neutral-400">
-                <span>Camp Lead: {shelter.contactPerson}</span>
-                <span className="flex items-center gap-1 text-brand">
-                  <Phone className="w-3.5 h-3.5" /> {shelter.phone}
-                </span>
+              {/* Contact info & Direct Google Maps Navigation */}
+              <div className="pt-3 border-t border-white/5 space-y-2">
+                <div className="flex items-center justify-between text-[10px] font-mono text-neutral-400">
+                  <span>Camp Lead: {shelter.contactPerson}</span>
+                  <span className="flex items-center gap-1 text-brand">
+                    <Phone className="w-3.5 h-3.5" /> {shelter.phone}
+                  </span>
+                </div>
+
+                <button
+                  onClick={() => {
+                    const lat = shelter.lat || (shelter as any).location?.coordinates?.[0] || 12.9830;
+                    const lng = shelter.lng || (shelter as any).location?.coordinates?.[1] || 80.2182;
+                    const launchUrl = (origStr?: string) => {
+                      let url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+                      if (origStr) url += `&origin=${origStr}`;
+                      window.open(url, '_blank', 'noopener,noreferrer');
+                    };
+
+                    if (navigator.geolocation) {
+                      navigator.geolocation.getCurrentPosition(
+                        (pos) => launchUrl(`${pos.coords.latitude},${pos.coords.longitude}`),
+                        () => launchUrl(),
+                        { timeout: 3500 }
+                      );
+                    } else {
+                      launchUrl();
+                    }
+                  }}
+                  className="w-full py-2 bg-emerald-500/15 hover:bg-emerald-500 text-emerald-400 hover:text-black border border-emerald-500/30 text-[11px] font-mono font-bold uppercase rounded flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                >
+                  <Navigation className="w-3.5 h-3.5" />
+                  <span>Navigate Here in Google Maps ↗</span>
+                </button>
               </div>
 
             </div>
