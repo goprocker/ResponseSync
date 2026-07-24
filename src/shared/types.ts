@@ -163,3 +163,19 @@ export interface AutomatedAlert {
   instructions: string;
   acknowledged: boolean;
 }
+
+export interface EmergencyHospital {
+  id: string;
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+  totalCapacity: number; // Bed capacity
+  occupiedCapacity: number;
+  icuBedsTotal: number;
+  icuBedsAvailable: number;
+  status: 'normal' | 'near_capacity' | 'full';
+  contactPerson: string;
+  phone: string;
+  hasTraumaCenter: boolean;
+}

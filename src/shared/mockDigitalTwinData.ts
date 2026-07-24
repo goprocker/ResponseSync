@@ -7,7 +7,8 @@ import {
   AgentActivityLog,
   ExplainableAIRecommendation,
   AutomatedAlert,
-  EvacuationRoute
+  EvacuationRoute,
+  EmergencyHospital
 } from './types';
 
 export const CHENNAI_CENTER: [number, number] = [12.988, 80.230];
@@ -531,3 +532,66 @@ export const MOCK_EVACUATION_ROUTE: EvacuationRoute = {
     'Arrive safely at Velachery Community Center Relief Camp (Gate 02)'
   ]
 };
+
+export const INITIAL_HOSPITALS: EmergencyHospital[] = [
+  {
+    id: 'hosp-01',
+    name: 'Chennai General Trauma Hospital & Medical Center',
+    address: 'Velachery 100ft Road, near Vijaya Nagar',
+    lat: 12.980,
+    lng: 80.220,
+    totalCapacity: 120,
+    occupiedCapacity: 104,
+    icuBedsTotal: 15,
+    icuBedsAvailable: 2,
+    status: 'near_capacity',
+    contactPerson: 'Dr. A. Vinodh',
+    phone: '+91 94441 55660',
+    hasTraumaCenter: true
+  },
+  {
+    id: 'hosp-02',
+    name: 'Fortis Emergency Specialty Clinic - Adyar',
+    address: 'LB Road, Adyar, Chennai',
+    lat: 13.003,
+    lng: 80.245,
+    totalCapacity: 80,
+    occupiedCapacity: 45,
+    icuBedsTotal: 10,
+    icuBedsAvailable: 6,
+    status: 'normal',
+    contactPerson: 'Dr. S. K. Roy',
+    phone: '+91 94441 77880',
+    hasTraumaCenter: true
+  },
+  {
+    id: 'hosp-03',
+    name: 'Apollo Hospital & Emergency Response Unit',
+    address: 'Guindy Main Road, Chennai',
+    lat: 13.012,
+    lng: 80.215,
+    totalCapacity: 200,
+    occupiedCapacity: 195,
+    icuBedsTotal: 25,
+    icuBedsAvailable: 0,
+    status: 'full',
+    contactPerson: 'Director R. K. Nair',
+    phone: '+91 44 2235 1234',
+    hasTraumaCenter: true
+  },
+  {
+    id: 'hosp-04',
+    name: 'KMC Disaster Support Clinic - Taramani',
+    address: 'Taramani Link Road, Chennai',
+    lat: 12.989,
+    lng: 80.246,
+    totalCapacity: 60,
+    occupiedCapacity: 30,
+    icuBedsTotal: 5,
+    icuBedsAvailable: 3,
+    status: 'normal',
+    contactPerson: 'Dr. Rita Sen',
+    phone: '+91 94441 99000',
+    hasTraumaCenter: false
+  }
+];
