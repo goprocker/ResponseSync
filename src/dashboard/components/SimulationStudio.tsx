@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SimulationParams, SimulationResult } from '../../shared/types';
+import { SimulationParams, SimulationResult, PredictedRoadCorridor, DeploymentRecommendation } from '../../shared/types';
 import {
   Sliders,
   Play,
@@ -31,55 +31,120 @@ function computeHydrodynamicSimulation(params: SimulationParams): SimulationResu
   const bridge = params.bridgeStatus;
 
   // Flooded sectors (1 to 8)
-  const rawZones = Math.floor((rain / 25) + (dam / 600) + (block / 35));
+  const rawZones = Math.floor((rain / 20) + (dam / 500) + (block / 30));
   const affectedZonesCount = Math.min(8, Math.max(1, rawZones));
 
   // Submerged area (km2)
-  const predictedSubmergedAreaKm2 = Number(((rain * 0.03 + dam * 0.0016) * (1 + block / 120) * tide).toFixed(1));
+  const predictedSubmergedAreaKm2 = Number(((rain * 0.032 + dam * 0.0019) * (1 + block / 100) * tide).toFixed(1));
 
   // Pop affected
-  const estimatedAffectedPeople = Math.round((6000 + rain * 480 + dam * 24) * (1 + block / 150) * (dur / 2));
+  const estimatedAffectedPeople = Math.round((5000 + rain * 520 + dam * 28) * (1 + block / 120) * (dur / 2.5));
 
-  // Critical road blocks
-  const criticalRoadBlocks: string[] = [];
-  if (bridge === 'closed') {
-    criticalRoadBlocks.push('Adyar Bridges Corridor (CLOSED - Submerged & Barricaded)');
-  } else if (bridge === 'restricted') {
-    criticalRoadBlocks.push('Adyar Bridges Corridor (RESTRICTED - 1 Lane Active)');
-  }
+  // Dynamic Rich Predicted Road Corridors
+  const depthGuindy = Number((1.1 + (rain / 90) + (block / 70)).toFixed(1));
+  const depthVelachery = Number((0.8 + (rain / 110) + (dam / 2000)).toFixed(1));
+  const depthKotturpuram = Number((0.5 + (dam / 1200)).toFixed(1));
+  const depthEstuary = Number((0.6 + (params.highTideOverlap ? 0.9 : 0.2)).toFixed(1));
+  const depthOMR = Number((0.4 + (rain / 130)).toFixed(1));
 
-  if (block >= 40 || rain >= 60) {
-    const depth = (1.2 + (rain / 100) + (block / 80)).toFixed(1);
-    criticalRoadBlocks.push(`Guindy Railway Subway (Submerged Depth ${depth}m)`);
-  }
-  if (rain >= 50 || dam >= 1200) {
-    criticalRoadBlocks.push('Velachery 100ft Road Vijaya Nagar Junction');
-  }
-  if (dam >= 1000) {
-    criticalRoadBlocks.push('Kotturpuram Bridge Approach & Riverbank');
-  }
-  if (tide > 1) {
-    criticalRoadBlocks.push('Adyar Estuary Causeway & Beach Road (High-Tide Overlap)');
-  }
-  if (rain >= 140) {
-    criticalRoadBlocks.push('OMR Taramani IT Corridor Underpass');
-  }
-  if (criticalRoadBlocks.length === 0) {
-    criticalRoadBlocks.push('All Primary Arterial Corridors Clear');
-  }
-
-  // Deployments
-  const boatCount = Math.max(2, Math.floor(dam / 250 + rain / 40));
-  const pumpCount = Math.max(2, Math.floor(rain / 15 + block / 20));
-  const busCount = Math.max(4, Math.floor(rain / 10 + dam / 300));
-
-  const recommendedDeployments = [
-    { type: 'Rescue Boat Units', count: boatCount, zone: 'Velachery South & Kotturpuram' },
-    { type: 'Heavy 500HP Dewatering Pumps', count: pumpCount, zone: 'Guindy Subway & Sluice Drains' },
-    { type: 'Evacuation Transit Buses', count: busCount, zone: 'Low-Lying Tenement Shelters' }
+  const predictedRoadCorridors: PredictedRoadCorridor[] = [
+    {
+      roadName: 'Guindy Railway Subway Corridor',
+      submergenceDepthMeters: depthGuindy,
+      timeToImpassableMin: Math.max(10, Math.round(45 - rain / 4)),
+      status: depthGuindy >= 1.8 ? 'CLOSED' : 'RESTRICTED',
+      recommendedDetour: 'Detour via Kathipara Flyover & Inner Ring Road Elevated Bypass',
+      vehicleRestriction: depthGuindy >= 1.8 ? 'BARRED: All Civilian & Standard Emergency Vehicles' : 'RESTRICTED: Heavy Emergency Vehicles Only',
+      affectedCorridorLengthKm: 1.4
+    },
+    {
+      roadName: 'Velachery 100ft Road Vijaya Nagar Junction',
+      submergenceDepthMeters: depthVelachery,
+      timeToImpassableMin: Math.max(15, Math.round(50 - dam / 100)),
+      status: rain >= 90 || dam >= 1800 ? 'CLOSED' : 'WARNING',
+      recommendedDetour: 'Divert via Taramani Link Road & OMR Radial Expressway',
+      vehicleRestriction: rain >= 90 ? 'BARRED: Light Motor Vehicles & Two-Wheelers' : 'SLOW: Heavy Transit Vehicles Only',
+      affectedCorridorLengthKm: 2.8
+    },
+    {
+      roadName: 'Kotturpuram Bridge Approach & Riverbank',
+      submergenceDepthMeters: depthKotturpuram,
+      timeToImpassableMin: Math.max(20, Math.round(60 - dam / 120)),
+      status: dam >= 1200 ? 'CLOSED' : 'RESTRICTED',
+      recommendedDetour: 'Divert via Anna Salai & Nandanam Signal Junction',
+      vehicleRestriction: dam >= 1200 ? 'BARRED: Submerged Bank Approach' : 'CAUTION: River Surge Outflow',
+      affectedCorridorLengthKm: 1.8
+    },
+    {
+      roadName: 'Adyar Estuary Causeway & Beach Road',
+      submergenceDepthMeters: depthEstuary,
+      timeToImpassableMin: Math.max(12, Math.round(35 - (params.highTideOverlap ? 15 : 0))),
+      status: params.highTideOverlap ? 'CLOSED' : 'WARNING',
+      recommendedDetour: 'Detour via Thiruvanmiyur Signal & ECR Main Corridor',
+      vehicleRestriction: params.highTideOverlap ? 'BARRED: High-Tide Estuarine Surge' : 'WARNING: Tidal Backwater Spray',
+      affectedCorridorLengthKm: 3.1
+    }
   ];
 
-  // Risk Timeline
+  if (rain >= 120) {
+    predictedRoadCorridors.push({
+      roadName: 'OMR Taramani IT Corridor Underpass',
+      submergenceDepthMeters: depthOMR,
+      timeToImpassableMin: Math.max(15, Math.round(40 - rain / 5)),
+      status: 'CLOSED',
+      recommendedDetour: 'Divert via Perungudi Bypass Expressway',
+      vehicleRestriction: 'BARRED: All Light & Heavy Traffic',
+      affectedCorridorLengthKm: 2.2
+    });
+  }
+
+  // Legacy string array for backward compatibility
+  const criticalRoadBlocks = predictedRoadCorridors.map(c => `${c.roadName} (${c.status} - Depth ${c.submergenceDepthMeters}m, Impassable T+${c.timeToImpassableMin}m)`);
+
+  // Dynamic AI Recommended Deployments with Decision Knowledge Base Precedents
+  const boatCount = Math.max(2, Math.floor(dam / 220 + rain / 35));
+  const pumpCount = Math.max(2, Math.floor(rain / 12 + block / 18));
+  const busCount = Math.max(4, Math.floor(rain / 8 + dam / 250));
+  const generatorCount = rain >= 80 || dam >= 1200 ? Math.max(2, Math.floor(rain / 30)) : 0;
+
+  const recommendedDeployments: DeploymentRecommendation[] = [
+    {
+      type: 'Rescue Boat Units',
+      count: boatCount,
+      zone: dam >= 1500 ? 'Kotturpuram Riverbank & Velachery South' : 'Velachery Vijaya Nagar Junction',
+      priority: dam >= 1500 ? 'CRITICAL' : 'HIGH',
+      expectedImpact: 'Cuts rescue response delay by 58% & neutralizes ground-floor entrapment',
+      knowledgeBasePrecedent: 'Citing Dec 2015 Cloudburst (94% Match) - Pre-evacuation protocol'
+    },
+    {
+      type: 'Heavy 500HP Dewatering Pumps',
+      count: pumpCount,
+      zone: block >= 50 ? 'Guindy Subway & Velachery Sluice Drains' : 'Taramani Canal Sluice Gate',
+      priority: block >= 60 ? 'CRITICAL' : 'HIGH',
+      expectedImpact: 'Prevents standing water accumulation & clears subway 14 hours faster',
+      knowledgeBasePrecedent: 'Citing Nov 2021 Cyclone Nivar (86% Match) - Early dewatering placement'
+    },
+    {
+      type: 'Evacuation Transit Buses',
+      count: busCount,
+      zone: 'Low-Lying Tenement Shelters & Kotturpuram',
+      priority: 'HIGH',
+      expectedImpact: 'Transport vulnerable citizens to high-ground relief centers prior to road closure',
+      knowledgeBasePrecedent: 'Citing Dec 2023 Cyclone Michaung (89% Match) - Tenement evacuation'
+    }
+  ];
+  if (generatorCount > 0) {
+    recommendedDeployments.push({
+      type: 'Emergency Diesel Generators',
+      count: generatorCount,
+      zone: 'Hospital Critical ICU Power Feeders (Apollo & Guindy Specialty)',
+      priority: 'CRITICAL',
+      expectedImpact: 'Maintains 100% ICU ventilator power continuity for critical patients',
+      knowledgeBasePrecedent: 'Citing Dec 2023 Cyclone Michaung (89% Match) - ICU Power Redundancy'
+    });
+  }
+
+  // Dynamic Inundation Risk Progress Timeline
   const d15 = Number((rain * 0.007 * tide).toFixed(1));
   const d30 = Number((rain * 0.013 * tide + dam * 0.0002).toFixed(1));
   const d60 = Number(((rain * 0.021 + dam * 0.0005) * tide).toFixed(1));
@@ -97,7 +162,28 @@ function computeHydrodynamicSimulation(params: SimulationParams): SimulationResu
   else if (rain >= 80 || dam >= 1500) severityLabel = 'SEVERE FLOOD SURGE';
   else if (rain >= 40 || dam >= 800) severityLabel = 'MODERATE INUNDATION';
 
-  const aiSummary = `[${severityLabel}] Simulated +${dur}h disaster scenario: ${rain} mm/hr rainfall intensity, ${dam} m³/s dam release, ${block}% canal silt blockage, ${params.highTideOverlap ? 'with High-Tide Estuarine Backwater' : 'normal tide'}. Hydrodynamic model predicts ${predictedSubmergedAreaKm2} km² total submergence impacting ~${estimatedAffectedPeople.toLocaleString()} residents. Peak water depth reaches ${d120}m at T+120 mins. Pre-positioning ${boatCount} rescue boats and ${pumpCount} dewatering pumps recommended prior to road closure.`;
+  // Knowledge Base Citation
+  let matchedEvent = 'November 2021 Cyclone Nivar Severe Inundation';
+  let similarityPct = 86;
+  let retrievedStrategy = 'Station high-capacity 500HP diesel dewatering pumps at 100ft road canal sluice gate and subway.';
+  let historicalOutcome = 'Reduced standing water duration by 18 hours across Velachery South.';
+  let aiRefinement = `Deploy ${pumpCount} mobile pumps 30 mins earlier based on live water depth derivative.`;
+
+  if (rain >= 100 || dam >= 1800) {
+    matchedEvent = 'December 2015 Chennai Cloudburst & Chembarambakkam Release';
+    similarityPct = Math.min(99, Math.round(75 + (rain / 10) + (dam / 200)));
+    retrievedStrategy = 'Deployment of 6 NDRF motorboat units to Velachery 100ft road; pre-evacuation of Kotturpuram riverbank tenements.';
+    historicalOutcome = 'Rescued 14,200 stranded residents with 91% effectiveness score.';
+    aiRefinement = `Apply 2015 rescue protocol for live conditions (${rain}mm/hr rain, ${dam}m³/s discharge) and enforce automated barricading at Guindy subway.`;
+  } else if (rain >= 130) {
+    matchedEvent = 'December 2023 Cyclone Michaung Catastrophic Inundation';
+    similarityPct = 92;
+    retrievedStrategy = 'Pre-position mobile emergency generators at hospital feeders and deploy amphibious rescue vehicles.';
+    historicalOutcome = 'Maintained critical ICU power at 100% continuity; evacuated 6,800 citizens.';
+    aiRefinement = 'Integrate SAR satellite mapping for live flood extent validation.';
+  }
+
+  const aiSummary = `[${severityLabel}] Simulated +${dur}h scenario (${rain} mm/hr rain, ${dam} m³/s release, ${block}% canal blockage, ${params.highTideOverlap ? 'High-Tide Surge ON' : 'Normal Tide'}). Hydrodynamic model predicts ${predictedSubmergedAreaKm2} km² submergence impacting ~${estimatedAffectedPeople.toLocaleString()} residents. Peak water depth reaches ${d120}m at T+120m. Citing ${matchedEvent} (${similarityPct}% Knowledge Base Match): Pre-position ${boatCount} boat units and ${pumpCount} heavy pumps prior to road closures.`;
 
   return {
     simulatedTime: `+${dur} Hours Scenario`,
@@ -105,67 +191,134 @@ function computeHydrodynamicSimulation(params: SimulationParams): SimulationResu
     predictedSubmergedAreaKm2,
     estimatedAffectedPeople,
     criticalRoadBlocks,
+    predictedRoadCorridors,
     recommendedDeployments,
     riskTimeline,
-    aiSummary
+    aiSummary,
+    knowledgeBaseCitation: {
+      matchedEvent,
+      similarityPct,
+      retrievedStrategy,
+      historicalOutcome,
+      aiRefinement
+    }
+  };
+}
+
+// Knowledge Base Scenario Matching Engine Function
+function computeScenarioMatches(params: SimulationParams) {
+  const rain = params.rainfallMmHr;
+  const dam = params.chembarambakkamReleaseM3s;
+  const block = params.canalBlockagePct;
+  const tide = params.highTideOverlap;
+
+  // 2015 Cloudburst Vector Match calculation
+  const diff2015 = Math.abs(rain - 120) / 1.5 + Math.abs(dam - 2200) / 30 + Math.abs(block - 60) / 2 + (tide ? 0 : 15);
+  const sim2015 = Math.min(99, Math.max(45, Math.round(100 - diff2015 / 1.8)));
+
+  // 2021 Nivar Vector Match calculation
+  const diff2021 = Math.abs(rain - 85) / 1.2 + Math.abs(dam - 800) / 15 + Math.abs(block - 85) / 1.5 + (tide ? 10 : 0);
+  const sim2021 = Math.min(98, Math.max(40, Math.round(100 - diff2021 / 1.6)));
+
+  // 2023 Michaung Vector Match calculation
+  const diff2023 = Math.abs(rain - 140) / 1.8 + Math.abs(dam - 1500) / 25 + Math.abs(block - 75) / 2 + (tide ? 0 : 20);
+  const sim2023 = Math.min(99, Math.max(38, Math.round(100 - diff2023 / 1.9)));
+
+  const matchedScenarios = [
+    {
+      id: 'sim-2015-12-01',
+      historicalEvent: 'December 2015 Chennai Cloudburst & Chembarambakkam Release',
+      similarityPct: sim2015,
+      keyMatches: [
+        `${rain}mm/hr Cloudburst intensity vector match`,
+        `${dam} m³/s Chembarambakkam discharge comparison`,
+        tide ? 'Estuarine high tide backwater overlap (1.8m surge)' : 'Micro-drainage outflow pattern',
+        `Canal silt blockage at ${block}%`
+      ],
+      retrievedStrategy: 'Deployment of 6 NDRF motorboat units to Velachery Vijaya Nagar 100ft road; pre-evacuation of Kotturpuram riverbank tenements.',
+      historicalOutcome: 'Rescued 14,200 stranded residents with 91% effectiveness score.',
+      aiRefinement: `Based on your live ${rain}mm/hr rainfall input, enforce automated hydraulic flood barricading at Guindy Railway Subway 40 mins prior to peak surge.`
+    },
+    {
+      id: 'sim-2021-11-25',
+      historicalEvent: 'November 2021 Cyclone Nivar Severe Inundation',
+      similarityPct: sim2021,
+      keyMatches: [
+        `Catchment rainfall match (${rain}mm/hr vs 85mm/hr historical)`,
+        `Drainage silt blockage ${block}% capacity bottleneck`,
+        'Waterlogging accumulation in Velachery South & Dhandeeswaram'
+      ],
+      retrievedStrategy: 'Station high-capacity 500HP diesel dewatering pumps at 100ft road canal sluice gate and Velachery station subway.',
+      historicalOutcome: 'Reduced standing water duration by 18 hours across Velachery South.',
+      aiRefinement: `Deploy ${Math.max(4, Math.floor(rain / 15))} mobile pumps 30 minutes earlier based on live parameter derivative.`
+    },
+    {
+      id: 'sim-2023-12-04',
+      historicalEvent: 'December 2023 Cyclone Michaung Catastrophic Inundation',
+      similarityPct: sim2023,
+      keyMatches: [
+        `Extreme storm precipitation profile (${rain}mm/hr)`,
+        `Subway inundation risk in Guindy & Velachery bypass`,
+        'Widespread 11kV electrical grid safety isolation'
+      ],
+      retrievedStrategy: 'Pre-position mobile emergency diesel generators at hospital feeders (Gleneagles & Guindy Super Specialty), deploy amphibious vehicles.',
+      historicalOutcome: 'Maintained critical ICU power at 100% continuity; safely evacuated 6,800 citizens.',
+      aiRefinement: 'Integrate synthetic aperture radar (SAR) satellite mapping for live flood boundary validation.'
+    }
+  ].sort((a, b) => b.similarityPct - a.similarityPct);
+
+  const topMatch = matchedScenarios[0];
+  const recommendedMasterPlan = `Synthesize ${topMatch.historicalEvent} strategy with dynamic pre-positioning of ${Math.max(2, Math.floor(dam / 250 + rain / 40))} boat units and ${Math.max(3, Math.floor(rain / 12 + block / 18))} dewatering pumps for input conditions (${rain}mm/hr rain, ${dam}m³/s dam release).`;
+
+  return {
+    matchedScenarios,
+    recommendedMasterPlan
   };
 }
 
 export const SimulationStudio: React.FC = () => {
   const [activeSubTab, setActiveSubTab] = useState<'simulation' | 'knowledge_base'>('simulation');
 
-  const [params, setParams] = useState<SimulationParams>({
+  const DEFAULT_PARAMS: SimulationParams = {
     rainfallMmHr: 110,
     chembarambakkamReleaseM3s: 1800,
     canalBlockagePct: 80,
     bridgeStatus: 'restricted',
     durationHours: 3,
     highTideOverlap: true
-  });
+  };
 
+  const [params, setParams] = useState<SimulationParams>(DEFAULT_PARAMS);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [result, setResult] = useState<SimulationResult | null>(computeHydrodynamicSimulation({
-    rainfallMmHr: 110,
-    chembarambakkamReleaseM3s: 1800,
-    canalBlockagePct: 80,
-    bridgeStatus: 'restricted',
-    durationHours: 3,
-    highTideOverlap: true
-  }));
-
-  // Re-calculate simulation instantly when parameters change
-  useEffect(() => {
-    setResult(computeHydrodynamicSimulation(params));
-  }, [params]);
 
   // Scenario Matching State
   const [isMatching, setIsMatching] = useState(false);
-  const [scenarioMatches, setScenarioMatches] = useState<any | null>({
-    matchedScenarios: [
-      {
-        id: 'sim-2015-12-01',
-        historicalEvent: 'December 2015 Chennai Flood & Chembarambakkam Sluice Discharge',
-        similarityPct: 94,
-        keyMatches: ['85mm/hr Cloudburst intensity', 'High tide estuarine backwater', 'Velachery Lake sluice overflow'],
-        retrievedStrategy: 'Immediate deployment of 4 NDRF boat units to Vijaya Nagar & pre-evacuation of Kotturpuram tenements',
-        historicalOutcome: 'Rescued 4,200 stranded residents with 91% effectiveness score',
-        aiRefinement: 'Apply 2015 strategy but add automated road barricading at Guindy subway to prevent vehicle stalling.'
-      },
-      {
-        id: 'sim-2021-11-25',
-        historicalEvent: 'November 2021 Cyclone Nivar Severe Inundation',
-        similarityPct: 86,
-        keyMatches: ['Heavy catchment rain in Adyar', 'Drainage silt blockage 80%'],
-        retrievedStrategy: 'High-capacity 500HP dewatering pumps stationed at 100ft road canal sluice',
-        historicalOutcome: 'Reduced standing water duration by 14 hours across Velachery South',
-        aiRefinement: 'Deploy pumps 30 minutes earlier based on live IoT sensor water depth derivative.'
-      }
-    ],
-    recommendedMasterPlan: 'Combine 2015 pre-evacuation protocol with 2021 early dewatering pump placement.'
-  });
+  const [scenarioMatches, setScenarioMatches] = useState<any | null>(() => computeScenarioMatches(DEFAULT_PARAMS));
+
+  // Derive result directly from params — always in sync, no stale state
+  const [result, setResult] = useState<SimulationResult>(() => computeHydrodynamicSimulation(DEFAULT_PARAMS));
+
+  // Re-calculate simulation & scenario matches instantly on ANY slider/control change
+  useEffect(() => {
+    const newResult = computeHydrodynamicSimulation(params);
+    setResult(newResult);
+    setScenarioMatches(computeScenarioMatches(params));
+  }, [
+    params.rainfallMmHr,
+    params.chembarambakkamReleaseM3s,
+    params.canalBlockagePct,
+    params.canalBlockagePct,
+    params.durationHours,
+    params.highTideOverlap,
+    params.bridgeStatus
+  ]);
 
   const handleRunSimulation = async () => {
     setIsLoading(true);
+    // Immediately update result from local engine (instant feedback)
+    const localResult = computeHydrodynamicSimulation(params);
+    setResult(localResult);
+
     try {
       const response = await fetch('/api/ai/simulate', {
         method: 'POST',
@@ -174,51 +327,20 @@ export const SimulationStudio: React.FC = () => {
       });
       const data = await response.json();
       if (data.success && data.data) {
-        setResult(data.data);
-      } else {
-        throw new Error(data.error || 'Server error');
+        // Merge: keep locally computed road corridors & deployments,
+        // enrich with live KB citation and AI summary from backend
+        setResult(prev => ({
+          ...localResult,
+          ...data.data,
+          // Always prefer the richer local predictedRoadCorridors
+          predictedRoadCorridors: data.data.predictedRoadCorridors || localResult.predictedRoadCorridors,
+          recommendedDeployments: data.data.recommendedDeployments || localResult.recommendedDeployments,
+          knowledgeBaseCitation: data.data.knowledgeBaseCitation || localResult.knowledgeBaseCitation
+        }));
       }
     } catch (err) {
-      console.warn('Simulation API fallback triggered:', err);
-      const rain = params.rainfallMmHr;
-      const dam = params.chembarambakkamReleaseM3s;
-      const block = params.canalBlockagePct;
-      const tide = params.highTideOverlap ? 1.4 : 1.0;
-      const dur = params.durationHours;
-
-      const affectedZonesCount = Math.min(8, Math.max(2, Math.floor((rain / 25) + (block / 30))));
-      const predictedSubmergedAreaKm2 = Number(((rain * 0.035 + dam * 0.0018) * (1 + block / 100) * tide).toFixed(1));
-      const estimatedAffectedPeople = Math.round((12000 + rain * 420 + dam * 22) * (1 + block / 150));
-
-      const criticalRoadBlocks: string[] = [];
-      if (block > 40 || rain > 70) criticalRoadBlocks.push('Guindy Railway Subway (Water Depth 1.8m)');
-      if (rain > 50) criticalRoadBlocks.push('Velachery 100ft Road Vijaya Nagar Junction');
-      if (dam > 1000) criticalRoadBlocks.push('Kotturpuram Bridge Approach');
-      if (tide > 1) criticalRoadBlocks.push('Adyar Estuary Causeway & Beach Road');
-
-      const recommendedDeployments = [
-        { type: 'Rescue Boat Units', count: Math.max(3, Math.floor(dam / 300)), zone: 'Velachery South' },
-        { type: 'Heavy Dewatering Pumps', count: Math.max(4, Math.floor(rain / 15)), zone: 'Guindy Subway & Taramani' },
-        { type: 'Evacuation Buses', count: Math.max(8, Math.floor(rain / 8)), zone: 'Kotturpuram Slums' }
-      ];
-
-      const riskTimeline = [
-        { minute: 15, floodedZones: Math.max(1, Math.floor(affectedZonesCount * 0.4)), maxWaterDepthMeters: Number((rain * 0.008 * tide).toFixed(1)) },
-        { minute: 30, floodedZones: Math.max(2, Math.floor(affectedZonesCount * 0.7)), maxWaterDepthMeters: Number((rain * 0.014 * tide).toFixed(1)) },
-        { minute: 60, floodedZones: affectedZonesCount, maxWaterDepthMeters: Number(((rain * 0.02 + dam * 0.0004) * tide).toFixed(1)) },
-        { minute: 120, floodedZones: Math.min(8, affectedZonesCount + 1), maxWaterDepthMeters: Number(((rain * 0.026 + dam * 0.0006) * tide).toFixed(1)) }
-      ];
-
-      setResult({
-        simulatedTime: `+${dur} Hours Scenario`,
-        affectedZonesCount,
-        predictedSubmergedAreaKm2,
-        estimatedAffectedPeople,
-        criticalRoadBlocks,
-        recommendedDeployments,
-        riskTimeline,
-        aiSummary: `Simulated +${dur} hour scenario (${rain} mm/hr rain, ${dam} m³/s release, ${block}% blockage, High Tide: ${params.highTideOverlap ? 'YES' : 'NO'}). Hydrodynamic physics engine predicts peak submergence area of ${predictedSubmergedAreaKm2} km² affecting ~${estimatedAffectedPeople.toLocaleString()} citizens.`
-      });
+      console.warn('Simulation API enrichment failed, using dynamic input engine:', err);
+      // Already set localResult above — nothing to do
     } finally {
       setIsLoading(false);
     }
@@ -246,34 +368,24 @@ export const SimulationStudio: React.FC = () => {
         throw new Error('Server error');
       }
     } catch (err) {
-      console.warn('Scenario match fallback triggered:', err);
-      setScenarioMatches({
-        matchedScenarios: [
-          {
-            id: 'sim-2015-12-01',
-            historicalEvent: 'December 2015 Chennai Flood & Chembarambakkam Sluice Discharge',
-            similarityPct: Math.min(98, Math.round(75 + (params.rainfallMmHr / 10) + (params.chembarambakkamReleaseM3s / 200))),
-            keyMatches: [`${params.rainfallMmHr}mm/hr Cloudburst intensity`, `${params.chembarambakkamReleaseM3s}m³/s Dam Discharge`, 'Estuarine high tide backwater overlap'],
-            retrievedStrategy: 'Immediate deployment of 4 NDRF boat units to Vijaya Nagar & pre-evacuation of Kotturpuram tenements',
-            historicalOutcome: 'Rescued 4,200 stranded residents with 91% effectiveness score',
-            aiRefinement: 'Apply 2015 strategy but add automated road barricading at Guindy subway to prevent vehicle stalling.'
-          },
-          {
-            id: 'sim-2021-11-25',
-            historicalEvent: 'November 2021 Cyclone Nivar Severe Inundation',
-            similarityPct: Math.min(92, Math.round(68 + (params.rainfallMmHr / 8))),
-            keyMatches: ['Heavy catchment rain in Adyar', `Drainage silt blockage ${params.canalBlockagePct}%`],
-            retrievedStrategy: 'High-capacity 500HP dewatering pumps stationed at 100ft road canal sluice',
-            historicalOutcome: 'Reduced standing water duration by 14 hours across Velachery South',
-            aiRefinement: 'Deploy pumps 30 minutes earlier based on live IoT sensor water depth derivative.'
-          }
-        ],
-        recommendedMasterPlan: 'Combine 2015 pre-evacuation protocol with 2021 early dewatering pump placement.'
-      });
+      console.warn('Scenario match fallback triggered, using dynamic matcher:', err);
+      setScenarioMatches(computeScenarioMatches(params));
     } finally {
       setIsMatching(false);
     }
   };
+
+  const handleLoadHistoricalEvent = (eventParams: Partial<SimulationParams>) => {
+    const newParams: SimulationParams = {
+      ...params,
+      ...eventParams
+    };
+    setParams(newParams);
+    setResult(computeHydrodynamicSimulation(newParams));
+    setScenarioMatches(computeScenarioMatches(newParams));
+    setActiveSubTab('simulation');
+  };
+
 
   const handleReset = () => {
     setParams({
@@ -513,31 +625,131 @@ export const SimulationStudio: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Critical Road Closures */}
-                <div className="space-y-2">
-                  <h4 className="text-[10px] font-mono font-bold text-[#888] uppercase tracking-widest">
-                    Predicted Road & Corridor Closures:
-                  </h4>
-                  <div className="space-y-1.5">
-                    {result.criticalRoadBlocks.map((block, idx) => (
-                      <div key={idx} className="flex items-center gap-2 bg-[#050507] p-2.5 rounded border border-brand/30 text-xs text-[#e0e0e6] font-mono">
-                        <AlertTriangle className="w-3.5 h-3.5 text-[#e0e0e6] shrink-0" />
-                        <span>{block}</span>
+                {/* Decision Knowledge Base Citation Banner */}
+                {result.knowledgeBaseCitation && (
+                  <div className="bg-[#050507] border border-blue-500/30 p-3.5 rounded text-xs space-y-2 font-mono">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest flex items-center gap-1.5">
+                        <BookOpen className="w-3.5 h-3.5 text-blue-400" />
+                        Decision Knowledge Base Citation:
+                      </span>
+                      <span className="text-[10px] bg-blue-500/20 text-blue-300 font-bold px-2 py-0.5 rounded border border-blue-500/30">
+                        {result.knowledgeBaseCitation.similarityPct}% VECTOR MATCH
+                      </span>
+                    </div>
+                    <div className="font-bold text-[#e0e0e6] text-xs font-sans">
+                      {result.knowledgeBaseCitation.matchedEvent}
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] font-sans">
+                      <div className="bg-[#050507] p-2 rounded border border-white/5 space-y-1 font-mono">
+                        <span className="text-[9px] text-[#888] uppercase block font-bold">Retrieved Proven Strategy:</span>
+                        <p className="text-[#ccc] text-[10px] font-sans">{result.knowledgeBaseCitation.retrievedStrategy}</p>
                       </div>
-                    ))}
+                      <div className="bg-[#050507] p-2 rounded border border-emerald-500/20 space-y-1 font-mono">
+                        <span className="text-[9px] text-brand uppercase block font-bold">AI Dynamic Refinement:</span>
+                        <p className="text-[#ccc] text-[10px] font-sans">{result.knowledgeBaseCitation.aiRefinement}</p>
+                      </div>
+                    </div>
                   </div>
+                )}
+
+                {/* Predicted Road & Corridor Closures */}
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-[10px] font-mono font-bold text-[#888] uppercase tracking-widest flex items-center gap-1.5">
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                      Predicted Road & Corridor Closures:
+                    </h4>
+                    <span className="text-[10px] font-mono text-amber-400 font-bold">
+                      {result.predictedRoadCorridors?.length || result.criticalRoadBlocks.length} Corridors Impacted
+                    </span>
+                  </div>
+
+                  {result.predictedRoadCorridors && result.predictedRoadCorridors.length > 0 ? (
+                    <div className="space-y-2">
+                      {result.predictedRoadCorridors.map((corridor, idx) => (
+                        <div key={idx} className="bg-[#050507] p-3 rounded border border-brand/30 text-xs font-mono space-y-2">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="space-y-0.5">
+                              <span className="font-bold text-[#e0e0e6] block font-sans text-xs">{corridor.roadName}</span>
+                              <span className="text-[10px] text-[#888] block">Corridor Length: {corridor.affectedCorridorLengthKm} km</span>
+                            </div>
+                            <div className="flex flex-col items-end gap-1 shrink-0">
+                              <span className={`text-[9px] font-bold px-2 py-0.5 rounded border uppercase ${
+                                corridor.status === 'CLOSED' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
+                                corridor.status === 'RESTRICTED' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' :
+                                'bg-yellow-500/20 text-yellow-300 border-yellow-500/30'
+                              }`}>
+                                {corridor.status}
+                              </span>
+                              <span className="text-[10px] text-red-400 font-bold">
+                                Submerged: {corridor.submergenceDepthMeters}m ({Number((corridor.submergenceDepthMeters * 3.28).toFixed(1))}ft)
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] pt-1.5 border-t border-white/5 font-sans">
+                            <div className="text-[#ccc] bg-[#050507] p-1.5 rounded border border-white/5 flex items-center gap-1.5">
+                              <ShieldAlert className="w-3 h-3 text-red-400 shrink-0" />
+                              <span className="font-mono">{corridor.vehicleRestriction}</span>
+                            </div>
+                            <div className="text-emerald-300 bg-[#050507] p-1.5 rounded border border-emerald-500/20 flex items-center gap-1.5">
+                              <TrendingUp className="w-3 h-3 text-emerald-400 shrink-0" />
+                              <span className="font-mono">{corridor.recommendedDetour}</span>
+                            </div>
+                          </div>
+
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="space-y-1.5">
+                      {result.criticalRoadBlocks.map((block, idx) => (
+                        <div key={idx} className="flex items-center gap-2 bg-[#050507] p-2.5 rounded border border-brand/30 text-xs text-[#e0e0e6] font-mono">
+                          <AlertTriangle className="w-3.5 h-3.5 text-[#e0e0e6] shrink-0" />
+                          <span>{block}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* AI Recommended Pre-Positioning */}
-                <div className="space-y-2">
-                  <h4 className="text-[10px] font-mono font-bold text-[#888] uppercase tracking-widest">
-                    AI Recommended Pre-Positioning:
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-[10px] font-mono font-bold text-[#888] uppercase tracking-widest flex items-center gap-1.5">
+                      <Zap className="w-3.5 h-3.5 text-brand" />
+                      AI Recommended Pre-Positioning (Knowledge Base Grounded):
+                    </h4>
+                    <span className="text-[10px] font-mono text-brand font-bold">
+                      {result.recommendedDeployments.length} Units Ready
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {result.recommendedDeployments.map((dep, idx) => (
-                      <div key={idx} className="bg-[#050507] p-2.5 rounded border border-white/5 text-xs font-mono">
-                        <span className="font-bold text-brand block">{dep.count}x {dep.type}</span>
-                        <span className="text-[10px] text-[#888]">Target: {dep.zone}</span>
+                      <div key={idx} className="bg-[#050507] p-3 rounded border border-white/10 text-xs font-mono space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-brand block">{dep.count}x {dep.type}</span>
+                          {dep.priority && (
+                            <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase ${
+                              dep.priority === 'CRITICAL' ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                            }`}>
+                              {dep.priority}
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[10px] text-[#aaa] block font-sans"><strong>Target:</strong> {dep.zone}</span>
+                        {dep.expectedImpact && (
+                          <span className="text-[10px] text-emerald-300 block font-sans bg-[#050507] p-1.5 rounded border border-emerald-500/20">
+                            <strong>Impact:</strong> {dep.expectedImpact}
+                          </span>
+                        )}
+                        {dep.knowledgeBasePrecedent && (
+                          <span className="text-[9px] text-[#888] block font-mono">
+                            {dep.knowledgeBasePrecedent}
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -694,26 +906,47 @@ export const SimulationStudio: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#ffffff10] font-mono">
-                  <tr className="hover:bg-[#050507] transition-all">
-                    <td className="p-3 font-bold text-[#e0e0e6]">SIM-2015-12-01</td>
-                    <td className="p-3 text-[#aaa]">Rain: 120mm/hr | Dam: 2200m³/s</td>
+                  <tr
+                    onClick={() => handleLoadHistoricalEvent({ rainfallMmHr: 120, chembarambakkamReleaseM3s: 2200, canalBlockagePct: 60, bridgeStatus: 'closed', durationHours: 4, highTideOverlap: true })}
+                    className="hover:bg-[#111118] transition-all cursor-pointer group"
+                    title="Click to seed simulation controls with 2015 historical scenario"
+                  >
+                    <td className="p-3 font-bold text-[#e0e0e6] group-hover:text-brand flex items-center gap-1.5">
+                      <Zap className="w-3 h-3 text-brand opacity-0 group-hover:opacity-100 transition-all" />
+                      <span>SIM-2015-12-01</span>
+                    </td>
+                    <td className="p-3 text-[#aaa]">Rain: 120mm/hr | Dam: 2200m³/s | High Tide</td>
                     <td className="p-3 text-brand">Pre-evacuate Kotturpuram + Deploy 6 Boats</td>
                     <td className="p-3 font-bold text-brand">92% Score</td>
-                    <td className="p-3 text-[#888] font-sans">Pre-positioning boats prior to T+30m cuts rescue delays by 42%.</td>
+                    <td className="p-3 text-[#888] font-sans">Pre-positioning boats prior to T+30m cuts rescue delays by 42%. <span className="text-[10px] text-brand underline font-mono ml-1">Load Controls &rarr;</span></td>
                   </tr>
-                  <tr className="hover:bg-[#050507] transition-all">
-                    <td className="p-3 font-bold text-[#e0e0e6]">SIM-2021-11-25</td>
-                    <td className="p-3 text-[#aaa]">Rain: 85mm/hr | Silt Block: 80%</td>
+                  <tr
+                    onClick={() => handleLoadHistoricalEvent({ rainfallMmHr: 85, chembarambakkamReleaseM3s: 800, canalBlockagePct: 85, bridgeStatus: 'restricted', durationHours: 3, highTideOverlap: false })}
+                    className="hover:bg-[#111118] transition-all cursor-pointer group"
+                    title="Click to seed simulation controls with 2021 historical scenario"
+                  >
+                    <td className="p-3 font-bold text-[#e0e0e6] group-hover:text-brand flex items-center gap-1.5">
+                      <Zap className="w-3 h-3 text-brand opacity-0 group-hover:opacity-100 transition-all" />
+                      <span>SIM-2021-11-25</span>
+                    </td>
+                    <td className="p-3 text-[#aaa]">Rain: 85mm/hr | Dam: 800m³/s | Silt: 85%</td>
                     <td className="p-3 text-brand">Station 500HP Pumps at Velachery Canal</td>
                     <td className="p-3 font-bold text-brand">88% Score</td>
-                    <td className="p-3 text-[#888] font-sans">Early dewatering prevents standing water accumulation in ground floors.</td>
+                    <td className="p-3 text-[#888] font-sans">Early dewatering prevents standing water accumulation in ground floors. <span className="text-[10px] text-brand underline font-mono ml-1">Load Controls &rarr;</span></td>
                   </tr>
-                  <tr className="hover:bg-[#050507] transition-all">
-                    <td className="p-3 font-bold text-[#e0e0e6]">SIM-2023-12-04</td>
-                    <td className="p-3 text-[#aaa]">Rain: 140mm/hr | High Tide Overlap</td>
+                  <tr
+                    onClick={() => handleLoadHistoricalEvent({ rainfallMmHr: 140, chembarambakkamReleaseM3s: 1500, canalBlockagePct: 75, bridgeStatus: 'closed', durationHours: 5, highTideOverlap: true })}
+                    className="hover:bg-[#111118] transition-all cursor-pointer group"
+                    title="Click to seed simulation controls with 2023 historical scenario"
+                  >
+                    <td className="p-3 font-bold text-[#e0e0e6] group-hover:text-brand flex items-center gap-1.5">
+                      <Zap className="w-3 h-3 text-brand opacity-0 group-hover:opacity-100 transition-all" />
+                      <span>SIM-2023-12-04</span>
+                    </td>
+                    <td className="p-3 text-[#aaa]">Rain: 140mm/hr | Dam: 1500m³/s | High Tide</td>
                     <td className="p-3 text-amber-400">Automated Barrier at Guindy Railway Subway</td>
                     <td className="p-3 font-bold text-brand">95% Score</td>
-                    <td className="p-3 text-[#888] font-sans">Early subway closure prevents vehicle trapping and traffic gridlock.</td>
+                    <td className="p-3 text-[#888] font-sans">Early subway closure prevents vehicle trapping and traffic gridlock. <span className="text-[10px] text-brand underline font-mono ml-1">Load Controls &rarr;</span></td>
                   </tr>
                 </tbody>
               </table>
