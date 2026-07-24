@@ -6,7 +6,8 @@ import {
   EmergencyResource,
   EmergencyShelter,
   CitizenReport,
-  EvacuationRoute
+  EvacuationRoute,
+  EmergencyHospital
 } from '../../shared/types';
 import {
   Layers,
@@ -32,6 +33,7 @@ interface DigitalTwinMapProps {
   resources: EmergencyResource[];
   shelters: EmergencyShelter[];
   reports: CitizenReport[];
+  hospitals?: EmergencyHospital[];
   evacuationRoute?: EvacuationRoute;
   timeHorizon: 'live' | '30m' | '1h' | '2h';
   setTimeHorizon: (horizon: 'live' | '30m' | '1h' | '2h') => void;
@@ -46,6 +48,7 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
   resources,
   shelters,
   reports,
+  hospitals,
   evacuationRoute,
   timeHorizon,
   setTimeHorizon,
@@ -64,11 +67,12 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
   const [showResources, setShowResources] = useState(true);
   const [showShelters, setShowShelters] = useState(true);
   const [showReports, setShowReports] = useState(true);
+  const [showHospitals, setShowHospitals] = useState(true);
   const [showRoute, setShowRoute] = useState(true);
 
   // Inspector Panel State
   const [selectedItem, setSelectedItem] = useState<{
-    type: 'zone' | 'sensor' | 'resource' | 'shelter' | 'report';
+    type: 'zone' | 'sensor' | 'resource' | 'shelter' | 'report' | 'hospital';
     data: any;
   } | null>(null);
 
@@ -345,6 +349,49 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
       });
     }
 
+    // Hospitals
+    if (showHospitals && hospitals) {
+      hospitals.forEach((hosp) => {
+        const iconHtml = `
+          <div style="
+            background: #10b981;
+            border: 2px solid #a7f3d0;
+            border-radius: 8px;
+            padding: 2px 6px;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(16,185,129,0.5);
+          ">
+            🏥
+          </div>
+        `;
+
+        const customIcon = L.divIcon({
+          html: iconHtml,
+          className: 'custom-hospital-icon',
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
+        });
+
+        const marker = L.marker([hosp.coordinates[0], hosp.coordinates[1]], { icon: customIcon });
+
+        marker.on('click', () => {
+          setSelectedItem({ type: 'hospital', data: hosp });
+        });
+
+        marker.bindTooltip(`
+          <div>
+            <strong>${hosp.name}</strong><br/>
+            Beds: ${hosp.available_icu_beds} ICU / ${hosp.total_beds} Total<br/>
+            Status: <span style="text-transform: uppercase;">${hosp.status}</span>
+          </div>
+        `);
+
+        layerGroup.addLayer(marker);
+      });
+    }
+
     // 6. Render Citizen Reports
     if (showReports) {
       reports.forEach((rep) => {
@@ -417,6 +464,7 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
     sensors,
     resources,
     shelters,
+    hospitals,
     reports,
     evacuationRoute,
     timeHorizon,
@@ -426,6 +474,7 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
     showResources,
     showShelters,
     showReports,
+    showHospitals,
     showRoute
   ]);
 
@@ -485,6 +534,15 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
             }`}
           >
             Shelters
+          </button>
+
+          <button
+            onClick={() => setShowHospitals(!showHospitals)}
+            className={`px-3 py-1 rounded-none text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              showHospitals ? 'bg-brand text-black' : 'bg-[#0d0d12] text-brand/60 border border-white/5'
+            }`}
+          >
+            Hospitals
           </button>
 
           <button
@@ -644,6 +702,23 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
               <div className="flex justify-between py-1">
                 <span className="text-brand/60">RATIONS:</span>
                 <span className="text-[#e0e0e6] font-bold">{selectedItem.data.foodSuppliesDays} Days Supply</span>
+              </div>
+            </div>
+          )}
+
+          {selectedItem.type === 'hospital' && (
+            <div className="space-y-1.5 text-xs font-mono">
+              <div className="flex justify-between py-1 border-b border-white/5">
+                <span className="text-brand/60">STATUS:</span>
+                <span className="font-bold text-[#e0e0e6] uppercase">{selectedItem.data.status}</span>
+              </div>
+              <div className="flex justify-between py-1 border-b border-white/5">
+                <span className="text-brand/60">CAPACITY:</span>
+                <span className="font-bold text-[#e0e0e6]">{selectedItem.data.total_beds} Total Beds</span>
+              </div>
+              <div className="flex justify-between py-1">
+                <span className="text-brand/60">AVAILABLE ICU:</span>
+                <span className="text-brand font-bold">{selectedItem.data.available_icu_beds} Beds</span>
               </div>
             </div>
           )}

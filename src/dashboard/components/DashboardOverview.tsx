@@ -174,6 +174,7 @@ export default function DashboardOverview({
               sensors={sensors}
               resources={resources}
               shelters={shelters}
+              hospitals={hospitals}
               reports={reports}
               evacuationRoute={evacuationRoute}
               timeHorizon={timeHorizon}

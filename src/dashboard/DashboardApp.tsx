@@ -513,6 +513,7 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
               sensors={sensors}
               resources={resources}
               shelters={shelters}
+              hospitals={hospitals}
               reports={reports}
               evacuationRoute={evacuationRoute}
               timeHorizon={timeHorizon}
