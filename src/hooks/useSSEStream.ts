@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { CitizenReport, AgentActivityLog, AutomatedAlert } from '../shared/types';
 
 interface UseSSEStreamProps {
@@ -8,11 +8,20 @@ interface UseSSEStreamProps {
 }
 
 export function useSSEStream({ onNewReport, onNewLog, onNewAlert }: UseSSEStreamProps) {
+  // Use refs so the effect never needs to re-run when callback identity changes
+  const onNewReportRef = useRef(onNewReport);
+  const onNewLogRef = useRef(onNewLog);
+  const onNewAlertRef = useRef(onNewAlert);
+
+  useEffect(() => { onNewReportRef.current = onNewReport; }, [onNewReport]);
+  useEffect(() => { onNewLogRef.current = onNewLog; }, [onNewLog]);
+  useEffect(() => { onNewAlertRef.current = onNewAlert; }, [onNewAlert]);
+
   useEffect(() => {
     let eventSource: EventSource | null = null;
     try {
       eventSource = new EventSource('/api/events');
-      
+
       eventSource.onmessage = (e) => {
         try {
           const parsed = JSON.parse(e.data);
@@ -36,7 +45,7 @@ export function useSSEStream({ onNewReport, onNewLog, onNewAlert }: UseSSEStream
               status: 'verified'
             };
 
-            onNewReport(formattedReport);
+            onNewReportRef.current(formattedReport);
 
             const sseLog: AgentActivityLog = {
               id: `log-sse-${Date.now()}`,
@@ -47,13 +56,13 @@ export function useSSEStream({ onNewReport, onNewLog, onNewAlert }: UseSSEStream
               severity: 'alert'
             };
 
-            onNewLog(sseLog);
+            onNewLogRef.current(sseLog);
 
-            if (onNewAlert) {
-              onNewAlert({
+            if (onNewAlertRef.current) {
+              onNewAlertRef.current({
                 id: `alert-sse-${Date.now()}`,
                 timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                headline: `🚨 REAL-TIME SOS: ${formattedReport.locationName}`,
+                headline: `REAL-TIME SOS: ${formattedReport.locationName}`,
                 zone: formattedReport.locationName,
                 severity: formattedReport.severity === 'critical' ? 'critical' : 'warning',
                 agenciesNotified: ['Disaster Mgmt HQ', 'Fire & Rescue', '108 Ambulance'],
@@ -79,5 +88,5 @@ export function useSSEStream({ onNewReport, onNewLog, onNewAlert }: UseSSEStream
         eventSource.close();
       }
     };
-  }, [onNewReport, onNewLog, onNewAlert]);
+  }, []); // ← empty deps: connect once on mount, use refs for latest callbacks
 }

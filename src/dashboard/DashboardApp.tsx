@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   DisasterType,
   AgencyRole,
@@ -75,18 +75,21 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
   const [agencyRole, setAgencyRole] = useState<AgencyRole>('authority');
   const [activeTab, setActiveTabState] = useState<string>(initialTab || 'dashboard');
 
+  // Sync initialTab only on first mount via ref guard
+  const initialTabSyncedRef = useRef(false);
   useEffect(() => {
-    if (initialTab && initialTab !== activeTab) {
+    if (!initialTabSyncedRef.current && initialTab) {
+      initialTabSyncedRef.current = true;
       setActiveTabState(initialTab);
     }
   }, [initialTab]);
 
-  const setActiveTab = (tab: string) => {
+  const setActiveTab = useCallback((tab: string) => {
     setActiveTabState(tab);
     if (onNavigateTab) {
       onNavigateTab(tab);
     }
-  };
+  }, [onNavigateTab]);
 
   const [zones, setZones] = useState<ZoneRisk[]>(INITIAL_ZONES);
   const [sensors, setSensors] = useState<IoTSensorNode[]>(INITIAL_IOT_SENSORS);
@@ -101,10 +104,23 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
   // Custom Hooks
   const { evacuationRoute, calculateRoute, selectShelter } = useEvacuationRoute(shelters);
 
+  // Stable SSE callbacks using useCallback + functional updaters (no stale closures)
+  const handleNewReport = useCallback((newReport: CitizenReport) => {
+    setReports(prev => [newReport, ...prev]);
+  }, []);
+
+  const handleNewLog = useCallback((newLog: AgentActivityLog) => {
+    setAgentLogs(prev => [newLog, ...prev]);
+  }, []);
+
+  const handleNewAlert = useCallback((newAlert: AutomatedAlert) => {
+    setAlerts(prev => [newAlert, ...prev]);
+  }, []);
+
   useSSEStream({
-    onNewReport: (newReport) => setReports(prev => [newReport, ...prev]),
-    onNewLog: (newLog) => setAgentLogs(prev => [newLog, ...prev]),
-    onNewAlert: (newAlert) => setAlerts(prev => [newAlert, ...prev])
+    onNewReport: handleNewReport,
+    onNewLog: handleNewLog,
+    onNewAlert: handleNewAlert
   });
 
   const [timeHorizon, setTimeHorizon] = useState<'live' | '30m' | '1h' | '2h'>('live');
