@@ -3,8 +3,8 @@
 import uuid
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, List, Optional
-from sqlalchemy import Float, String, ForeignKey, DateTime
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy import Float, String, ForeignKey, DateTime, JSON
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -25,7 +25,7 @@ class Simulation(Base):
     description: Mapped[str] = mapped_column(String(500), default="", nullable=False)
 
     # Input parameters stored in JSON (rainfall_mm, dam_release, river_level, traffic_multiplier)
-    input_parameters: Mapped[dict] = mapped_column(JSONB, default=dict, nullable=False)
+    input_parameters: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
 
     status: Mapped[str] = mapped_column(
         String(50), default="PENDING", nullable=False, index=True
@@ -59,9 +59,9 @@ class SimulationResult(Base):
         UUID(as_uuid=True), ForeignKey("simulations.id", ondelete="CASCADE"), nullable=False
     )
 
-    flood_spread_data: Mapped[dict] = mapped_column(JSONB, default=dict, nullable=False)
-    recommended_evacuation_plan: Mapped[dict] = mapped_column(JSONB, default=dict, nullable=False)
-    recommended_resource_plan: Mapped[dict] = mapped_column(JSONB, default=dict, nullable=False)
+    flood_spread_data: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
+    recommended_evacuation_plan: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
+    recommended_resource_plan: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
 
     effectiveness_score: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)  # 0.0 to 100.0
     ai_confidence_pct: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)

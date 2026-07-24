@@ -33,7 +33,7 @@ class Resource(Base):
 
     # GeoAlchemy2 PostGIS Point location (EPSG:4326)
     current_location: Mapped[Geometry] = mapped_column(
-        Geometry(geometry_type="POINT", srid=4326), nullable=False, index=True
+        Geometry(geometry_type="POINT", srid=4326, spatial_index=False, from_text=None), nullable=False
     )
 
     assigned_zone_id: Mapped[Optional[uuid.UUID]] = mapped_column(

@@ -26,7 +26,7 @@ class Shelter(Base):
 
     # GeoAlchemy2 PostGIS Point location (EPSG:4326)
     location: Mapped[Geometry] = mapped_column(
-        Geometry(geometry_type="POINT", srid=4326), nullable=False, index=True
+        Geometry(geometry_type="POINT", srid=4326, spatial_index=False, from_text=None), nullable=False
     )
 
     total_capacity: Mapped[int] = mapped_column(Integer, default=100, nullable=False)

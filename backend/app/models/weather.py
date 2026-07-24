@@ -3,8 +3,8 @@
 import uuid
 from datetime import datetime, timezone
 from geoalchemy2 import Geometry
-from sqlalchemy import Float, String, DateTime
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy import Float, String, DateTime, JSON
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -22,7 +22,7 @@ class WeatherCache(Base):
     
     # GeoAlchemy2 PostGIS Point (EPSG:4326)
     location: Mapped[Geometry] = mapped_column(
-        Geometry(geometry_type="POINT", srid=4326), nullable=False
+        Geometry(geometry_type="POINT", srid=4326, spatial_index=False, from_text=None), nullable=False
     )
 
     rainfall_mm: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
@@ -32,7 +32,7 @@ class WeatherCache(Base):
     wind_speed_kmh: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
     humidity_pct: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
 
-    raw_data: Mapped[dict] = mapped_column(JSONB, default=dict, nullable=False)
+    raw_data: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
     cached_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), index=True
     )

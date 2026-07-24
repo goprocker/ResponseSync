@@ -23,7 +23,7 @@ class Hospital(Base):
 
     # GeoAlchemy2 PostGIS Point location (EPSG:4326)
     location: Mapped[Geometry] = mapped_column(
-        Geometry(geometry_type="POINT", srid=4326), nullable=False, index=True
+        Geometry(geometry_type="POINT", srid=4326, spatial_index=False, from_text=None), nullable=False
     )
 
     icu_beds_available: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

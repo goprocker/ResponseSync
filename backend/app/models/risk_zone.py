@@ -30,7 +30,7 @@ class RiskZone(Base):
     
     # GeoAlchemy2 PostGIS Polygon boundary (EPSG:4326)
     boundary: Mapped[Geometry] = mapped_column(
-        Geometry(geometry_type="POLYGON", srid=4326), nullable=False, index=True
+        Geometry(geometry_type="POLYGON", srid=4326, spatial_index=False, from_text=None), nullable=False
     )
 
     flood_depth_m: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)

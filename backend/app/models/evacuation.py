@@ -26,7 +26,7 @@ class EvacuationRoute(Base):
 
     # GeoAlchemy2 PostGIS Point (Origin)
     start_location: Mapped[Geometry] = mapped_column(
-        Geometry(geometry_type="POINT", srid=4326), nullable=False
+        Geometry(geometry_type="POINT", srid=4326, spatial_index=False, from_text=None), nullable=False
     )
 
     destination_shelter_id: Mapped[Optional[uuid.UUID]] = mapped_column(
@@ -35,7 +35,7 @@ class EvacuationRoute(Base):
 
     # GeoAlchemy2 PostGIS LineString geometry for full route path
     route_geometry: Mapped[Geometry] = mapped_column(
-        Geometry(geometry_type="LINESTRING", srid=4326), nullable=False, index=True
+        Geometry(geometry_type="LINESTRING", srid=4326, spatial_index=False, from_text=None), nullable=False
     )
 
     is_blocked: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, index=True)

@@ -3,8 +3,8 @@
 import uuid
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Optional
-from sqlalchemy import Float, Text, ForeignKey, DateTime
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy import Float, Text, ForeignKey, DateTime, JSON
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -26,10 +26,10 @@ class DecisionKnowledge(Base):
     )
 
     scenario_vector: Mapped[dict] = mapped_column(
-        JSONB, default=dict, nullable=False, comment="Normalized parameter vector for similarity matching"
+        JSON, default=dict, nullable=False, comment="Normalized parameter vector for similarity matching"
     )
-    input_conditions: Mapped[dict] = mapped_column(JSONB, default=dict, nullable=False)
-    recommended_actions: Mapped[dict] = mapped_column(JSONB, default=dict, nullable=False)
+    input_conditions: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
+    recommended_actions: Mapped[dict] = mapped_column(JSON, default=dict, nullable=False)
     
     outcome_effectiveness: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
     lessons_learned: Mapped[str] = mapped_column(Text, default="", nullable=False)

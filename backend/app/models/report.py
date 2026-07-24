@@ -4,8 +4,8 @@ import uuid
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Optional
 from geoalchemy2 import Geometry
-from sqlalchemy import Enum as SQLEnum, String, Text, ForeignKey, DateTime
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy import Enum as SQLEnum, String, Text, ForeignKey, DateTime, JSON
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -40,10 +40,10 @@ class CitizenReport(Base):
     
     # GeoAlchemy2 PostGIS Point (Longitude, Latitude) EPSG:4326
     location: Mapped[Geometry] = mapped_column(
-        Geometry(geometry_type="POINT", srid=4326), nullable=False, index=True
+        Geometry(geometry_type="POINT", srid=4326, spatial_index=False, from_text=None), nullable=False
     )
     
-    media_urls: Mapped[dict] = mapped_column(JSONB, default=list, nullable=False)
+    media_urls: Mapped[dict] = mapped_column(JSON, default=list, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), index=True
     )
