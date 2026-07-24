@@ -89,7 +89,15 @@ body {
   box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.4);
 }
 
-/* Custom Theme-Aligned Cyber-Amber & Dark Ink Scrollbar */
+/* ─── Scrollbar Theming ───────────────────────────────────────────── */
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(210, 95, 56, 0.4) #08080c;
+}
+
+/* Webkit (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -121,9 +129,14 @@ body {
   background: #08080c;
 }
 
-/* Firefox Custom Scrollbar Support */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(210, 95, 56, 0.4) #08080c;
+/* Hide scrollbar utility (used on tab strips, nav) */
+.hide-scrollbar::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar,
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
