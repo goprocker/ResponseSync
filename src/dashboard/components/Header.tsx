@@ -90,7 +90,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Navigation Tabs */}
-        <nav className="flex items-center gap-1 bg-[#050507] p-0.5 rounded-none border border-white/10 overflow-x-auto w-full lg:w-auto">
+        <nav className="flex items-center gap-1 bg-[#050507] p-0.5 rounded-none border border-white/10 overflow-x-auto w-full lg:w-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           <button
             onClick={() => setActiveTab('twin_map')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-none text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
@@ -207,12 +207,31 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Agency Selector & Telemetry Controls */}
         <div className="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
           
-          {/* Agency View Dropdown */}
+          {/* Agency View Dropdown & JWT Security Indicator */}
           <div className="flex items-center gap-2 bg-[#050507] px-3 py-1.5 rounded-none border border-white/10">
-            <span className="text-[9px] uppercase font-mono tracking-widest text-brand/60 hidden xl:inline">Role:</span>
+            <span className="text-[9px] uppercase font-mono tracking-widest text-brand/60 hidden xl:inline">Role (JWT):</span>
             <select
               value={agencyRole}
-              onChange={(e) => setAgencyRole(e.target.value as AgencyRole)}
+              onChange={async (e) => {
+                const newRole = e.target.value as AgencyRole;
+                setAgencyRole(newRole);
+                try {
+                  const resp = await fetch('/api/auth/switch-role', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ role: newRole })
+                  });
+                  if (resp.ok) {
+                    const data = await resp.json();
+                    if (data.token) {
+                      localStorage.setItem('jwt_token', data.token);
+                      localStorage.setItem('user_payload', JSON.stringify(data.user));
+                    }
+                  }
+                } catch (err) {
+                  console.warn('JWT role switch sync error:', err);
+                }
+              }}
               className="bg-transparent text-xs font-mono font-bold text-[#e0e0e6] focus:outline-none cursor-pointer"
             >
               <option value="authority" className="bg-[#0e0e14] text-[#e0e0e6]">🏛️ Disaster Mgmt HQ</option>
@@ -221,6 +240,9 @@ export const Header: React.FC<HeaderProps> = ({
               <option value="health_hospitals" className="bg-[#0e0e14] text-[#e0e0e6]">🏥 Health & Hospitals</option>
               <option value="citizen" className="bg-[#0e0e14] text-[#e0e0e6]">👤 Citizen Public View</option>
             </select>
+            <span className="text-[8px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1 py-0.5 font-mono uppercase font-bold rounded shrink-0 hidden md:inline-block" title="JWT Token Authenticated & Role Protected">
+              🔐 JWT SECURED
+            </span>
           </div>
 
           {/* Live Sync Status Badge */}

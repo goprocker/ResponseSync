@@ -27,13 +27,16 @@ export function useSSEStream({ onNewReport, onNewLog, onNewAlert }: UseSSEStream
           const parsed = JSON.parse(e.data);
           if (parsed.type === 'citizen_report_created' && parsed.payload) {
             const r = parsed.payload;
+            const rLat = Number(r.lat ?? (Array.isArray(r.coordinates) ? r.coordinates[0] : (r.coordinates?.lat ?? 12.9785)));
+            const rLng = Number(r.lng ?? (Array.isArray(r.coordinates) ? r.coordinates[1] : (r.coordinates?.lng ?? 80.2205)));
+
             const formattedReport: CitizenReport = {
               id: r.id || `rep-sse-${Date.now()}`,
               reporterName: r.reporterName || 'Live Citizen',
               phone: r.phone || '+91 90000 00000',
               timestamp: 'Just now (Live SSE)',
-              lat: r.coordinates?.lat || 12.978,
-              lng: r.coordinates?.lng || 80.222,
+              lat: rLat,
+              lng: rLng,
               locationName: r.locationName || 'Velachery Hazard Point',
               category: r.hazardType || 'waterlogging',
               severity: r.severity || 'critical',
@@ -62,7 +65,7 @@ export function useSSEStream({ onNewReport, onNewLog, onNewAlert }: UseSSEStream
               onNewAlertRef.current({
                 id: `alert-sse-${Date.now()}`,
                 timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                headline: `REAL-TIME SOS: ${formattedReport.locationName}`,
+                headline: `🚨 REAL-TIME SOS: ${formattedReport.locationName}`,
                 zone: formattedReport.locationName,
                 severity: formattedReport.severity === 'critical' ? 'critical' : 'warning',
                 agenciesNotified: ['Disaster Mgmt HQ', 'Fire & Rescue', '108 Ambulance'],

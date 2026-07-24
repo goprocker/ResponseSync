@@ -385,42 +385,26 @@ export const INITIAL_CITIZEN_REPORTS: CitizenReport[] = [
 export const INITIAL_AGENT_LOGS: AgentActivityLog[] = [
   {
     id: 'log-1',
-    agentName: 'Weather Agent',
+    agentName: 'Hydro-Risk Ingestion Agent',
     timestamp: '10:24:12 AM',
-    action: 'Radar Echo Scan',
-    details: 'Heavy convective cloud cell over South Chennai. Rainfall intensity 85 mm/hr recorded in Velachery cluster.',
+    action: 'Radar & Telemetry Ingestion',
+    details: 'Heavy convective cloud cell over South Chennai. Processed 85 mm/hr rain rate and 3 verified citizen SOS calls.',
     severity: 'alert'
   },
   {
     id: 'log-2',
-    agentName: 'Satellite Agent',
+    agentName: 'Decision & Resource Agent',
     timestamp: '10:24:30 AM',
-    action: 'Sentinel SAR Flood Inundation Analysis',
-    details: 'Detected 3.2 sq km expanding water surface area along Velachery Lake & Adyar spillway corridors.',
+    action: 'Supabase KB Match & Fleet Routing',
+    details: 'Matched against Dec 2015 historical cloudburst in Supabase DB. Pre-positioned 4 NDRF boat units at Velachery and generated GST detour.',
     severity: 'warning'
   },
   {
     id: 'log-3',
-    agentName: 'Flood Prediction Agent',
+    agentName: 'Command & Dispatch Agent',
     timestamp: '10:24:55 AM',
-    action: 'Hydrodynamic Simulation Model',
-    details: 'Predicted +0.9m surge in next 45 minutes for Velachery South. Evacuation priority escalated to CRITICAL.',
-    severity: 'alert'
-  },
-  {
-    id: 'log-4',
-    agentName: 'Evacuation Agent',
-    timestamp: '10:25:10 AM',
-    action: 'Dynamic Route Optimization',
-    details: 'Closed Guindy Railway Underpass corridor. Rerouted 1,200 vehicles towards GST Flyover & Lattice Bridge Rd.',
-    severity: 'info'
-  },
-  {
-    id: 'log-5',
-    agentName: 'Explainability Agent',
-    timestamp: '10:25:20 AM',
-    action: 'Recommendation Rationale Generated',
-    details: 'Provided 5-part evidence tree for NDRF Motor Boat deployment to Vijaya Nagar Junction.',
+    action: 'XAI Audit & Multi-Agency Dispatch Broadcast',
+    details: 'Decision confidence 96%. Broadcasted automated alert to NDRF, Fire & Rescue, and Traffic Control. Field teams dispatched.',
     severity: 'success'
   }
 ];
