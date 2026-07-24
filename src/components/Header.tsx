@@ -19,9 +19,10 @@ interface HeaderProps {
   activeTab: 'twin_map' | 'multi_agent' | 'simulation' | 'citizen_portal' | 'analytics';
   setActiveTab: (tab: 'twin_map' | 'multi_agent' | 'simulation' | 'citizen_portal' | 'analytics') => void;
   isSyncing: boolean;
-  onTriggerSync: () => void;
+  onTriggerSync: (preset?: 'normal' | 'moderate' | 'flood') => void;
   alertsCount: number;
   lastSyncTime: string;
+  activePreset?: 'normal' | 'moderate' | 'flood';
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -31,7 +32,8 @@ export const Header: React.FC<HeaderProps> = ({
   setActiveTab,
   isSyncing,
   onTriggerSync,
-  alertsCount
+  alertsCount,
+  activePreset = 'flood'
 }) => {
   return (
     <header className="bg-[#08080c] border-b border-[#ffffff12] sticky top-0 z-50 backdrop-blur-md px-4 sm:px-6 py-2.5">
@@ -99,6 +101,51 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <Users className="w-3.5 h-3.5" />
             <span>Citizen Portal</span>
+          </button>
+        </div>
+
+        {/* Judge Demo Scenario Presets */}
+        <div className="flex items-center gap-1 bg-[#101018] p-1 rounded-lg border border-[#ffffff12]">
+          <span className="text-[9px] uppercase font-mono font-bold text-amber-500 px-1.5 hidden xl:inline">
+            JUDGE DEMO:
+          </span>
+          <button
+            onClick={() => onTriggerSync('normal')}
+            disabled={isSyncing}
+            className={`px-2 py-1 rounded text-[10px] font-mono font-bold uppercase transition-all cursor-pointer ${
+              activePreset === 'normal'
+                ? 'bg-emerald-500 text-black shadow'
+                : 'text-[#888] hover:text-emerald-400'
+            }`}
+            title="Simulate Normal Clear Operational Day (2.4mm/hr Rain)"
+          >
+            ☀️ Normal Day
+          </button>
+
+          <button
+            onClick={() => onTriggerSync('moderate')}
+            disabled={isSyncing}
+            className={`px-2 py-1 rounded text-[10px] font-mono font-bold uppercase transition-all cursor-pointer ${
+              activePreset === 'moderate'
+                ? 'bg-amber-500 text-black shadow'
+                : 'text-[#888] hover:text-amber-400'
+            }`}
+            title="Simulate Not So Normal Day (42mm/hr Heavy Rain)"
+          >
+            🌦️ Not So Normal Day
+          </button>
+
+          <button
+            onClick={() => onTriggerSync('flood')}
+            disabled={isSyncing}
+            className={`px-2 py-1 rounded text-[10px] font-mono font-bold uppercase transition-all cursor-pointer ${
+              activePreset === 'flood'
+                ? 'bg-red-500 text-white shadow'
+                : 'text-[#888] hover:text-red-400'
+            }`}
+            title="Simulate Catastrophic Cloudburst Flood Scenario (110mm/hr Rain)"
+          >
+            🚨 Simulate Flood
           </button>
         </div>
 

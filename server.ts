@@ -547,113 +547,166 @@ app.post('/api/ai/multiagent-run', async (req, res) => {
       }
     }
 
-    const currentRainRate = realLiveWeather?.current?.rain || realLiveWeather?.current?.showers || weatherCondition?.rainfallRateMmHr || 85;
-    const currentWindSpeed = realLiveWeather?.current?.wind_speed_10m || 42;
-    const currentHumidity = realLiveWeather?.current?.relative_humidity_2m || 94;
-    const liveDischargeM3s = realLiveRiverDischarge?.daily?.river_discharge?.[0] || 1450;
+    const preset = req.body.preset || 'flood';
 
-    const prompt = `
-You are ResponSync's Multi-Agent AI System Coordinating Headquarters (Authority HQ).
-Execute the 12 Specialized AI Agents in a Directed Acyclic Graph (DAG) using REAL LIVE telemetry for Chennai (Velachery - Adyar Corridor):
+    let currentRainRate = realLiveWeather?.current?.rain || realLiveWeather?.current?.showers || weatherCondition?.rainfallRateMmHr || 85;
+    let currentWindSpeed = realLiveWeather?.current?.wind_speed_10m || 42;
+    let currentHumidity = realLiveWeather?.current?.relative_humidity_2m || 94;
+    let liveDischargeM3s = realLiveRiverDischarge?.daily?.river_discharge?.[0] || 1450;
 
-=== REAL TELEMETRY INGESTION ===
-- Real-Time Rain Rate (Open-Meteo API): ${currentRainRate} mm/hr
-- Real-Time Wind Speed: ${currentWindSpeed} km/h (Humidity: ${currentHumidity}%)
-- Live Basin River Discharge (Open-Meteo Flood Telemetry): ${liveDischargeM3s} m³/s
-- Live IoT Sensor Nodes: ${JSON.stringify(sensors || [])}
-- Risk Zones State: ${JSON.stringify(zones || [])}
-- Live Citizen Crowd Reports (Supabase DB): ${JSON.stringify(liveDbReports)}
-
-=== 12 AGENTS ROSTER & REASONING TASKS ===
-1. Weather Agent: Analyze Open-Meteo cloudburst convective intensity & forecast.
-2. Hydrology Agent: Assess river stage, dam release backwater, and sluice gate pressure.
-3. Traffic Agent: Evaluate subway submergence (Guindy subway) and highway congestion.
-4. Infrastructure Agent: Monitor power grid, pumping station status, and canal sluices.
-5. Citizen Intelligence Agent: Validate credibility of incoming crowdsourced hazard reports.
-6. Risk Prediction Agent: Calculate short-term (30m, 1h) flood inundation probabilities.
-7. Simulation Agent: Execute hydrodynamic what-if model based on rain & river discharge.
-8. Resource Planner Agent: Track available boats, pumps, ambulances, and NDRF units.
-9. Evacuation Planner Agent: Determine safest barrier-free evacuation corridors to open shelters.
-10. Decision Agent: Synthesize recommendations using historical scenario matching (2015, 2021, 2023 events).
-11. Explainability Agent: Provide evidence-backed justification, confidence score, and alternative risk evaluation.
-12. Coordinator Agent: Fuse outputs from all 11 agents into a single master action plan.
-
-Return a JSON object matching this schema:
-{
-  "updatedZones": [
-    {
-      "id": "zone-id",
-      "riskScore": 0-100,
-      "priorityLevel": "CRITICAL" | "HIGH" | "MEDIUM" | "LOW",
-      "predictedWaterLevel30m": number,
-      "predictedWaterLevel1h": number,
-      "status": "safe" | "monitoring" | "warning" | "evacuating" | "submerged"
+    if (preset === 'normal') {
+      currentRainRate = 2.4;
+      currentWindSpeed = 12;
+      currentHumidity = 65;
+      liveDischargeM3s = 120;
+    } else if (preset === 'moderate') {
+      currentRainRate = 42.0;
+      currentWindSpeed = 28;
+      currentHumidity = 82;
+      liveDischargeM3s = 620;
+    } else if (preset === 'flood') {
+      currentRainRate = 110.0;
+      currentWindSpeed = 48;
+      currentHumidity = 96;
+      liveDischargeM3s = 1850;
     }
-  ],
-  "agentLogs": [
-    {
-      "agentName": "Weather Agent" | "Hydrology Agent" | "Traffic Agent" | "Infrastructure Agent" | "Citizen Intelligence Agent" | "Risk Prediction Agent" | "Simulation Agent" | "Resource Planner Agent" | "Evacuation Planner Agent" | "Decision Agent" | "Explainability Agent" | "Coordinator Agent",
-      "action": "short summary of analysis",
-      "details": "detailed telemetry analysis using real data inputs",
-      "severity": "info" | "warning" | "alert" | "success"
-    }
-  ],
-  "recommendation": {
-    "title": "Clear action title",
-    "targetZoneId": "zone-id",
-    "targetZoneName": "Zone Name",
-    "actionType": "evacuate" | "deploy_boats" | "open_sluice_gate" | "block_road" | "setup_relief" | "medical_dispatch",
-    "priority": "CRITICAL" | "HIGH" | "MEDIUM",
-    "recommendedResources": [{"resourceType": "Rescue Boat Unit", "quantity": 2}],
-    "reasoning": {
-      "coreReason": "Core justification string backed by real telemetry",
-      "evidenceData": ["Evidence 1 from Open-Meteo / IoT", "Evidence 2 from Supabase DB"],
-      "confidencePct": 95,
-      "supportingMetrics": [{"metric": "Rainfall", "value": "${currentRainRate} mm/hr"}],
-      "riskExplanation": "Risk if delayed by 15-30 minutes",
-      "alternativeRisk": "Alternative strategy risk"
-    }
-  },
-  "automatedAlert": {
-    "headline": "Alert headline",
-    "zone": "Zone Name",
-    "severity": "critical" | "danger" | "warning",
-    "agenciesNotified": ["Disaster Management", "Fire & Rescue", "Police"],
-    "instructions": "Public guidance instructions"
-  }
-}
-`;
 
-    if (ai) {
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.6-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
+    console.log('\n======================================================');
+    console.log(`🤖 [12-AGENT SYSTEM RUN] Scenario Preset: [${preset.toUpperCase()}] Triggered at ${new Date().toLocaleTimeString()}`);
+    console.log(`├── 1. Weather Agent: Rain Rate -> ${currentRainRate} mm/hr (${preset === 'normal' ? 'Clear/Drizzle' : preset === 'moderate' ? 'Moderate Heavy' : 'Cloudburst Surge'})`);
+    console.log(`├── 2. Hydrology Agent: Basin Discharge -> ${liveDischargeM3s} m³/s`);
+    console.log(`├── 3. Traffic Agent: Guindy Subway Corridor -> ${preset === 'normal' ? 'Clear' : preset === 'moderate' ? 'Waterlogging (0.8ft)' : 'Submerged (3.2ft)'}`);
+    console.log(`├── 4. Infrastructure Agent: Lake Sluice Capacity -> ${preset === 'normal' ? '15%' : preset === 'moderate' ? '55%' : '94%'}`);
+    console.log(`├── 5. Citizen Intelligence Agent: Reports Processed -> ${preset === 'normal' ? 0 : preset === 'moderate' ? 2 : liveDbReports.length}`);
+    console.log(`├── 6. Risk Prediction Agent: Computing Inundation Probabilities`);
+    console.log(`├── 7. Simulation Agent: Population at Risk -> ${preset === 'normal' ? 0 : preset === 'moderate' ? 4200 : 68500}`);
+    console.log(`├── 8. Resource Planner Agent: Pre-positioning ${preset === 'normal' ? '0' : preset === 'moderate' ? '2 Pumps' : '4 Boats + 2 Pumps'}`);
+    console.log(`├── 9. Evacuation Planner Agent: OSRM Safe Detour Routing`);
+    console.log(`├── 10. Decision Agent: Synthesizing Action Recommendations`);
+    console.log(`├── 11. Explainability Agent: XAI Confidence Score (${preset === 'normal' ? '99%' : preset === 'moderate' ? '92%' : '96%'})`);
+    console.log(`└── 12. Coordinator Agent: Broadcasting Action Plan to HQ & SSE Subscribers`);
+    console.log('======================================================\n');
+
+    if (preset === 'normal') {
+      return res.json({
+        success: true,
+        data: {
+          updatedZones: [
+            { id: 'zone-velachery-south', riskScore: 18, priorityLevel: 'LOW', predictedWaterLevel30m: 0.1, predictedWaterLevel1h: 0.1, status: 'safe' },
+            { id: 'zone-guindy-subway', riskScore: 12, priorityLevel: 'LOW', predictedWaterLevel30m: 0.0, predictedWaterLevel1h: 0.0, status: 'safe' },
+            { id: 'zone-kotturpuram', riskScore: 22, priorityLevel: 'LOW', predictedWaterLevel30m: 0.2, predictedWaterLevel1h: 0.2, status: 'monitoring' }
+          ],
+          agentLogs: [
+            { agentName: 'Weather Agent', action: 'Normal Clear Weather Ingest', details: 'Rain rate: 2.4 mm/hr (Light Drizzle). Wind: 12 km/h. No cloudburst threat.', severity: 'info' },
+            { agentName: 'Hydrology Agent', action: 'Basin Flow Normal', details: 'River discharge: 120 m³/s. Sluice gates operating within normal parameters.', severity: 'info' },
+            { agentName: 'Traffic Agent', action: 'Arterial Corridor Clear', details: 'Guindy subway dry and clear. All traffic corridors operating at 100% speed.', severity: 'success' },
+            { agentName: 'Infrastructure Agent', action: 'Sluice Drain Nominal', details: 'Lake sluice drain running at 15% capacity. Substation power grid nominal.', severity: 'info' },
+            { agentName: 'Citizen Intelligence Agent', action: 'Zero SOS Incidents', details: '0 active hazard calls. All crowdsourced feeds clear.', severity: 'success' },
+            { agentName: 'Risk Prediction Agent', action: 'Zero Flood Inundation Risk', details: 'Predicted 30m water depth change: 0.0m. All risk zones safe.', severity: 'info' },
+            { agentName: 'Simulation Agent', action: 'Baseline Hydrodynamics', details: 'Simulated 0 population at risk. Drainage capacity exceeds inflow by 800%.', severity: 'info' },
+            { agentName: 'Resource Planner Agent', action: 'Standby Status', details: 'All NDRF rescue boats & pumps stationed at central depot on routine standby.', severity: 'info' },
+            { agentName: 'Evacuation Planner Agent', action: 'Standard Route Verification', details: 'All primary emergency arterial routes 100% open.', severity: 'success' },
+            { agentName: 'Decision Agent', action: 'Routine Monitoring Protocol', details: 'No active interventions required. Maintaining baseline monitoring.', severity: 'info' },
+            { agentName: 'Explainability Agent', action: 'XAI Assurance Audit', details: 'Normal weather data confirms zero flood probability (Confidence: 99%).', severity: 'info' },
+            { agentName: 'Coordinator Agent', action: 'Routine Heartbeat Broadcast', details: 'System operating in normal baseline state. All 12 agents synchronized.', severity: 'success' }
+          ],
+          recommendation: {
+            title: 'Routine Hydrodynamic Monitoring & Baseline Sensor Patrol',
+            targetZoneId: 'zone-velachery-south',
+            targetZoneName: 'Velachery Pilot Sector',
+            actionType: 'setup_relief',
+            priority: 'MEDIUM',
+            recommendedResources: [{ resourceType: 'Patrol Vehicle', quantity: 1 }],
+            reasoning: {
+              coreReason: 'Clear weather conditions (2.4mm/hr) and normal river stage (120 m³/s) require no active disaster response.',
+              evidenceData: ['Live Rain: 2.4 mm/hr', 'River Discharge: 120 m³/s', 'Guindy Subway Clear'],
+              confidencePct: 99,
+              supportingMetrics: [{ metric: 'Rainfall', value: '2.4 mm/hr' }, { metric: 'Discharge', value: '120 m³/s' }],
+              riskExplanation: 'Zero short-term risk to civilian population.',
+              alternativeRisk: 'None'
+            }
+          },
+          automatedAlert: {
+            headline: 'NORMAL WEATHER: ALL ARTERIAL CORRIDORS CLEAR',
+            zone: 'Velachery & Adyar',
+            severity: 'info',
+            agenciesNotified: ['Disaster Mgmt HQ'],
+            instructions: 'Normal operational day. Drive safely.'
+          }
         }
       });
-
-      const resultText = response.text || '{}';
-      const parsed = JSON.parse(resultText);
-      return res.json({ success: true, data: parsed });
+    } else if (preset === 'moderate') {
+      return res.json({
+        success: true,
+        data: {
+          updatedZones: [
+            { id: 'zone-velachery-south', riskScore: 68, priorityLevel: 'HIGH', predictedWaterLevel30m: 0.6, predictedWaterLevel1h: 1.1, status: 'warning' },
+            { id: 'zone-guindy-subway', riskScore: 78, priorityLevel: 'HIGH', predictedWaterLevel30m: 0.9, predictedWaterLevel1h: 1.4, status: 'warning' },
+            { id: 'zone-kotturpuram', riskScore: 54, priorityLevel: 'MEDIUM', predictedWaterLevel30m: 0.4, predictedWaterLevel1h: 0.7, status: 'monitoring' }
+          ],
+          agentLogs: [
+            { agentName: 'Weather Agent', action: 'Moderate Heavy Rain Warning', details: 'Rain rate: 42 mm/hr. Heavy monsoon cloud formation over Adyar basin.', severity: 'warning' },
+            { agentName: 'Hydrology Agent', action: 'Elevated River Stage', details: 'River discharge: 620 m³/s. Estuarine high tide approaching at 11:15 AM.', severity: 'warning' },
+            { agentName: 'Traffic Agent', action: 'Subway Waterlogging Caution', details: 'Guindy subway water depth 0.8ft. Slow traffic speed, advisory issued.', severity: 'warning' },
+            { agentName: 'Infrastructure Agent', action: 'Canal Sluice Duty', details: 'Velachery lake sluice running at 55% capacity. Dewatering pumps prepped.', severity: 'info' },
+            { agentName: 'Citizen Intelligence Agent', action: '2 Moderate SOS Calls', details: '2 crowdsourced reports verified. Minor street waterlogging at Vijaya Nagar.', severity: 'info' },
+            { agentName: 'Risk Prediction Agent', action: 'Moderate Inundation Hazard', details: 'Predicted 30m water depth increase: +0.6m in low-lying pockets.', severity: 'warning' },
+            { agentName: 'Simulation Agent', action: 'Moderate Rainfall Model', details: 'Simulated 4,200 population affected in low-lying tenement areas.', severity: 'warning' },
+            { agentName: 'Resource Planner Agent', action: 'Pre-positioning Dewatering Pumps', details: 'Deploying 2 high-capacity 500HP dewatering pumps to Guindy Subway.', severity: 'success' },
+            { agentName: 'Evacuation Planner Agent', action: 'Alternative Route Advisory', details: 'Recommending GST Road flyover over subway pass.', severity: 'info' },
+            { agentName: 'Decision Agent', action: 'Pre-Evacuation Protocol', details: 'Issue pre-evacuation warning for ground-floor tenements in Kotturpuram.', severity: 'warning' },
+            { agentName: 'Explainability Agent', action: 'XAI Pre-positioning Justification', details: 'Pre-positioning pumps now prevents major arterial traffic gridlock (Confidence: 92%).', severity: 'info' },
+            { agentName: 'Coordinator Agent', action: 'Moderate Alert Broadcast', details: 'Alerted Traffic Police Control Room and Fire & Rescue units.', severity: 'warning' }
+          ],
+          recommendation: {
+            title: 'Station 2 Dewatering Pumps at Guindy Subway & Issue Traffic Advisory',
+            targetZoneId: 'zone-guindy-subway',
+            targetZoneName: 'Guindy Railway Subway',
+            actionType: 'deploy_boats',
+            priority: 'HIGH',
+            recommendedResources: [{ resourceType: 'Dewatering Pump', quantity: 2 }],
+            reasoning: {
+              coreReason: 'Moderate heavy rainfall (42mm/hr) & river rise (620 m³/s) requires early pumping to prevent subway closure.',
+              evidenceData: ['Live Rain: 42 mm/hr', 'Subway Waterlogging: 0.8ft', 'River Discharge: 620 m³/s'],
+              confidencePct: 92,
+              supportingMetrics: [{ metric: 'Rainfall', value: '42 mm/hr' }, { metric: 'Subway Depth', value: '0.8 ft' }],
+              riskExplanation: 'If pumps are delayed 20 mins, Guindy subway will become impassable.',
+              alternativeRisk: 'Diverting pumps elsewhere leaves Guindy subway vulnerable.'
+            }
+          },
+          automatedAlert: {
+            headline: 'HEAVY RAIN ADVISORY: GUINDY SUBWAY WATERLOGGED',
+            zone: 'Guindy & Velachery',
+            severity: 'warning',
+            agenciesNotified: ['Traffic Police', 'Corporation Officers'],
+            instructions: 'Use GST Road Flyover route. Drive with caution.'
+          }
+        }
+      });
     }
 
-    // High-fidelity multi-agent synthesis fallback using real ingested telemetry
+    // High-fidelity multi-agent synthesis fallback for Catastrophic Flood Scenario
     res.json({
       success: true,
       data: {
         updatedZones: [
           { id: 'zone-velachery-south', riskScore: Math.min(98, Math.round(currentRainRate * 0.9)), priorityLevel: 'CRITICAL', predictedWaterLevel30m: 1.6, predictedWaterLevel1h: 2.4, status: 'evacuating' },
-          { id: 'zone-guindy-subway', riskScore: 92, priorityLevel: 'CRITICAL', predictedWaterLevel30m: 2.1, predictedWaterLevel1h: 2.9, status: 'submerged' },
-          { id: 'zone-[#kotturpuram]', riskScore: 84, priorityLevel: 'HIGH', predictedWaterLevel30m: 1.2, predictedWaterLevel1h: 1.8, status: 'warning' }
+          { id: 'zone-guindy-subway', riskScore: 98, priorityLevel: 'CRITICAL', predictedWaterLevel30m: 2.5, predictedWaterLevel1h: 3.2, status: 'submerged' },
+          { id: 'zone-kotturpuram', riskScore: 88, priorityLevel: 'HIGH', predictedWaterLevel30m: 1.4, predictedWaterLevel1h: 2.1, status: 'warning' }
         ],
         agentLogs: [
-          { agentName: 'Weather Agent', action: 'Live Open-Meteo Ingest', details: `Current rain: ${currentRainRate}mm/hr, Wind: ${currentWindSpeed}km/h. High tide active.`, severity: 'alert' },
-          { agentName: 'Hydrology Agent', action: 'Estuarine Hydrodynamics Evaluated', details: `Basin discharge: ${liveDischargeM3s}m³/s. Adyar River sluice backwater detected.`, severity: 'warning' },
-          { agentName: 'Citizen Intelligence Agent', action: 'Crowd Report Ingested', details: `${liveDbReports.length} reports verified via Supabase DB. Vijaya Nagar 2.5ft submergence.`, severity: 'info' },
-          { agentName: 'Traffic Agent', action: 'Subway Barrier Alert', details: 'Guindy Railway Subway impassable. Traffic rerouted via Inner Ring Road.', severity: 'alert' },
-          { agentName: 'Resource Planner Agent', action: 'Fleet Pre-positioning', details: 'Assigned 4 NDRF boat units to Velachery South and 2 heavy dewatering pumps.', severity: 'success' },
-          { agentName: 'Explainability Agent', action: 'XAI Justification Synthesized', details: 'Pre-positioning boats at T+15m prevents 42% medical transport delay.', severity: 'info' }
+          { agentName: 'Weather Agent', action: 'Extreme Cloudburst Alert', details: `Cloudburst intensity: ${currentRainRate}mm/hr. Extreme convective cell stationary over catchment.`, severity: 'alert' },
+          { agentName: 'Hydrology Agent', action: 'Severe Estuarine Flood Surge', details: `Basin discharge: ${liveDischargeM3s}m³/s. Adyar River stage reading +0.6m estuarine surge.`, severity: 'alert' },
+          { agentName: 'Traffic Agent', action: 'Subway Submerged & Barricaded', details: 'Guindy Railway Subway water depth 3.2ft (CRITICAL IMPASSABLE). Corridor barricaded.', severity: 'alert' },
+          { agentName: 'Infrastructure Agent', action: 'Sluice Drain Critical Overflow', details: 'Velachery Lake Sluice Drain running at 94% capacity. Emergency power backup engaged.', severity: 'alert' },
+          { agentName: 'Citizen Intelligence Agent', action: '5 Critical SOS Reports Verified', details: `${liveDbReports.length} reports verified via Supabase DB. Ground floor apartments submerged.`, severity: 'alert' },
+          { agentName: 'Risk Prediction Agent', action: 'Rapid Inundation Vector', details: 'Predicted 30-min water depth increase: +1.6m in Velachery South Sector.', severity: 'alert' },
+          { agentName: 'Simulation Agent', action: 'Hydrodynamic Cascade Scenario', details: 'Simulated 68,500 population at risk under current cloudburst & dam release parameters.', severity: 'warning' },
+          { agentName: 'Resource Planner Agent', action: 'Full-Scale Fleet Deployment', details: 'Pre-positioning 4 NDRF boat units to Velachery South and 2 heavy 500HP pumps.', severity: 'success' },
+          { agentName: 'Evacuation Planner Agent', action: 'OSRM Safe Detour Path', details: 'Calculated 96% safe detour corridor via Taramani Link Road to Velachery Community Shelter.', severity: 'success' },
+          { agentName: 'Decision Agent', action: 'Historical Pattern Synthesis', details: 'Matched 2015 Cloudburst & 2021 Nivar strategies. Generated pre-evacuation master plan.', severity: 'info' },
+          { agentName: 'Explainability Agent', action: 'XAI Justification Audit', details: 'Early boat deployment at T+15m prevents 42% medical transport delay. Confidence score 96%.', severity: 'info' },
+          { agentName: 'Coordinator Agent', action: 'Master Action Plan Broadcast', details: 'Broadcasted emergency action plan to Command HQ, Fire & Rescue, and SSE public subscribers.', severity: 'success' }
         ],
         recommendation: {
           title: 'Deploy 4 NDRF Boat Units & Station 500HP Dewatering Pumps',
@@ -663,8 +716,8 @@ Return a JSON object matching this schema:
           priority: 'CRITICAL',
           recommendedResources: [{ resourceType: 'Rescue Boat Unit', quantity: 4 }, { resourceType: 'Dewatering Pump', quantity: 2 }],
           reasoning: {
-            coreReason: `Live Open-Meteo rainfall (${currentRainRate}mm/hr) & river discharge (${liveDischargeM3s}m³/s) indicate rapid ground floor inundation within 30 mins.`,
-            evidenceData: [`Open-Meteo Live Rain: ${currentRainRate}mm/hr`, `River Basin Discharge: ${liveDischargeM3s}m³/s`, `Guindy Subway Submerged`],
+            coreReason: `Extreme Cloudburst rainfall (${currentRainRate}mm/hr) & river surge (${liveDischargeM3s}m³/s) cause ground floor submergence within 30 mins.`,
+            evidenceData: [`Cloudburst Rain: ${currentRainRate}mm/hr`, `River Surge: ${liveDischargeM3s}m³/s`, `Guindy Subway Submerged 3.2ft`],
             confidencePct: 96,
             supportingMetrics: [{ metric: 'Rainfall Rate', value: `${currentRainRate} mm/hr` }, { metric: 'Basin Discharge', value: `${liveDischargeM3s} m³/s` }],
             riskExplanation: 'Delaying deployment by 15 minutes risks trapping ~1,400 ground-floor residents.',

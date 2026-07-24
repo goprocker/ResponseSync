@@ -67,22 +67,27 @@ export default function App() {
   const [explainModalRec, setExplainModalRec] = useState<ExplainableAIRecommendation | null>(null);
   const [dispatchZoneId, setDispatchZoneId] = useState<string | null>(null);
 
-  // Syncing state
+  // Syncing & Judge Demo Scenario Preset state
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [lastSyncTime, setLastSyncTime] = useState<string>('Just now');
+  const [activePreset, setActivePreset] = useState<'normal' | 'moderate' | 'flood'>('flood');
 
-  // Trigger Multi-Agent AI System Run via Gemini
-  const handleTriggerSync = async () => {
+  // Trigger Multi-Agent AI System Run with Judge Demo Scenario Presets
+  const handleTriggerSync = async (presetTarget?: 'normal' | 'moderate' | 'flood') => {
+    const selectedPreset = presetTarget || activePreset;
+    setActivePreset(selectedPreset);
     setIsSyncing(true);
+
     try {
       const response = await fetch('/api/ai/multiagent-run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          preset: selectedPreset,
           zones,
           sensors,
           reports,
-          weatherCondition: { rainfallRateMmHr: 85, description: 'Heavy Convective Cloudburst over Velachery' }
+          weatherCondition: { rainfallRateMmHr: selectedPreset === 'normal' ? 2.4 : selectedPreset === 'moderate' ? 42 : 110 }
         })
       });
 
@@ -377,6 +382,7 @@ export default function App() {
         onTriggerSync={handleTriggerSync}
         alertsCount={alerts.filter(a => !a.acknowledged).length}
         lastSyncTime={lastSyncTime}
+        activePreset={activePreset}
       />
 
       {/* Dynamic Tab Views */}

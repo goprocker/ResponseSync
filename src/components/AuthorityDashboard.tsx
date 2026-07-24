@@ -64,13 +64,17 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
 
   const availableAgents = [
     'Weather Agent',
-    'Satellite Agent',
-    'Flood Prediction Agent',
+    'Hydrology Agent',
     'Traffic Agent',
+    'Infrastructure Agent',
     'Citizen Intelligence Agent',
+    'Risk Prediction Agent',
+    'Simulation Agent',
     'Resource Planner Agent',
-    'Evacuation Agent',
-    'Explainability Agent'
+    'Evacuation Planner Agent',
+    'Decision Agent',
+    'Explainability Agent',
+    'Coordinator Agent'
   ];
 
   return (
