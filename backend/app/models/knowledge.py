@@ -26,7 +26,7 @@ class DecisionKnowledge(Base):
     )
 
     scenario_vector: Mapped[dict] = mapped_column(
-        JSONB, default=dict, nullable=False, help_text="Normalized parameter vector for similarity matching"
+        JSONB, default=dict, nullable=False, comment="Normalized parameter vector for similarity matching"
     )
     input_conditions: Mapped[dict] = mapped_column(JSONB, default=dict, nullable=False)
     recommended_actions: Mapped[dict] = mapped_column(JSONB, default=dict, nullable=False)
