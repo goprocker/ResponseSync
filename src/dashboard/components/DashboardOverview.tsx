@@ -32,8 +32,8 @@ interface DashboardOverviewProps {
   hospitals: EmergencyHospital[];
   agentLogs?: AgentActivityLog[];
   evacuationRoute: EvacuationRoute | null;
-  timeHorizon: number;
-  setTimeHorizon: (val: number) => void;
+  timeHorizon: 'live' | '30m' | '1h' | '2h';
+  setTimeHorizon: (val: 'live' | '30m' | '1h' | '2h') => void;
   onSelectReport: (report: CitizenReport) => void;
   onSelectZone: (zoneId: string) => void;
   onNavigateToTab: (tabId: string) => void;

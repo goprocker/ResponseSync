@@ -31,7 +31,6 @@ import { DigitalTwinMap } from './components/DigitalTwinMap';
 import { AuthorityDashboard } from './components/AuthorityDashboard';
 import { SimulationStudio } from './components/SimulationStudio';
 import { CitizenPortal } from './components/CitizenPortal';
-import { AnalyticsHub } from './components/AnalyticsHub';
 import { ExplainabilityModal } from './components/ExplainabilityModal';
 import { ResourceDispatchModal } from './components/ResourceDispatchModal';
 import { AlertNotificationBanner } from './components/AlertNotificationBanner';
