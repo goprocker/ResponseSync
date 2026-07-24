@@ -286,12 +286,12 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
   };
 
   return (
-    <div className="min-h-screen bg-[#040806] text-[#e0e0e6] flex flex-col font-sans">
+    <div className="h-screen overflow-hidden bg-black text-[#e0e0e6] flex flex-col font-sans">
       
       {/* Return to Home Switcher Ribbon */}
       <div 
         onClick={onBackToLanding}
-        className="bg-[#050f0b] hover:bg-[#091b12] text-[#10b981] hover:text-emerald-100 text-[10px] font-mono font-bold uppercase tracking-wider py-1.5 px-4 text-center cursor-pointer transition-colors flex items-center justify-center gap-2 select-none z-50 border-b border-[#10b98125]"
+        className="bg-[#0d0d12] hover:bg-white/5 text-brand hover:text-[#e0e0e6] text-[10px] font-mono font-bold uppercase tracking-wider py-1.5 px-4 text-center cursor-pointer transition-colors flex items-center justify-center gap-2 select-none z-50 border-b border-white/10"
       >
         <span>⚡ Viewing LIVE ResponSync Command OS. Click here to return to the UgoRound Landing Page.</span>
       </div>
@@ -314,9 +314,11 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
         activePreset={activePreset}
       />
 
-      {/* Dynamic Tab Views */}
-      <main className="flex-1">
-        {activeTab === 'twin_map' && (
+      {/* Main Command Workspace */}
+      <main className="flex-1 flex flex-col lg:flex-row min-h-0 relative overflow-hidden bg-[#050507]">
+        
+        {/* Permanent Digital Twin Map on Left */}
+        <div className="flex-1 min-h-[300px] lg:min-h-0 relative h-full">
           <DigitalTwinMap
             zones={zones}
             sensors={sensors}
@@ -330,43 +332,52 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
             onSelectResource={(res) => {}}
             onSelectReport={(rep) => {}}
           />
-        )}
+        </div>
 
-        {activeTab === 'multi_agent' && (
-          <AuthorityDashboard
-            zones={zones}
-            agentLogs={agentLogs}
-            recommendations={recommendations}
-            resources={resources}
-            alerts={alerts}
-            onApproveRecommendation={handleApproveRecommendation}
-            onRejectRecommendation={handleRejectRecommendation}
-            onOpenExplainModal={(rec) => setExplainModalRec(rec)}
-            onOpenDispatchModal={(zoneId) => setDispatchZoneId(zoneId)}
-            isSyncing={isSyncing}
-            onTriggerSync={handleTriggerSync}
-          />
-        )}
+        {/* Right Operations Panel */}
+        {activeTab !== 'twin_map' && (
+          <div className="w-full lg:w-[45%] border-t lg:border-t-0 lg:border-l border-white/10 bg-[#050507] flex flex-col min-w-0 h-[50vh] lg:h-full overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="p-4 sm:p-5 flex-1 min-w-0">
+              
+              {activeTab === 'multi_agent' && (
+                <AuthorityDashboard
+                  zones={zones}
+                  agentLogs={agentLogs}
+                  recommendations={recommendations}
+                  resources={resources}
+                  alerts={alerts}
+                  onApproveRecommendation={handleApproveRecommendation}
+                  onRejectRecommendation={handleRejectRecommendation}
+                  onOpenExplainModal={(rec) => setExplainModalRec(rec)}
+                  onOpenDispatchModal={(zoneId) => setDispatchZoneId(zoneId)}
+                  isSyncing={isSyncing}
+                  onTriggerSync={handleTriggerSync}
+                />
+              )}
 
-        {activeTab === 'simulation' && (
-          <SimulationStudio />
-        )}
+              {activeTab === 'simulation' && (
+                <SimulationStudio />
+              )}
 
-        {activeTab === 'citizen_portal' && (
-          <CitizenPortal
-            shelters={shelters}
-            reports={reports}
-            onSubmitReport={handleSubmitCitizenReport}
-            evacuationRoute={evacuationRoute}
-            onSelectRouteShelter={handleSelectRouteShelter}
-          />
-        )}
+              {activeTab === 'citizen_portal' && (
+                <CitizenPortal
+                  shelters={shelters}
+                  reports={reports}
+                  onSubmitReport={handleSubmitCitizenReport}
+                  evacuationRoute={evacuationRoute}
+                  onSelectRouteShelter={handleSelectRouteShelter}
+                />
+              )}
 
-        {activeTab === 'analytics' && (
-          <AnalyticsHub
-            sensors={sensors}
-            zones={zones}
-          />
+              {activeTab === 'analytics' && (
+                <AnalyticsHub
+                  sensors={sensors}
+                  zones={zones}
+                />
+              )}
+
+            </div>
+          </div>
         )}
       </main>
 
@@ -390,7 +401,7 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
       )}
 
       {/* Footer */}
-      <footer className="bg-[#0a0a0f] border-t border-[#ffffff15] py-3 px-4 text-center text-xs font-mono text-[#666]">
+      <footer className="bg-[#0e0e14] border-t border-white/10 py-2 px-4 text-center text-[10px] font-mono text-brand/60">
         <p>ResponSync AI Digital Twin Platform • Powered by Gemini AI Multi-Agent Intelligence • Chennai Disaster Pilot Region</p>
       </footer>
 
