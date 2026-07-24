@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   DisasterType,
   AgencyRole,
@@ -10,7 +10,8 @@ import {
   AgentActivityLog,
   ExplainableAIRecommendation,
   AutomatedAlert,
-  EvacuationRoute
+  EvacuationRoute,
+  EmergencyHospital
 } from '../shared/types';
 import {
   INITIAL_ZONES,
@@ -21,6 +22,7 @@ import {
   INITIAL_AGENT_LOGS,
   INITIAL_RECOMMENDATIONS,
   INITIAL_ALERTS,
+  INITIAL_HOSPITALS,
   MOCK_EVACUATION_ROUTE
 } from '../shared/mockDigitalTwinData';
 
@@ -34,21 +36,45 @@ import { ExplainabilityModal } from './components/ExplainabilityModal';
 import { ResourceDispatchModal } from './components/ResourceDispatchModal';
 import { AlertNotificationBanner } from './components/AlertNotificationBanner';
 
+import DashboardOverview from './components/DashboardOverview';
+import HospitalsPanel from './components/HospitalsPanel';
+import ResourcesPanel from './components/ResourcesPanel';
+import SheltersPanel from './components/SheltersPanel';
+import IncidentsPanel from './components/IncidentsPanel';
+import SettingsPanel from './components/SettingsPanel';
+
+import { 
+  LayoutDashboard, 
+  ShieldAlert, 
+  Map, 
+  Truck, 
+  Home, 
+  Hospital, 
+  Cpu, 
+  Sliders, 
+  MessageSquare, 
+  Settings, 
+  Bell, 
+  ChevronDown,
+  RefreshCw,
+  Activity,
+  AlertTriangle
+} from 'lucide-react';
+
 import { useSSEStream } from '../hooks/useSSEStream';
 import { useEvacuationRoute } from '../hooks/useEvacuationRoute';
-import { useEffect } from 'react';
 
 interface DashboardAppProps {
   onBackToLanding: () => void;
-  initialTab?: 'twin_map' | 'multi_agent' | 'simulation' | 'citizen_portal' | 'analytics';
-  onNavigateTab?: (tab: 'twin_map' | 'multi_agent' | 'simulation' | 'citizen_portal' | 'analytics') => void;
+  initialTab?: string;
+  onNavigateTab?: (tab: string) => void;
 }
 
 export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTab }: DashboardAppProps) {
   // Global State
   const [disasterType, setDisasterType] = useState<DisasterType>('flood');
   const [agencyRole, setAgencyRole] = useState<AgencyRole>('authority');
-  const [activeTab, setActiveTabState] = useState<'twin_map' | 'multi_agent' | 'simulation' | 'citizen_portal' | 'analytics'>(initialTab || 'twin_map');
+  const [activeTab, setActiveTabState] = useState<string>(initialTab || 'dashboard');
 
   useEffect(() => {
     if (initialTab && initialTab !== activeTab) {
@@ -56,7 +82,7 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
     }
   }, [initialTab]);
 
-  const setActiveTab = (tab: 'twin_map' | 'multi_agent' | 'simulation' | 'citizen_portal' | 'analytics') => {
+  const setActiveTab = (tab: string) => {
     setActiveTabState(tab);
     if (onNavigateTab) {
       onNavigateTab(tab);
@@ -67,6 +93,7 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
   const [sensors, setSensors] = useState<IoTSensorNode[]>(INITIAL_IOT_SENSORS);
   const [resources, setResources] = useState<EmergencyResource[]>(INITIAL_RESOURCES);
   const [shelters, setShelters] = useState<EmergencyShelter[]>(INITIAL_SHELTERS);
+  const [hospitals, setHospitals] = useState<EmergencyHospital[]>(INITIAL_HOSPITALS);
   const [reports, setReports] = useState<CitizenReport[]>(INITIAL_CITIZEN_REPORTS);
   const [agentLogs, setAgentLogs] = useState<AgentActivityLog[]>(INITIAL_AGENT_LOGS);
   const [recommendations, setRecommendations] = useState<ExplainableAIRecommendation[]>(INITIAL_RECOMMENDATIONS);
@@ -285,101 +312,271 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
     setAlerts(prev => prev.map(a => a.id === alertId ? { ...a, acknowledged: true } : a));
   };
 
+  const activeReportsCount = reports.filter(r => r.status !== 'resolved').length;
+  const activeAlert = alerts.filter(a => !a.acknowledged)[0] || alerts[0];
+
+  const menuItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'incidents', label: 'Incidents', icon: ShieldAlert, badge: activeReportsCount },
+    { id: 'twin_map', label: 'Map View', icon: Map },
+    { id: 'resources', label: 'Resources', icon: Truck },
+    { id: 'shelters', label: 'Shelters', icon: Home },
+    { id: 'hospitals', label: 'Hospitals', icon: Hospital },
+    { id: 'multi_agent', label: 'Authority HQ', icon: Cpu, badge: alerts.filter(a => !a.acknowledged).length },
+    { id: 'simulation', label: 'Simulations', icon: Sliders },
+    { id: 'citizen_portal', label: 'Reports', icon: MessageSquare },
+    { id: 'settings', label: 'Settings', icon: Settings },
+  ];
+
   return (
-    <div className="h-screen overflow-hidden bg-black text-[#e0e0e6] flex flex-col font-sans">
+    <div className="h-screen overflow-hidden bg-black text-[#e0e0e6] flex font-sans">
       
-      {/* Return to Home Switcher Ribbon */}
-      <div 
-        onClick={onBackToLanding}
-        className="bg-[#0d0d12] hover:bg-white/5 text-brand hover:text-[#e0e0e6] text-[10px] font-mono font-bold uppercase tracking-wider py-1.5 px-4 text-center cursor-pointer transition-colors flex items-center justify-center gap-2 select-none z-50 border-b border-white/10"
-      >
-        <span>⚡ Viewing LIVE ResponSync Command OS. Click here to return to the UgoRound Landing Page.</span>
-      </div>
-
-      {/* Alert Notification Banner */}
-      <AlertNotificationBanner alerts={alerts} onAcknowledge={handleAcknowledgeAlert} />
-
-      {/* Main Header */}
-      <Header
-        disasterType={disasterType}
-        setDisasterType={setDisasterType}
-        agencyRole={agencyRole}
-        setAgencyRole={setAgencyRole}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        isSyncing={isSyncing}
-        onTriggerSync={handleTriggerSync}
-        alertsCount={alerts.filter(a => !a.acknowledged).length}
-        lastSyncTime={lastSyncTime}
-        activePreset={activePreset}
-      />
-
-      {/* Main Command Workspace */}
-      <main className="flex-1 flex flex-col lg:flex-row min-h-0 relative overflow-hidden bg-[#050507]">
+      {/* 1. Left Sidebar Navigation Panel */}
+      <aside className="w-[240px] border-r border-white/10 bg-[#0e0e14] flex flex-col h-full z-30 select-none flex-shrink-0">
         
-        {/* Permanent Digital Twin Map on Left */}
-        <div className="flex-1 min-h-[300px] lg:min-h-0 relative h-full">
-          <DigitalTwinMap
-            zones={zones}
-            sensors={sensors}
-            resources={resources}
-            shelters={shelters}
-            reports={reports}
-            evacuationRoute={evacuationRoute}
-            timeHorizon={timeHorizon}
-            setTimeHorizon={setTimeHorizon}
-            onSelectZone={(zone) => setDispatchZoneId(zone.id)}
-            onSelectResource={(res) => {}}
-            onSelectReport={(rep) => {}}
-          />
+        {/* Logo Section */}
+        <div className="p-5 border-b border-white/10 flex items-center gap-3">
+          <div className="w-7 h-7 bg-brand rounded-sm rotate-45 flex items-center justify-center">
+            <Activity className="w-3.5 h-3.5 text-black -rotate-45" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-white tracking-tighter text-sm font-sans uppercase">
+              RESPON<span className="text-brand">SYNC</span>
+            </span>
+            <span className="text-[9px] text-neutral-400 uppercase font-mono tracking-wider">AI Emergency Command</span>
+          </div>
         </div>
 
-        {/* Right Operations Panel */}
-        {activeTab !== 'twin_map' && (
-          <div className="w-full lg:w-[45%] border-t lg:border-t-0 lg:border-l border-white/10 bg-[#050507] flex flex-col min-w-0 h-[50vh] lg:h-full overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-            <div className="p-4 sm:p-5 flex-1 min-w-0">
-              
-              {activeTab === 'multi_agent' && (
-                <AuthorityDashboard
-                  zones={zones}
-                  agentLogs={agentLogs}
-                  recommendations={recommendations}
-                  resources={resources}
-                  alerts={alerts}
-                  onApproveRecommendation={handleApproveRecommendation}
-                  onRejectRecommendation={handleRejectRecommendation}
-                  onOpenExplainModal={(rec) => setExplainModalRec(rec)}
-                  onOpenDispatchModal={(zoneId) => setDispatchZoneId(zoneId)}
-                  isSyncing={isSyncing}
-                  onTriggerSync={handleTriggerSync}
-                />
-              )}
+        {/* Sidebar Navigation Links */}
+        <nav className="flex-1 p-3 space-y-1 overflow-y-auto no-scrollbar">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`flex items-center justify-between w-full px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider transition-all rounded-none cursor-pointer ${
+                  isActive
+                    ? 'bg-brand text-black font-extrabold'
+                    : 'text-neutral-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Icon className="w-4 h-4" />
+                  <span>{item.label}</span>
+                </div>
+                {item.badge !== undefined && item.badge > 0 && (
+                  <span className={`px-1.5 py-0.2 text-[8px] font-bold ${
+                    isActive ? 'bg-[#050507] text-[#e0e0e6]' : 'bg-brand/15 text-brand border border-brand/20'
+                  }`}>
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </nav>
 
-              {activeTab === 'simulation' && (
-                <SimulationStudio />
-              )}
-
-              {activeTab === 'citizen_portal' && (
-                <CitizenPortal
-                  shelters={shelters}
-                  reports={reports}
-                  onSubmitReport={handleSubmitCitizenReport}
-                  evacuationRoute={evacuationRoute}
-                  onSelectRouteShelter={handleSelectRouteShelter}
-                />
-              )}
-
-              {activeTab === 'analytics' && (
-                <AnalyticsHub
-                  sensors={sensors}
-                  zones={zones}
-                />
-              )}
-
-            </div>
+        {/* System Status Footers */}
+        <div className="p-4 border-t border-white/10 space-y-2.5 font-mono text-[9px] mt-auto">
+          <div className="flex items-center justify-between text-neutral-400">
+            <span>System Status</span>
+            <span className="flex items-center gap-1 text-emerald-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              All Systems Operational
+            </span>
           </div>
-        )}
-      </main>
+          <div className="flex items-center justify-between text-neutral-400">
+            <span>AI Sync</span>
+            <span className="flex items-center gap-1 text-emerald-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              Active
+            </span>
+          </div>
+        </div>
+
+      </aside>
+
+      {/* 2. Right Operations Workspace */}
+      <div className="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden bg-[#050507]">
+        
+        {/* Return to Home Switcher Ribbon */}
+        <div 
+          onClick={onBackToLanding}
+          className="bg-[#0d0d12] hover:bg-white/5 text-brand hover:text-[#e0e0e6] text-[10px] font-mono font-bold uppercase tracking-wider py-1 px-4 text-center cursor-pointer transition-colors flex items-center justify-center gap-2 select-none z-50 border-b border-white/10 flex-shrink-0"
+        >
+          <span>⚡ Viewing LIVE ResponSync Command OS. Click here to return to the UgoRound Landing Page.</span>
+        </div>
+
+        {/* Alert Notification Banner */}
+        <AlertNotificationBanner alerts={alerts} onAcknowledge={handleAcknowledgeAlert} />
+
+        {/* Top Header Bar */}
+        <header className="h-[55px] bg-[#0e0e14] border-b border-white/10 px-5 flex items-center justify-between flex-shrink-0 z-20">
+          
+          {/* Active Flashing Alert Box */}
+          <div className="flex items-center gap-2">
+            {activeAlert ? (
+              <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-500 px-3 py-1.5 text-[11px] font-sans font-bold">
+                <AlertTriangle className="w-3.5 h-3.5 text-red-500 animate-pulse" />
+                <span className="uppercase tracking-wider">FLASH FLOOD ALERT</span>
+                <span className="text-[#e0e0e6] font-normal font-mono">• {activeAlert.zone}</span>
+                <span className="text-neutral-500 font-normal font-mono ml-1">{activeAlert.timestamp}</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 bg-[#050507] border border-white/5 text-neutral-400 px-3 py-1 text-xs">
+                <span>ALL SECTORS SECURE</span>
+              </div>
+            )}
+          </div>
+
+          {/* User Profile and Roles */}
+          <div className="flex items-center gap-4">
+            
+            {/* Sync trigger shortcut */}
+            <button 
+              onClick={() => handleTriggerSync()}
+              disabled={isSyncing}
+              className="p-1.5 border border-white/10 hover:border-brand/40 text-brand bg-[#050507] hover:bg-brand/5 cursor-pointer disabled:opacity-50"
+              title="Run 12 Agents Sync Loop"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+            </button>
+
+            {/* Notification bell badge */}
+            <div className="relative cursor-pointer text-neutral-400 hover:text-white p-1">
+              <Bell className="w-4 h-4" />
+              <span className="absolute top-0 right-0 w-3 h-3 bg-brand text-black text-[8px] font-extrabold rounded-full flex items-center justify-center font-mono">
+                3
+              </span>
+            </div>
+
+            {/* User Initial Avatar */}
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-sm bg-brand text-black font-extrabold text-xs flex items-center justify-center font-mono select-none">
+                DM
+              </div>
+              
+              {/* Dropdown details */}
+              <div className="flex items-center gap-1.5 cursor-pointer text-xs font-mono text-[#e0e0e6] select-none">
+                <select 
+                  value={agencyRole} 
+                  onChange={(e) => setAgencyRole(e.target.value as AgencyRole)}
+                  className="bg-transparent border-none text-neutral-300 hover:text-white font-mono uppercase focus:outline-none cursor-pointer text-[10px] tracking-wide"
+                >
+                  <option value="authority" className="bg-[#0e0e14]">Disaster Mgmt HQ</option>
+                  <option value="fire_rescue" className="bg-[#0e0e14]">Fire & Rescue</option>
+                  <option value="police" className="bg-[#0e0e14]">Police Dept</option>
+                  <option value="health_hospitals" className="bg-[#0e0e14]">Hospitals Group</option>
+                </select>
+                <ChevronDown className="w-3.5 h-3.5 text-neutral-400" />
+              </div>
+            </div>
+
+          </div>
+
+        </header>
+
+        {/* 3. Main Workspace Screen */}
+        <main className={`flex-1 min-h-0 relative overflow-hidden ${activeTab === 'twin_map' ? 'p-0' : 'p-6 overflow-y-auto no-scrollbar'}`}>
+          
+          {/* Tab Render Router */}
+          {activeTab === 'dashboard' && (
+            <DashboardOverview
+              zones={zones}
+              sensors={sensors}
+              resources={resources}
+              shelters={shelters}
+              reports={reports}
+              hospitals={hospitals}
+              evacuationRoute={evacuationRoute}
+              timeHorizon={timeHorizon}
+              setTimeHorizon={setTimeHorizon}
+              onSelectReport={(rep) => setActiveTab('incidents')}
+              onSelectZone={(zoneId) => setDispatchZoneId(zoneId)}
+              onNavigateToTab={setActiveTab}
+            />
+          )}
+
+          {activeTab === 'incidents' && (
+            <IncidentsPanel 
+              reports={reports} 
+              onOpenDispatchModal={(zoneId) => setDispatchZoneId(zoneId)} 
+            />
+          )}
+
+          {activeTab === 'twin_map' && (
+            <DigitalTwinMap
+              zones={zones}
+              sensors={sensors}
+              resources={resources}
+              shelters={shelters}
+              reports={reports}
+              evacuationRoute={evacuationRoute}
+              timeHorizon={timeHorizon}
+              setTimeHorizon={setTimeHorizon}
+              onSelectZone={(zone) => setDispatchZoneId(zone.id)}
+              onSelectResource={(res) => {}}
+              onSelectReport={(rep) => {}}
+            />
+          )}
+
+          {activeTab === 'resources' && (
+            <ResourcesPanel 
+              resources={resources} 
+            />
+          )}
+
+          {activeTab === 'shelters' && (
+            <SheltersPanel 
+              shelters={shelters} 
+            />
+          )}
+
+          {activeTab === 'hospitals' && (
+            <HospitalsPanel 
+              hospitals={hospitals} 
+            />
+          )}
+
+          {activeTab === 'multi_agent' && (
+            <AuthorityDashboard
+              zones={zones}
+              agentLogs={agentLogs}
+              recommendations={recommendations}
+              resources={resources}
+              alerts={alerts}
+              onApproveRecommendation={handleApproveRecommendation}
+              onRejectRecommendation={handleRejectRecommendation}
+              onOpenExplainModal={(rec) => setExplainModalRec(rec)}
+              onOpenDispatchModal={(zoneId) => setDispatchZoneId(zoneId)}
+              isSyncing={isSyncing}
+              onTriggerSync={handleTriggerSync}
+            />
+          )}
+
+          {activeTab === 'simulation' && (
+            <SimulationStudio />
+          )}
+
+          {activeTab === 'citizen_portal' && (
+            <CitizenPortal
+              shelters={shelters}
+              reports={reports}
+              onSubmitReport={handleSubmitCitizenReport}
+              evacuationRoute={evacuationRoute}
+              onSelectRouteShelter={handleSelectRouteShelter}
+            />
+          )}
+
+          {activeTab === 'settings' && (
+            <SettingsPanel />
+          )}
+
+        </main>
+
+      </div>
 
       {/* Modals */}
       {explainModalRec && (
@@ -399,11 +596,6 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
           onClose={() => setDispatchZoneId(null)}
         />
       )}
-
-      {/* Footer */}
-      <footer className="bg-[#0e0e14] border-t border-white/10 py-2 px-4 text-center text-[10px] font-mono text-brand/60">
-        <p>ResponSync AI Digital Twin Platform • Powered by Gemini AI Multi-Agent Intelligence • Chennai Disaster Pilot Region</p>
-      </footer>
 
     </div>
   );
