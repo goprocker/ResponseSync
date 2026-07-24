@@ -1254,7 +1254,7 @@ Return JSON response:
   }
 });
 
-// 1. Multi-Agent AI System Run Endpoint (12 Production Agents)
+// 1. Multi-Agent AI System Run Endpoint (3 Production Agents)
 app.post('/api/ai/multiagent-run', async (req, res) => {
   try {
     const { zones, sensors, reports, weatherCondition } = req.body;

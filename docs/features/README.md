@@ -9,7 +9,7 @@ Welcome to the comprehensive feature documentation for **ResponSync** — AI Dec
 | # | Feature Name | Description & Component | Documentation Link |
 | :--- | :--- | :--- | :--- |
 | **01** | **Digital Twin GIS Map & Live Telemetry** | Leaflet Dark GIS Map, IoT Nodes, Risk Polygons, Open-Meteo Weather | [01_digital_twin_map.md](file:///x:/Projects/response%20sync%202/docs/features/01_digital_twin_map.md) |
-| **02** | **12-Agent AI System & Authority HQ** | DAG Agent Pipeline, Fleet Dispatch, Gemini 3.6 Flash reasoning | [02_multi_agent_system.md](file:///x:/Projects/response%20sync%202/docs/features/02_multi_agent_system.md) |
+| **02** | **3-Agent AI System & Authority HQ** | 3-Agent Pipeline, Fleet Dispatch, Gemini reasoning | [02_multi_agent_system.md](file:///x:/Projects/response%20sync%202/docs/features/02_multi_agent_system.md) |
 | **03** | **What-If Disaster Simulation Studio** | Parameter Sliders, Hydrodynamic Projections, Road Submergence | [03_simulation_studio.md](file:///x:/Projects/response%20sync%202/docs/features/03_simulation_studio.md) |
 | **04** | **Scenario Matching Knowledge Base** | Historical Event Matcher (2015, 2021, 2023), AI Refinement Summary | [04_scenario_matching.md](file:///x:/Projects/response%20sync%202/docs/features/04_scenario_matching.md) |
 | **05** | **Explainable AI (XAI) Inspector** | Visual Evidence Inspector, Metric Citations, Delay Risk Explanation | [05_explainable_ai.md](file:///x:/Projects/response%20sync%202/docs/features/05_explainable_ai.md) |

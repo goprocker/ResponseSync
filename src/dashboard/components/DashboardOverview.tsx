@@ -364,13 +364,13 @@ export default function DashboardOverview({
           </div>
         </div>
 
-        {/* Timeline & 12-Agent Intelligence Stream */}
+        {/* Timeline & 3-Agent Intelligence Stream */}
         <div className="bg-[#0e0e14] border border-white/10 p-5 flex flex-col h-full max-h-[300px] lg:max-h-none overflow-hidden">
           <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-3">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-brand" />
               <h3 className="text-sm font-bold text-white uppercase tracking-wider font-sans">
-                12-Agent Activity Feed
+                3-Agent Activity Feed
               </h3>
             </div>
             <button 

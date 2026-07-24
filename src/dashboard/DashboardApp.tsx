@@ -461,7 +461,7 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
               onClick={() => handleTriggerSync()}
               disabled={isSyncing}
               className="p-1.5 border border-white/10 hover:border-brand/40 text-brand bg-[#050507] hover:bg-brand/5 cursor-pointer disabled:opacity-50"
-              title="Run 12 Agents Sync Loop"
+              title="Run 3 Agents Sync Loop"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
             </button>
