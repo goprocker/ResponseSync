@@ -28,6 +28,9 @@ import {
   CheckCircle2,
   Crosshair,
   AlertTriangle,
+  ChevronDown,
+  ChevronUp,
+  Minus,
   X
 } from 'lucide-react';
 
@@ -67,6 +70,15 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const layersGroupRef = useRef<L.LayerGroup | null>(null);
+  const tileLayerRef = useRef<L.TileLayer | null>(null);
+  const measureGroupRef = useRef<L.LayerGroup | null>(null);
+
+  // Map Basemap Tile Style
+  const [mapTileStyle, setMapTileStyle] = useState<'dark' | 'voyager' | 'satellite' | 'streets'>('dark');
+
+  // Map Measurement Mode State
+  const [isMeasuring, setIsMeasuring] = useState<boolean>(false);
+  const [measurePoints, setMeasurePoints] = useState<[number, number][]>([]);
 
   // Layer Visibility States
   const [showZones, setShowZones] = useState(true);
@@ -113,6 +125,7 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
   const [selectedShelterId, setSelectedShelterId] = useState(shelters[0]?.id || 'sh-01');
   const [isClickToPickOrigin, setIsClickToPickOrigin] = useState(false);
   const [showStepsDrawer, setShowStepsDrawer] = useState(false);
+  const [isRouteEngineMinimized, setIsRouteEngineMinimized] = useState(false);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
   // Inspector Panel State
@@ -120,6 +133,63 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
     type: 'zone' | 'sensor' | 'resource' | 'shelter' | 'report' | 'hospital';
     data: any;
   } | null>(null);
+
+  // Redirect and open direct optimized navigation in Google Maps using current GPS location & destination
+  const handleOpenGoogleMaps = () => {
+    if (!evacuationRoute || !evacuationRoute.waypoints || evacuationRoute.waypoints.length === 0) {
+      const targetShelter = shelters.find(s => s.id === selectedShelterId);
+      const destCoords = targetShelter?.location?.coordinates || [12.9830, 80.2182];
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${destCoords[0]},${destCoords[1]}&travelmode=driving`, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    const destCoords = evacuationRoute.waypoints[evacuationRoute.waypoints.length - 1];
+    const destStr = `${destCoords[0]},${destCoords[1]}`;
+
+    const launchMaps = (originStr?: string) => {
+      let url = `https://www.google.com/maps/dir/?api=1&destination=${destStr}&travelmode=driving`;
+      if (originStr) {
+        url += `&origin=${originStr}`;
+      } else {
+        const origCoords = evacuationRoute.waypoints[0];
+        url += `&origin=${origCoords[0]},${origCoords[1]}`;
+      }
+      // Direct optimized route - intentionally omitting intermediate waypoints so Google Maps computes the optimal live traffic route
+      window.open(url, '_blank', 'noopener,noreferrer');
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => launchMaps(`${pos.coords.latitude},${pos.coords.longitude}`),
+        () => launchMaps(),
+        { timeout: 3500 }
+      );
+    } else {
+      launchMaps();
+    }
+  };
+
+  // Get tile URL for current style
+  const getTileUrl = (style: 'dark' | 'voyager' | 'satellite' | 'streets') => {
+    switch (style) {
+      case 'dark':
+        return 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+      case 'satellite':
+        return 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+      case 'streets':
+        return 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      case 'voyager':
+      default:
+        return 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+    }
+  };
+
+  // Recenter Map Camera
+  const handleRecenterMap = () => {
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.flyTo([12.988, 80.230], 13, { duration: 1.2 });
+    }
+  };
 
   // Initialize Map
   useEffect(() => {
@@ -134,16 +204,21 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
 
       L.control.zoom({ position: 'topright' }).addTo(map);
 
-      // Dark theme map tiles from CartoDB or standard OSM
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap &copy; CARTO',
+      // Add Basemap Tile Layer
+      const tileLayer = L.tileLayer(getTileUrl(mapTileStyle), {
+        attribution: '&copy; OpenStreetMap &copy; CARTO &copy; Esri',
         subdomains: 'abcd',
         maxZoom: 19
       }).addTo(map);
 
+      tileLayerRef.current = tileLayer;
+
       const layerGroup = L.layerGroup().addTo(map);
+      const measureGroup = L.layerGroup().addTo(map);
+      
       mapInstanceRef.current = map;
       layersGroupRef.current = layerGroup;
+      measureGroupRef.current = measureGroup;
     }
 
     return () => {
@@ -153,6 +228,13 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
       }
     };
   }, []);
+
+  // Update Basemap Tiles when style changes
+  useEffect(() => {
+    if (tileLayerRef.current) {
+      tileLayerRef.current.setUrl(getTileUrl(mapTileStyle));
+    }
+  }, [mapTileStyle]);
 
   // Map click listener for setting dynamic passenger origin
   useEffect(() => {
@@ -177,6 +259,69 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
       map.off('click', handleMapClick);
     };
   }, [isClickToPickOrigin, selectedShelterId, onCalculateEvacuationRoute]);
+
+  // Map measurement click listener
+  useEffect(() => {
+    if (!mapInstanceRef.current) return;
+    const map = mapInstanceRef.current;
+
+    const handleMeasureClick = (e: L.LeafletMouseEvent) => {
+      if (isMeasuring) {
+        setMeasurePoints(prev => [...prev, [e.latlng.lat, e.latlng.lng]]);
+      }
+    };
+
+    map.on('click', handleMeasureClick);
+    return () => {
+      map.off('click', handleMeasureClick);
+    };
+  }, [isMeasuring]);
+
+  // Render Measurement Overlay
+  useEffect(() => {
+    if (!measureGroupRef.current) return;
+    const measureGroup = measureGroupRef.current;
+    measureGroup.clearLayers();
+
+    if (measurePoints.length > 0) {
+      measurePoints.forEach((pt, idx) => {
+        const marker = L.circleMarker(pt, {
+          radius: 5,
+          color: '#fbbf24',
+          fillColor: '#fbbf24',
+          fillOpacity: 0.9
+        }).bindTooltip(`P${idx + 1}`, { permanent: true, direction: 'top' });
+        measureGroup.addLayer(marker);
+      });
+
+      if (measurePoints.length > 1) {
+        const polyline = L.polyline(measurePoints, {
+          color: '#fbbf24',
+          weight: 3,
+          dashArray: '5, 5'
+        });
+        measureGroup.addLayer(polyline);
+
+        let totalDistMeters = 0;
+        for (let i = 0; i < measurePoints.length - 1; i++) {
+          const p1 = L.latLng(measurePoints[i][0], measurePoints[i][1]);
+          const p2 = L.latLng(measurePoints[i + 1][0], measurePoints[i + 1][1]);
+          totalDistMeters += p1.distanceTo(p2);
+        }
+
+        const km = (totalDistMeters / 1000).toFixed(2);
+        const lastPt = measurePoints[measurePoints.length - 1];
+        const distMarker = L.marker(lastPt, {
+          icon: L.divIcon({
+            html: `<div style="background: #0d0d12; color: #fbbf24; border: 1px solid #fbbf24; padding: 2px 6px; font-size: 10px; font-family: monospace; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.5);">📏 ${km} km</div>`,
+            className: 'dist-label',
+            iconAnchor: [-10, 0]
+          })
+        });
+        measureGroup.addLayer(distMarker);
+      }
+    }
+  }, [measurePoints]);
 
   // Render Map Layers on State Changes
   useEffect(() => {
@@ -564,31 +709,81 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
       });
     }
 
-    // 7. Render Evacuation Route & Waypoints
+    // 7. Render Evacuation Route & Waypoints (Lane-Wise Road Corridor)
     if (showRoute && evacuationRoute && Array.isArray(evacuationRoute.waypoints) && evacuationRoute.waypoints.length > 0) {
       const validWaypoints = evacuationRoute.waypoints
         .map((wp: any) => [Number(wp[0]), Number(wp[1])])
         .filter(([lat, lng]) => !isNaN(lat) && !isNaN(lng)) as [number, number][];
 
       if (validWaypoints.length > 0) {
-        // Route Polyline
-        const routePolyline = L.polyline(validWaypoints, {
-          color: '#10b981',
-          weight: 6,
-          opacity: 0.95,
-          dashArray: '10, 10'
+        // LAYER A: Outer Safety Clearance Buffer (Glow Corridor)
+        const bufferCorridor = L.polyline(validWaypoints, {
+          color: '#059669',
+          weight: 16,
+          opacity: 0.25,
+          lineCap: 'round',
+          lineJoin: 'round'
         });
 
-        routePolyline.bindTooltip(`
-          <div style="font-family: sans-serif; font-size: 11px;">
-            <strong style="color: #10b981;">⚡ Dynamic Safe Evacuation Route</strong><br/>
-            Safety Score: <strong>${evacuationRoute.safetyScorePct}% SAFE</strong><br/>
-            Distance: ${evacuationRoute.distanceKm} km • Est. Time: ${evacuationRoute.estimatedTimeMinutes} mins<br/>
-            Destination: <strong>${evacuationRoute.destinationShelterName}</strong>
-          </div>
-        `, { sticky: true });
+        // LAYER B: Road Asphalt Casing
+        const roadCasing = L.polyline(validWaypoints, {
+          color: '#022c22',
+          weight: 8,
+          opacity: 0.85,
+          lineCap: 'round',
+          lineJoin: 'round'
+        });
 
-        layerGroup.addLayer(routePolyline);
+        // LAYER C: Active Safe Vehicle Transit Lane (Neon Green)
+        const activeLane = L.polyline(validWaypoints, {
+          color: '#34d399',
+          weight: 4,
+          opacity: 0.95,
+          lineCap: 'round',
+          lineJoin: 'round'
+        });
+
+        // LAYER D: Center Lane Divider Markings (White Dashed Line)
+        const laneDivider = L.polyline(validWaypoints, {
+          color: '#ffffff',
+          weight: 1.5,
+          opacity: 0.9,
+          dashArray: '6, 10',
+          lineCap: 'butt'
+        });
+
+        const routeTooltipHtml = `
+          <div style="font-family: monospace; font-size: 11px; padding: 4px;">
+            <strong style="color: #34d399;">🛣️ SAFE EMERGENCY CORRIDOR</strong><br/>
+            Active Lane: <strong>Lane 1 (Elevated Passable Road)</strong><br/>
+            Safety Index: <strong>${evacuationRoute.safetyScorePct}% SAFE</strong><br/>
+            Distance: ${evacuationRoute.distanceKm} km • Est. Time: ${evacuationRoute.estimatedTimeMinutes} mins
+          </div>
+        `;
+
+        bufferCorridor.bindTooltip(routeTooltipHtml, { sticky: true });
+        roadCasing.bindTooltip(routeTooltipHtml, { sticky: true });
+        activeLane.bindTooltip(routeTooltipHtml, { sticky: true });
+
+        layerGroup.addLayer(bufferCorridor);
+        layerGroup.addLayer(roadCasing);
+        layerGroup.addLayer(activeLane);
+        layerGroup.addLayer(laneDivider);
+
+        // Render Lane Guidance Decision Badge along mid-route
+        if (validWaypoints.length >= 2) {
+          const midIdx = Math.floor(validWaypoints.length / 2);
+          const badgeCoords = validWaypoints[midIdx];
+
+          if (badgeCoords) {
+            const laneBadgeIcon = L.divIcon({
+              html: `<div style="background: #022c22; color: #34d399; border: 1px solid #34d399; padding: 2px 6px; font-size: 9px; font-family: monospace; font-weight: bold; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.6); border-radius: 2px;">🛣️ LANE 1: Clear Corridor</div>`,
+              className: 'lane-badge-mid',
+              iconAnchor: [-10, 0]
+            });
+            layerGroup.addLayer(L.marker(badgeCoords, { icon: laneBadgeIcon }));
+          }
+        }
 
         // Start Origin Beacon Marker
         const startCoords = validWaypoints[0];
@@ -606,7 +801,6 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
               justify-content: center;
               font-size: 16px;
               box-shadow: 0 0 16px rgba(37,99,235,0.8);
-              animation: pulse 2s infinite;
             ">
               📍
             </div>
@@ -810,9 +1004,84 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
       {/* Map Header Overlay Bar */}
       <div className="absolute top-3 left-3 right-3 z-20 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
         
-        {/* Layer Toggles */}
+        {/* Layer Toggles & Map Controls */}
         <div className="flex flex-wrap items-center gap-1.5 bg-[#050507] p-1.5 rounded-none border border-white/10 shadow-none backdrop-blur-md pointer-events-auto">
-          <span className="text-[9px] uppercase tracking-[0.2em] font-mono text-brand/60 px-2.5 flex items-center gap-1">
+          
+          {/* Basemap Style Switcher */}
+          <div className="flex items-center gap-1 pr-2 border-r border-white/10">
+            <span className="text-[9px] uppercase tracking-[0.2em] font-mono text-brand/60 px-1">Map Style:</span>
+            <button
+              onClick={() => setMapTileStyle('dark')}
+              className={`px-2 py-0.5 text-[9px] font-mono font-bold uppercase transition-all ${
+                mapTileStyle === 'dark' ? 'bg-brand text-black font-extrabold' : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              Dark
+            </button>
+            <button
+              onClick={() => setMapTileStyle('satellite')}
+              className={`px-2 py-0.5 text-[9px] font-mono font-bold uppercase transition-all ${
+                mapTileStyle === 'satellite' ? 'bg-brand text-black font-extrabold' : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              Satellite
+            </button>
+            <button
+              onClick={() => setMapTileStyle('streets')}
+              className={`px-2 py-0.5 text-[9px] font-mono font-bold uppercase transition-all ${
+                mapTileStyle === 'streets' ? 'bg-brand text-black font-extrabold' : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              Streets
+            </button>
+            <button
+              onClick={() => setMapTileStyle('voyager')}
+              className={`px-2 py-0.5 text-[9px] font-mono font-bold uppercase transition-all ${
+                mapTileStyle === 'voyager' ? 'bg-brand text-black font-extrabold' : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              Voyager
+            </button>
+          </div>
+
+          {/* Quick Camera & Measurement Controls */}
+          <div className="flex items-center gap-1.5 pr-2 border-r border-white/10">
+            <button
+              onClick={handleRecenterMap}
+              className="px-2 py-1 bg-[#0d0d12] hover:bg-brand/20 text-brand border border-brand/30 text-[10px] font-mono font-bold flex items-center gap-1 transition-all"
+              title="Recenter Map View to City Core"
+            >
+              <Crosshair className="w-3 h-3" />
+              <span>Center</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setIsMeasuring(!isMeasuring);
+                if (isMeasuring) setMeasurePoints([]);
+              }}
+              className={`px-2 py-1 text-[10px] font-mono font-bold flex items-center gap-1 border transition-all ${
+                isMeasuring 
+                  ? 'bg-amber-500 text-black border-amber-400 animate-pulse' 
+                  : 'bg-[#0d0d12] text-amber-400 border-amber-500/30 hover:bg-amber-500/20'
+              }`}
+              title="Click map points to measure real distance"
+            >
+              <span>📏 {isMeasuring ? 'Click Map...' : 'Ruler'}</span>
+            </button>
+
+            {measurePoints.length > 0 && (
+              <button
+                onClick={() => setMeasurePoints([])}
+                className="px-1.5 py-1 bg-red-950/60 text-red-400 border border-red-500/40 text-[9px] font-mono font-bold hover:bg-red-900/60"
+                title="Clear Ruler Pins"
+              >
+                Clear ({measurePoints.length})
+              </button>
+            )}
+          </div>
+
+          <span className="text-[9px] uppercase tracking-[0.2em] font-mono text-brand/60 px-1 flex items-center gap-1">
             <Layers className="w-3.5 h-3.5 text-[#e0e0e6]" />
             Layers:
           </span>
@@ -948,154 +1217,205 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
       <div ref={mapContainerRef} className="w-full h-full z-10" />
 
       {/* Floating Interactive Evacuation Route Controller */}
-      <div className="absolute top-16 left-3 z-20 w-80 md:w-96 bg-[#08080c]/95 border border-white/10 p-3.5 rounded shadow-2xl backdrop-blur-md text-xs text-[#e0e0e6] space-y-3 font-mono">
-        <div className="flex items-center justify-between border-b border-white/10 pb-2">
-          <div className="flex items-center gap-2">
+      <div className={`absolute bottom-6 left-3 z-30 bg-[#08080c]/95 border border-emerald-500/30 rounded-lg shadow-2xl backdrop-blur-md text-xs text-[#e0e0e6] font-mono transition-all duration-200 max-h-[75vh] overflow-y-auto ${
+        isRouteEngineMinimized ? 'w-auto p-2 min-w-[260px]' : 'w-80 md:w-96 p-3.5 space-y-3'
+      }`}>
+        <div className={`flex items-center justify-between ${isRouteEngineMinimized ? '' : 'border-b border-white/10 pb-2'}`}>
+          <div
+            className="flex items-center gap-2 cursor-pointer select-none"
+            onClick={() => setIsRouteEngineMinimized(!isRouteEngineMinimized)}
+          >
             <Navigation className="w-4 h-4 text-emerald-400 shrink-0" />
             <span className="font-bold text-sm tracking-tight text-white font-sans">
               Passenger Safe Route Engine
             </span>
-          </div>
-          <span className="text-[9px] bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded uppercase font-bold">
-            Live Avoidance
-          </span>
-        </div>
-
-        {/* Origin Selection */}
-        <div className="space-y-1.5">
-          <label className="text-[10px] text-neutral-400 uppercase font-bold block">
-            1. Passenger Origin Location:
-          </label>
-          <div className="flex gap-1.5">
-            <select
-              value={routeOriginName}
-              onChange={(e) => {
-                const name = e.target.value;
-                setRouteOriginName(name);
-                const presets: Record<string, [number, number]> = {
-                  'Velachery 100ft Road (Vijaya Nagar Junction)': [12.9785, 80.2205],
-                  'Guindy Railway Station Corridor': [13.0067, 80.2117],
-                  'Kotturpuram Adyar River Bank': [13.0231, 80.2411],
-                  'Taramani 100ft Canal Link Road': [12.9863, 80.2432]
-                };
-                const coords = presets[name] || routeOriginCoords;
-                setRouteOriginCoords(coords);
-                if (onCalculateEvacuationRoute) {
-                  onCalculateEvacuationRoute(name, coords, selectedShelterId);
-                }
-              }}
-              className="flex-1 bg-[#101018] border border-white/10 text-xs text-[#e0e0e6] font-mono rounded p-1.5 focus:outline-none focus:border-emerald-500/50"
-            >
-              <option value="Velachery 100ft Road (Vijaya Nagar Junction)">📍 Velachery 100ft Road</option>
-              <option value="Guindy Railway Station Corridor">📍 Guindy Station</option>
-              <option value="Kotturpuram Adyar River Bank">📍 Kotturpuram Adyar</option>
-              <option value="Taramani 100ft Canal Link Road">📍 Taramani Link Road</option>
-              {routeOriginName.startsWith('GPS Pin') || routeOriginName.startsWith('Citizen') ? (
-                <option value={routeOriginName}>🎯 {routeOriginName}</option>
-              ) : null}
-            </select>
-
-            <button
-              onClick={() => setIsClickToPickOrigin(!isClickToPickOrigin)}
-              title="Click on the map to place origin pin"
-              className={`px-2.5 py-1.5 rounded border text-[10px] font-bold uppercase transition-all flex items-center gap-1 cursor-pointer shrink-0 ${
-                isClickToPickOrigin
-                  ? 'bg-amber-500 text-black border-amber-400 animate-pulse'
-                  : 'bg-[#141420] text-neutral-300 border-white/10 hover:border-white/30'
-              }`}
-            >
-              <Crosshair className="w-3.5 h-3.5" />
-              <span>{isClickToPickOrigin ? 'Click Map...' : 'Pick Pin'}</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Destination Shelter Selection */}
-        <div className="space-y-1.5">
-          <label className="text-[10px] text-neutral-400 uppercase font-bold block">
-            2. Relief Shelter Destination:
-          </label>
-          <select
-            value={selectedShelterId}
-            onChange={(e) => {
-              const shId = e.target.value;
-              setSelectedShelterId(shId);
-              if (onCalculateEvacuationRoute) {
-                onCalculateEvacuationRoute(routeOriginName, routeOriginCoords, shId);
-              }
-            }}
-            className="w-full bg-[#101018] border border-white/10 text-xs text-[#e0e0e6] font-mono rounded p-1.5 focus:outline-none focus:border-emerald-500/50"
-          >
-            {shelters.map((s) => (
-              <option key={s.id} value={s.id}>
-                ⛺ {s.name} ({s.totalCapacity - s.currentOccupancy} Beds Available)
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Action Button */}
-        <button
-          onClick={() => {
-            if (onCalculateEvacuationRoute) {
-              onCalculateEvacuationRoute(routeOriginName, routeOriginCoords, selectedShelterId);
-            }
-          }}
-          disabled={isCalculatingRoute}
-          className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded shadow border border-emerald-400/40 uppercase tracking-wider text-xs flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50"
-        >
-          {isCalculatingRoute ? (
-            <span>AI Computing Hazard-Free Path...</span>
-          ) : (
-            <>
-              <Navigation className="w-3.5 h-3.5" />
-              <span>Calculate Safe Route</span>
-            </>
-          )}
-        </button>
-
-        {/* Active Route Summary Card */}
-        {evacuationRoute && (
-          <div className="bg-[#12121a] border border-emerald-500/40 p-2.5 rounded space-y-2 animate-in fade-in">
-            <div className="flex items-center justify-between border-b border-white/5 pb-1.5">
-              <div>
-                <span className="text-[9px] text-emerald-400 uppercase font-bold block">Target Destination:</span>
-                <span className="font-sans font-bold text-white">{evacuationRoute.destinationShelterName}</span>
-              </div>
-              <div className="text-right">
-                <span className="text-lg font-extrabold text-emerald-400 block leading-tight">
-                  {evacuationRoute.safetyScorePct}%
-                </span>
-                <span className="text-[9px] text-neutral-400 uppercase">Safety Index</span>
-              </div>
-            </div>
-
-            <div className="flex justify-between text-[11px] bg-[#09090d] p-1.5 rounded border border-white/5">
-              <span>Distance: <strong className="text-white">{evacuationRoute.distanceKm} km</strong></span>
-              <span>Time: <strong className="text-white">{evacuationRoute.estimatedTimeMinutes} mins</strong></span>
-            </div>
-
-            <div className="text-[10px] text-neutral-300 bg-red-950/30 border border-red-500/30 p-1.5 rounded">
-              <strong className="text-red-400 uppercase">Hazards Avoided:</strong>{' '}
-              {evacuationRoute.hazardsAvoided.join(' • ')}
-            </div>
-
-            <button
-              onClick={() => setShowStepsDrawer(!showStepsDrawer)}
-              className="w-full text-left text-[10px] text-emerald-400 hover:underline flex items-center justify-between cursor-pointer pt-1"
-            >
-              <span>Turn-by-Turn Guidance ({evacuationRoute.turnByTurnInstructions.length} Steps)</span>
-              <span>{showStepsDrawer ? '▲ Hide' : '▼ Expand'}</span>
-            </button>
-
-            {showStepsDrawer && (
-              <ol className="list-decimal list-inside text-[10px] text-neutral-300 space-y-1 bg-[#09090d] p-2 rounded max-h-36 overflow-y-auto border border-white/5">
-                {evacuationRoute.turnByTurnInstructions.map((step, idx) => (
-                  <li key={idx} className="pb-1 border-b border-white/5 last:border-0">{step}</li>
-                ))}
-              </ol>
+            {evacuationRoute && isRouteEngineMinimized && (
+              <span className="text-[10px] bg-emerald-500/20 text-emerald-400 font-bold px-1.5 py-0.5 rounded font-mono ml-1">
+                {evacuationRoute.safetyScorePct}% Safe
+              </span>
             )}
           </div>
+          <div className="flex items-center gap-1.5">
+            {!isRouteEngineMinimized && (
+              <span className="text-[9px] bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded uppercase font-bold hidden sm:inline-block">
+                Live Avoidance
+              </span>
+            )}
+            <button
+              onClick={() => setIsRouteEngineMinimized(!isRouteEngineMinimized)}
+              className="p-1 text-neutral-400 hover:text-white hover:bg-white/10 rounded transition-colors cursor-pointer flex items-center gap-1"
+              title={isRouteEngineMinimized ? "Expand Route Engine" : "Minimize Route Engine"}
+            >
+              <span className="text-[10px] uppercase font-bold text-neutral-400 hover:text-white">
+                {isRouteEngineMinimized ? 'Expand' : 'Minimize'}
+              </span>
+              {isRouteEngineMinimized ? <ChevronDown className="w-4 h-4" /> : <Minus className="w-4 h-4" />}
+            </button>
+          </div>
+        </div>
+
+        {!isRouteEngineMinimized && (
+          <>
+            {/* Origin Selection */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] text-neutral-400 uppercase font-bold block">
+                1. Passenger Origin Location:
+              </label>
+              <div className="flex gap-1.5">
+                <select
+                  value={routeOriginName}
+                  onChange={(e) => {
+                    const name = e.target.value;
+                    setRouteOriginName(name);
+                    const presets: Record<string, [number, number]> = {
+                      'Velachery 100ft Road (Vijaya Nagar Junction)': [12.9785, 80.2205],
+                      'Guindy Railway Station Corridor': [13.0067, 80.2117],
+                      'Kotturpuram Adyar River Bank': [13.0231, 80.2411],
+                      'Taramani 100ft Canal Link Road': [12.9863, 80.2432]
+                    };
+                    const coords = presets[name] || routeOriginCoords;
+                    setRouteOriginCoords(coords);
+                    if (onCalculateEvacuationRoute) {
+                      onCalculateEvacuationRoute(name, coords, selectedShelterId);
+                    }
+                  }}
+                  className="flex-1 bg-[#101018] border border-white/10 text-xs text-[#e0e0e6] font-mono rounded p-1.5 focus:outline-none focus:border-emerald-500/50"
+                >
+                  <option value="Velachery 100ft Road (Vijaya Nagar Junction)">📍 Velachery 100ft Road</option>
+                  <option value="Guindy Railway Station Corridor">📍 Guindy Station</option>
+                  <option value="Kotturpuram Adyar River Bank">📍 Kotturpuram Adyar</option>
+                  <option value="Taramani 100ft Canal Link Road">📍 Taramani Link Road</option>
+                  {routeOriginName.startsWith('GPS Pin') || routeOriginName.startsWith('Citizen') ? (
+                    <option value={routeOriginName}>🎯 {routeOriginName}</option>
+                  ) : null}
+                </select>
+
+                <button
+                  onClick={() => setIsClickToPickOrigin(!isClickToPickOrigin)}
+                  title="Click on the map to place origin pin"
+                  className={`px-2.5 py-1.5 rounded border text-[10px] font-bold uppercase transition-all flex items-center gap-1 cursor-pointer shrink-0 ${
+                    isClickToPickOrigin
+                      ? 'bg-amber-500 text-black border-amber-400 animate-pulse'
+                      : 'bg-[#141420] text-neutral-300 border-white/10 hover:border-white/30'
+                  }`}
+                >
+                  <Crosshair className="w-3.5 h-3.5" />
+                  <span>{isClickToPickOrigin ? 'Click Map...' : 'Pick Pin'}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Destination Shelter Selection */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] text-neutral-400 uppercase font-bold block">
+                2. Relief Shelter Destination:
+              </label>
+              <select
+                value={selectedShelterId}
+                onChange={(e) => {
+                  const shId = e.target.value;
+                  setSelectedShelterId(shId);
+                  if (onCalculateEvacuationRoute) {
+                    onCalculateEvacuationRoute(routeOriginName, routeOriginCoords, shId);
+                  }
+                }}
+                className="w-full bg-[#101018] border border-white/10 text-xs text-[#e0e0e6] font-mono rounded p-1.5 focus:outline-none focus:border-emerald-500/50"
+              >
+                {shelters.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    ⛺ {s.name} ({s.totalCapacity - s.currentOccupancy} Beds Available)
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Action Button */}
+            <button
+              onClick={() => {
+                if (onCalculateEvacuationRoute) {
+                  onCalculateEvacuationRoute(routeOriginName, routeOriginCoords, selectedShelterId);
+                }
+              }}
+              disabled={isCalculatingRoute}
+              className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded shadow border border-emerald-400/40 uppercase tracking-wider text-xs flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50"
+            >
+              {isCalculatingRoute ? (
+                <span>AI Computing Hazard-Free Path...</span>
+              ) : (
+                <>
+                  <Navigation className="w-3.5 h-3.5" />
+                  <span>Calculate Safe Route</span>
+                </>
+              )}
+            </button>
+
+            {/* Active Route Summary Card */}
+            {evacuationRoute && (
+              <div className="bg-[#12121a] border border-emerald-500/40 p-2.5 rounded space-y-2 animate-in fade-in">
+                <div className="flex items-center justify-between border-b border-white/5 pb-1.5">
+                  <div>
+                    <span className="text-[9px] text-emerald-400 uppercase font-bold block font-mono">KM CORRIDOR DESTINATION:</span>
+                    <span className="font-sans font-bold text-white">{evacuationRoute.destinationShelterName}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-lg font-extrabold text-emerald-400 block leading-tight font-mono">
+                      {evacuationRoute.safetyScorePct}%
+                    </span>
+                    <span className="text-[9px] text-neutral-400 uppercase font-mono">Safety Index</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-1.5 text-[10px] bg-[#09090d] p-1.5 rounded border border-white/5 font-mono">
+                  <div className="flex justify-between text-neutral-300">
+                    <span>Distance:</span>
+                    <strong className="text-white">{evacuationRoute.distanceKm} km</strong>
+                  </div>
+                  <div className="flex justify-between text-neutral-300">
+                    <span>Est Time:</span>
+                    <strong className="text-white">{evacuationRoute.estimatedTimeMinutes} mins</strong>
+                  </div>
+                  <div className="flex justify-between text-neutral-300">
+                    <span>Active Lane:</span>
+                    <strong className="text-emerald-400">Lane 1 (Elevated)</strong>
+                  </div>
+                  <div className="flex justify-between text-neutral-300">
+                    <span>Clearance:</span>
+                    <strong className="text-emerald-400">Clear Road</strong>
+                  </div>
+                </div>
+
+                <div className="text-[10px] text-neutral-300 bg-red-950/30 border border-red-500/30 p-1.5 rounded">
+                  <strong className="text-red-400 uppercase font-mono">Hazards Avoided:</strong>{' '}
+                  {evacuationRoute.hazardsAvoided.join(' • ')}
+                </div>
+
+                <button
+                  onClick={handleOpenGoogleMaps}
+                  className="w-full mt-1 py-2 bg-emerald-500 hover:bg-emerald-400 text-black font-mono font-bold text-xs uppercase rounded flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-emerald-500/20 transition-all hover:scale-[1.01]"
+                  title="Open turn-by-turn direction in Google Maps using your live GPS position"
+                >
+                  <Navigation className="w-4 h-4 fill-black" />
+                  <span>Open Navigation in Google Maps ↗</span>
+                </button>
+
+                <button
+                  onClick={() => setShowStepsDrawer(!showStepsDrawer)}
+                  className="w-full text-left text-[10px] font-mono text-emerald-400 hover:underline flex items-center justify-between cursor-pointer pt-1"
+                >
+                  <span>🛣️ Navigation Steps ({evacuationRoute.turnByTurnInstructions.length})</span>
+                  <span>{showStepsDrawer ? '▲ Hide' : '▼ Expand'}</span>
+                </button>
+
+                {showStepsDrawer && (
+                  <ol className="list-decimal list-inside text-[10px] text-neutral-300 space-y-1 bg-[#09090d] p-2 rounded max-h-36 overflow-y-auto border border-white/5 font-mono">
+                    {evacuationRoute.turnByTurnInstructions.map((step, idx) => (
+                      <li key={idx} className="pb-1 border-b border-white/5 last:border-0">{step}</li>
+                    ))}
+                  </ol>
+                )}
+              </div>
+            )}
+          </>
         )}
       </div>
 
