@@ -68,10 +68,15 @@ responsesync/
 │   │       ├── SheltersPanel.tsx           # Relief shelter capacity & occupancy tracker
 │   │       └── SimulationStudio.tsx        # Disaster what-if physics simulation sandbox
 │   ├── hooks/                      # Custom React Hooks
+│   │   ├── useAgentPipeline.ts     # 3-Agent pipeline execution & stream logging hook
 │   │   ├── useEvacuationRoute.ts   # OSRM evacuation path calculation hook
+│   │   ├── useMapControls.ts       # Tile basemaps, distance measurement & layer visibility hook
 │   │   └── useSSEStream.ts         # Real-time SSE connection & event dispatcher hook
 │   ├── landing/                    # Public Landing Page
 │   │   └── LandingPage.tsx         # Hero section, feature overview & portal navigation links
+│   ├── services/                   # API & Validation Services
+│   │   ├── api.ts                  # Centralized type-safe Express endpoint API client
+│   │   └── schema.ts               # Zod validation schemas for forms & telemetry
 │   └── shared/                     # Types, Mock Data & Constants
 │       ├── cascadingData.ts        # Pre-computed cascading failure scenarios & graph nodes
 │       ├── cascadingTypes.ts       # Type definitions for cascading impact analysis
