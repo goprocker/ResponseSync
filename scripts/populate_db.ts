@@ -96,12 +96,64 @@ async function populateAllDetailedKnowledge() {
       retrieved_strategy: 'Immediate activation of automated LED variable message signboards + physical barricades at Guindy subway; diversion of traffic to GST elevated flyover.',
       historical_outcome: 'Zero vehicles trapped in Guindy subway; emergency ambulance transit delay reduced by 35% along green-wave corridor.',
       ai_refinement: 'Link live CCTV vision AI models to traffic signal controllers to automatically establish green-wave priority corridors for emergency ambulances and NDRF transit buses.'
+    },
+    {
+      id: 'sim-2022-12-09',
+      historical_event: 'December 2022 Cyclone Mandous Coastal Flooding',
+      similarity_pct: 88,
+      key_matches: [
+        '115mm/12h coastal rainfall intensity',
+        'High wind speeds (85 km/h) causing extensive tree falls',
+        'Estuarine high tide exacerbating drainage blockages'
+      ],
+      retrieved_strategy: 'Pre-emptive clearing of storm water drains and immediate deployment of 15 NDRF teams equipped with heavy tree-cutting machinery.',
+      historical_outcome: 'Cleared 320 fallen trees within 12 hours; prevented coastal inundation in Marina area by synchronized tidal pumping.',
+      ai_refinement: 'Integrate live anemometer data with drain sensors to preemptively clear critical arterial routes before peak wind gusts.'
+    },
+    {
+      id: 'sim-2016-12-12',
+      historical_event: 'December 2016 Cyclone Vardah Urban Devastation',
+      similarity_pct: 85,
+      key_matches: [
+        'Wind speeds exceeding 130 km/h',
+        'Complete failure of overhead electrical grids',
+        'Massive disruption of communication networks'
+      ],
+      retrieved_strategy: 'Immediate restoration of ham radio networks for emergency communication and deployment of mobile cell towers on wheels (COWs).',
+      historical_outcome: 'Restored vital communication links within 24 hours; facilitated emergency medical responses despite zero cellular coverage.',
+      ai_refinement: 'Establish automated drone-based mesh networks to provide immediate localized Wi-Fi coverage for first responders in total blackout zones.'
+    },
+    {
+      id: 'sim-2005-10-27',
+      historical_event: 'October 2005 Chennai Northeast Monsoon Deluge',
+      similarity_pct: 79,
+      key_matches: [
+        'Prolonged heavy rainfall (400mm over 3 days)',
+        'Major tank breaches in Kanchipuram and Tiruvallur districts',
+        'Severe inundation of low-lying areas in South Chennai'
+      ],
+      retrieved_strategy: 'Establishment of extensive relief camps in schools and community halls; mass distribution of food packets and chlorine tablets to prevent waterborne diseases.',
+      historical_outcome: 'Successfully accommodated 50,000 evacuees in temporary shelters; zero major outbreaks of cholera or typhoid post-flood.',
+      ai_refinement: 'Deploy automated drone deliveries for emergency medical supplies to isolated relief camps and utilize GIS mapping to optimize food distribution routes.'
+    },
+    {
+      id: 'sim-2008-11-26',
+      historical_event: 'November 2008 Cyclone Nisha Induced Flooding',
+      similarity_pct: 81,
+      key_matches: [
+        'Extreme single-day rainfall (up to 300mm)',
+        'Overtopping of the Adyar and Cooum rivers',
+        'Significant agricultural crop damage in peri-urban areas'
+      ],
+      retrieved_strategy: 'Deployment of army and navy personnel for immediate search and rescue using mechanized boats; emergency release of water from major reservoirs.',
+      historical_outcome: 'Rescued over 10,000 stranded individuals; coordinated multi-agency response reduced potential fatalities by 40%.',
+      ai_refinement: 'Implement predictive hydrodynamic models to coordinate reservoir release schedules with tidal charts, minimizing downstream estuarine backflow.'
     }
   ];
 
   const { error: dkErr } = await supabase.from('decision_knowledge').upsert(decisionKnowledge);
   if (dkErr) console.warn('⚠️ Decision Knowledge upsert warning:', dkErr.message);
-  else console.log('✅ Decision Knowledge Base populated with 6 historical incidents!');
+  else console.log('✅ Decision Knowledge Base populated with 10 historical incidents!');
 
   // 2. POPULATE HISTORICAL DISASTER SIMULATIONS (simulations)
   const simulations = [
@@ -182,6 +234,58 @@ async function populateAllDetailedKnowledge() {
       effectiveness_score: 92,
       outcome: 'Automated subway barricading and traffic re-routing prevented car entrapment',
       lessons_learned: 'CCTV vision AI traffic green-waves reduce ambulance transit time by 35%.'
+    },
+    {
+      id: 'sim-2022-12-09',
+      title: 'December 2022 Cyclone Mandous Flooding',
+      rainfall_mm_hr: 55,
+      dam_discharge_m3s: 300,
+      canal_blockage_pct: 50,
+      affected_zones_count: 3,
+      predicted_submerged_area_km2: 2.4,
+      estimated_affected_people: 18000,
+      effectiveness_score: 88,
+      outcome: 'Cleared 320 fallen trees within 12h, maintained critical routes open',
+      lessons_learned: 'Rapid deployment of tree-cutting teams is essential during high-wind cyclone landfalls.'
+    },
+    {
+      id: 'sim-2016-12-12',
+      title: 'December 2016 Cyclone Vardah Impact',
+      rainfall_mm_hr: 45,
+      dam_discharge_m3s: 200,
+      canal_blockage_pct: 40,
+      affected_zones_count: 5,
+      predicted_submerged_area_km2: 1.5,
+      estimated_affected_people: 45000,
+      effectiveness_score: 85,
+      outcome: 'Restored vital communication links within 24h using alternative networks',
+      lessons_learned: 'Overhead electrical grid vulnerability requires redundant emergency communication protocols.'
+    },
+    {
+      id: 'sim-2005-10-27',
+      title: 'October 2005 Chennai Deluge',
+      rainfall_mm_hr: 30,
+      dam_discharge_m3s: 1500,
+      canal_blockage_pct: 70,
+      affected_zones_count: 6,
+      predicted_submerged_area_km2: 6.2,
+      estimated_affected_people: 120000,
+      effectiveness_score: 79,
+      outcome: 'Successfully accommodated 50,000 evacuees in temporary shelters with basic supplies',
+      lessons_learned: 'Long-duration rainfall requires sustained supply chains for relief camps.'
+    },
+    {
+      id: 'sim-2008-11-26',
+      title: 'November 2008 Cyclone Nisha Floods',
+      rainfall_mm_hr: 60,
+      dam_discharge_m3s: 2200,
+      canal_blockage_pct: 65,
+      affected_zones_count: 4,
+      predicted_submerged_area_km2: 5.1,
+      estimated_affected_people: 85000,
+      effectiveness_score: 81,
+      outcome: 'Coordinated army and navy response rescued 10,000 individuals',
+      lessons_learned: 'Multi-agency coordination is critical when river overtopping exceeds local response capacity.'
     }
   ];
 
