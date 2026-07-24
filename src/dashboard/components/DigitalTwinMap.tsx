@@ -1616,32 +1616,23 @@ export const DigitalTwinMap: React.FC<DigitalTwinMapProps> = ({
       )}
 
       {/* Legend Footer Bar */}
-      <div className="bg-[#050507] border-t border-white/10 px-4 md:px-6 py-2 flex flex-wrap items-center justify-between gap-3 text-[10px] font-mono text-neutral-400 z-20">
-        <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-red-500"></span>
-            <span className="text-white font-semibold">HIGH_RISK_ZONE</span>
+      <div className="bg-[#050507] border-t border-white/10 px-6 h-9 flex flex-wrap items-center justify-between text-[10px] font-mono text-brand/60 z-20">
+        <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-2">
+            <span className="w-2 h-2 rounded-none bg-neutral-400"></span>
+            <span>HIGH_RISK_ZONE</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-blue-500"></span>
-            <span className="text-white font-semibold">FLOOD_INUNDATION</span>
+          <div className="flex items-center space-x-2">
+            <span className="w-2 h-2 rounded-none bg-neutral-600"></span>
+            <span>FLOOD_INUNDATION</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-brand"></span>
-            <span className="text-white font-semibold">RESCUE_UNITS</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-emerald-400"></span>
-            <span className="text-white font-semibold">IOT_SENSORS</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-amber-400"></span>
-            <span className="text-white font-semibold">SHELTERS</span>
+          <div className="flex items-center space-x-2">
+            <span className="w-2 h-2 rounded-none bg-brand"></span>
+            <span>RESCUE_UNITS</span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-neutral-500 uppercase tracking-widest">CENTER:</span>
-          <span className="text-brand font-bold">12.9784° N, 80.2185° E (Velachery)</span>
+        <div>
+          <span className="text-brand/60">COORDINATES:</span> <span className="text-[#e0e0e6]">12.9784° N, 80.2185° E</span>
         </div>
       </div>
 

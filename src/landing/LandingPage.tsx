@@ -144,7 +144,7 @@ export default function LandingPage({ onLaunchDashboard }: LandingPageProps) {
             {/* The Switcher Link to the Digital Twin Dashboard */}
             <button 
               onClick={onLaunchDashboard}
-              className="rounded-full border border-brand/40 bg-brand/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-brand transition-all hover:bg-brand/20 cursor-pointer hidden sm:inline-block"
+              className="rounded-full border border-[#ff4e00]/40 bg-[#ff4e00]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#ff4e00] transition-all hover:bg-[#ff4e00]/20 cursor-pointer hidden sm:inline-block"
             >
               Command OS
             </button>
@@ -189,7 +189,7 @@ export default function LandingPage({ onLaunchDashboard }: LandingPageProps) {
               setMobileMenuOpen(false);
               onLaunchDashboard();
             }}
-            className="flex w-full items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold uppercase tracking-wider text-brand hover:bg-white/5 text-left cursor-pointer"
+            className="flex w-full items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold uppercase tracking-wider text-[#ff4e00] hover:bg-white/5 text-left cursor-pointer"
           >
             Launch Command OS <ArrowUpRight className="h-4 w-4" />
           </button>
