@@ -428,7 +428,7 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
           onClick={onBackToLanding}
           className="bg-[#0d0d12] hover:bg-white/5 text-brand hover:text-[#e0e0e6] text-[10px] font-mono font-bold uppercase tracking-wider py-1 px-4 text-center cursor-pointer transition-colors flex items-center justify-center gap-2 select-none z-50 border-b border-white/10 flex-shrink-0"
         >
-          <span>⚡ Viewing LIVE ResponSync Command OS. Click here to return to the UgoRound Landing Page.</span>
+          <span>⚡ Viewing LIVE ResponSync Command OS. Click here to return to the ResponSync Landing Page.</span>
         </div>
 
         {/* Alert Notification Banner */}

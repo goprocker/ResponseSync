@@ -895,7 +895,7 @@ export default function LandingPage({ onLaunchDashboard }: LandingPageProps) {
             </div>
             <div>
               <p className="text-[#888] text-base leading-relaxed max-w-xl">
-                Public safety teams across government, civic, and utility services run UgoRound as their first-to-know channel—because your community shouldn't need an app, an account, or understand English to stay safe.
+                Public safety teams across government, civic, and utility services run ResponSync as their first-to-know channel—because your community shouldn't need an app, an account, or understand English to stay safe.
               </p>
             </div>
           </div>
@@ -1002,7 +1002,7 @@ export default function LandingPage({ onLaunchDashboard }: LandingPageProps) {
                       </span>
                     </button>
                     <a 
-                      href="mailto:info@ugoround.com" 
+                      href="mailto:contact@responsync.ai" 
                       className="inline-flex items-center rounded-full border border-white/15 px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-[#ccc] transition-colors hover:text-white"
                     >
                       Book A Call
@@ -1064,11 +1064,11 @@ export default function LandingPage({ onLaunchDashboard }: LandingPageProps) {
               </div>
 
               <a 
-                href="mailto:info@ugoround.com" 
+                href="mailto:contact@responsync.ai" 
                 className="mt-8 inline-flex items-center gap-2 text-xs font-mono text-[#aaa] hover:text-white transition-colors"
               >
                 <Mail className="w-3.5 h-3.5 text-brand" />
-                info@ugoround.com
+                contact@responsync.ai
               </a>
             </div>
 
@@ -1105,14 +1105,14 @@ export default function LandingPage({ onLaunchDashboard }: LandingPageProps) {
           {/* Large Watermark */}
           <div className="mt-20 select-none">
             <p aria-hidden="true" className="bg-gradient-to-b from-white/10 to-transparent bg-clip-text text-[13vw] font-bold leading-none tracking-tighter text-transparent uppercase text-left">
-              ugoround<span className="font-display italic text-brand text-[15vw] lowercase font-normal leading-[0]">.</span>
+              responsync<span className="font-display italic text-brand text-[15vw] lowercase font-normal leading-[0]">.</span>
             </p>
           </div>
 
           {/* Bottom Bar */}
           <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-white/5 py-8 text-[11px] text-[#555] sm:flex-row sm:items-center">
             <div className="flex items-center gap-2">
-              <span>© {new Date().getFullYear()} UgoRound. All rights reserved.</span>
+              <span>© {new Date().getFullYear()} ResponSync. All rights reserved.</span>
             </div>
             <div className="flex flex-wrap items-center gap-4">
               <span className="mono inline-flex items-center gap-1.5 uppercase tracking-[0.18em] text-[#aaa]">
