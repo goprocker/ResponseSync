@@ -22,7 +22,7 @@
 
 ResponSync is a full-stack **AI Decision Digital Twin** — a live virtual city representation that fuses real-time weather, IoT sensor telemetry, satellite radar, citizen reports, and explainable AI into a single command platform for predictive flood response.
 
-The platform is purpose-built for the **Chennai Velachery–Adyar flood corridor**, the most flood-prone urban zone in South India. It combines a 12-agent AI orchestration pipeline (powered by Google Gemini) with real-time geospatial intelligence to autonomously assess threats, simulate cascading impacts, optimize evacuation routes, and dispatch resources — all while providing transparent, explainable reasoning to emergency coordinators.
+The platform is purpose-built for the **Chennai Velachery–Adyar flood corridor**, the most flood-prone urban zone in South India. It combines a 3-agent AI orchestration pipeline (powered by Google Gemini) with real-time geospatial intelligence to autonomously assess threats, simulate cascading impacts, optimize evacuation routes, and dispatch resources — all while providing transparent, explainable reasoning to emergency coordinators.
 
 > **Pilot Area:** Chennai Velachery & Adyar Corridor — covering Velachery South (Vijaya Nagar), Guindy Railway Subway, Kotturpuram Adyar River Bank, and Taramani 100ft Canal Link.
 
@@ -33,25 +33,14 @@ The platform is purpose-built for the **Chennai Velachery–Adyar flood corridor
 ### 🗺️ Digital Twin Map
 Interactive Leaflet map rendering the live city state — risk zones with dynamic severity shading, IoT sensor nodes (water level gauges, rain gauges, flow rate sensors), emergency resources, shelters, hospitals, and citizen report markers. Real-time flood polygon overlays from Sentinel-1 SAR satellite data.
 
-### 🤖 12-Agent AI Orchestration Pipeline
-Twelve specialized Gemini agents work in concert across a coordinated pipeline:
+### 🤖 3-Agent AI Orchestration Pipeline
+Three specialized Gemini agents work in concert across a coordinated pipeline:
 
-| Agent | Role |
-|-------|------|
-| Hydro-Risk Ingestion | Ingest water level & rainfall data |
-| Weather Agent | Live weather intelligence & forecast |
-| Flood Prediction Agent | Hydrodynamic inundation modeling |
-| Traffic Agent | Road network & congestion analysis |
-| Infrastructure Agent | Power grid, drainage, bridge status |
-| Satellite Agent | Sentinel-1 SAR & NASA FIRMS feeds |
-| Citizen Intelligence Agent | Report validation & trend analysis |
-| Resource Planner Agent | Optimal resource allocation |
-| Evacuation Agent | Safe route computation |
-| Simulation Agent | What-if scenario modeling |
-| Decision & Resource Agent | Strategic response planning |
-| Explainability Agent | Human-readable AI reasoning |
-
-The pipeline concludes with a **Coordinator Agent** that synthesizes all agent outputs into a unified command recommendation with confidence scores.
+| Agent | Role | Output & Responsibilities |
+|-------|------|---------------------------|
+| **Hydro-Risk Ingestion Agent** | Ingest weather radar, river discharge, IoT sensors & citizen SOS calls | Calculates short-term inundation probabilities and water rise rates across Velachery, Guindy, and Kotturpuram. |
+| **Decision & Resource Agent** | Vector similarity matching against historical disasters & fleet routing | Matches Supabase Knowledge Base, formulates fleet allocation (boats, pumps, buses), and calculates safe detours. |
+| **Command & Dispatch Agent** | XAI confidence audit & multi-agency dispatch broadcast | Synthesizes multi-agent rationale with Explainable AI confidence scores and formats broadcast alerts. |
 
 ### 🌊 What-If Disaster Simulation Studio
 Run predictive simulations across multiple disaster types (flood, cyclone, earthquake, wildfire, landslide, tsunami) with configurable parameters — rainfall intensity, dam discharge rate, canal blockage percentage, bridge closures, and high tide overlap. Outputs include risk timelines, affected population estimates, and resource deployment plans.
@@ -97,7 +86,7 @@ flowchart TD
         Landing["Landing Page<br/>Portal Router"]
         Dashboard["Dashboard App<br/>Tab Navigation"]
         TwinMap["Digital Twin Map<br/>Leaflet + Risk Zones"]
-        MultiAgent["Authority Dashboard<br/>12-Agent Pipeline"]
+        MultiAgent["Authority Dashboard<br/>3-Agent Pipeline"]
         SimStudio["Simulation Studio<br/>What-If Engine"]
         CitizenPortal["Citizen Portal<br/>Report Submission"]
         Analytics["Analytics Hub<br/>Fusion Dashboard"]
@@ -110,7 +99,7 @@ flowchart TD
     end
 
     subgraph AI ["🤖 AI Agent Layer"]
-        Pipeline["12-Agent<br/>Orchestration Pipeline"]
+        Pipeline["3-Agent<br/>Orchestration Pipeline"]
         Simulation["What-If<br/>Simulation Engine"]
         ScenarioMatch["Historical<br/>Scenario Matcher"]
         XAI["Explainability<br/>Engine"]
@@ -149,7 +138,7 @@ flowchart TD
     API --> Supabase & InMemory
 ```
 
-### 12-Agent AI Pipeline Flow
+### 3-Agent AI Pipeline Flow
 
 ```mermaid
 sequenceDiagram
@@ -159,30 +148,19 @@ sequenceDiagram
 
     UI->>API: POST /api/ai/multiagent-run (zones, sensors, weather)
     
-    Note over API: Phase 1: Data Ingestion
+    Note over API: Agent 1: Ingestion & Telemetry
     API->>G: Hydro-Risk Ingestion Agent
-    API->>G: Weather Intelligence Agent
-    API->>G: Satellite Reconnaissance Agent
-    G-->>API: Sensor + weather + SAR analysis
-
-    Note over API: Phase 2: Prediction & Analysis
-    API->>G: Flood Prediction Agent
-    API->>G: Traffic & Infrastructure Agents
-    API->>G: Citizen Intelligence Agent
-    G-->>API: Inundation forecasts, road status, report trends
-
-    Note over API: Phase 3: Decision & Optimization
-    API->>G: Resource Planner + Evacuation Agents
+    G-->>API: Inundation probability & water rise rate
+    
+    Note over API: Agent 2: Decision & Strategy
     API->>G: Decision & Resource Agent
-    API->>G: Simulation Agent
-    G-->>API: Resource plans, routes, scenario models
+    G-->>API: Historical matching & fleet dispatch strategy
 
-    Note over API: Phase 4: Synthesis & Explanation
-    API->>G: Explainability Agent
-    API->>G: Coordinator Agent (Final Synthesis)
-    G-->>API: Unified command recommendation
+    Note over API: Agent 3: Synthesis & Audit
+    API->>G: Command & Dispatch Agent
+    G-->>API: XAI confidence audit & multi-agency dispatch broadcast
 
-    API-->>UI: Full pipeline result (12 agents + coordinator)
+    API-->>UI: Full pipeline result (3-agent execution payload)
 ```
 
 ---
@@ -302,7 +280,7 @@ responsesync/
 │   │   └── components/
 │   │       ├── Header.tsx                 # Navigation header + role switcher
 │   │       ├── DigitalTwinMap.tsx          # Leaflet map — zones, sensors, resources
-│   │       ├── AuthorityDashboard.tsx      # 12-agent AI pipeline control
+│   │       ├── AuthorityDashboard.tsx      # 3-agent AI pipeline control
 │   │       ├── SimulationStudio.tsx        # What-if disaster simulator
 │   │       ├── CascadingImpactView.tsx     # Multi-disaster cascading analysis
 │   │       ├── CitizenPortal.tsx           # Report submission & tracking
@@ -440,7 +418,7 @@ This single command starts the unified Express + Vite server. Both the API backe
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/api/ai/multiagent-run` | Run full 12-agent pipeline |
+| `POST` | `/api/ai/multiagent-run` | Run full 3-agent pipeline |
 | `POST` | `/api/ai/simulation` | What-if disaster simulation |
 | `POST` | `/api/ai/validate-report` | AI report validation & scoring |
 | `POST` | `/api/ai/explainability` | XAI deep-dive reasoning |
@@ -497,7 +475,7 @@ This single command starts the unified Express + Vite server. Both the API backe
 | Express 4 | HTTP server & API routing |
 | tsx | TypeScript execution for development |
 | JSON Web Token | JWT auth with role-based access control |
-| Google GenAI SDK | Gemini 2.5 Flash integration for 12-agent pipeline |
+| Google GenAI SDK | Gemini 2.5 Flash integration for 3-agent pipeline |
 | Supabase JS | PostgreSQL + PostGIS client |
 
 ### Infrastructure

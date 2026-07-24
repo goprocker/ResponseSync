@@ -130,15 +130,42 @@ export interface SimulationParams {
   highTideOverlap: boolean;
 }
 
+export interface PredictedRoadCorridor {
+  roadName: string;
+  submergenceDepthMeters: number;
+  timeToImpassableMin: number;
+  status: 'CLOSED' | 'RESTRICTED' | 'WARNING';
+  recommendedDetour: string;
+  vehicleRestriction: string;
+  affectedCorridorLengthKm: number;
+}
+
+export interface DeploymentRecommendation {
+  type: string;
+  count: number;
+  zone: string;
+  priority?: 'CRITICAL' | 'HIGH' | 'MEDIUM';
+  expectedImpact?: string;
+  knowledgeBasePrecedent?: string;
+}
+
 export interface SimulationResult {
   simulatedTime: string;
   affectedZonesCount: number;
   predictedSubmergedAreaKm2: number;
   estimatedAffectedPeople: number;
   criticalRoadBlocks: string[];
-  recommendedDeployments: { type: string; count: number; zone: string }[];
+  predictedRoadCorridors?: PredictedRoadCorridor[];
+  recommendedDeployments: DeploymentRecommendation[];
   riskTimeline: { minute: number; floodedZones: number; maxWaterDepthMeters: number }[];
   aiSummary: string;
+  knowledgeBaseCitation?: {
+    matchedEvent: string;
+    similarityPct: number;
+    retrievedStrategy: string;
+    historicalOutcome: string;
+    aiRefinement: string;
+  };
 }
 
 export interface EvacuationRoute {

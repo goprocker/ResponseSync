@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { EmergencyShelter, CitizenReport, EvacuationRoute } from '../../shared/types';
+import { EmergencyShelter, CitizenReport, EvacuationRoute } from '../../shared/types.js';
+import { CitizenReportSchema } from '../../services/schema.js';
 import {
   Users,
   Navigation,
@@ -81,6 +82,24 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const parseResult = CitizenReportSchema.safeParse({
+      reporterName: reportForm.reporterName || 'Anonymous Citizen',
+      phone: reportForm.phone,
+      locationName: reportForm.locationName,
+      lat: 12.9785,
+      lng: 80.2205,
+      hazardType: reportForm.category,
+      severity: reportForm.severity,
+      description: reportForm.description,
+      imageUrl: reportForm.imageUrl
+    });
+
+    if (!parseResult.success) {
+      alert(`Validation Error: ${parseResult.error.issues[0]?.message || 'Invalid form input'}`);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {

@@ -575,5 +575,50 @@ export const INITIAL_HOSPITALS: EmergencyHospital[] = [
     contactPerson: 'Dr. Rita Sen',
     phone: '+91 94441 99000',
     hasTraumaCenter: false
+  },
+  {
+    id: 'hosp-05',
+    name: 'MIOT International Hospital',
+    address: '4/112, Mount Poonamallee Road, Manapakkam, Chennai',
+    lat: 13.016,
+    lng: 80.181,
+    totalCapacity: 300,
+    occupiedCapacity: 210,
+    icuBedsTotal: 40,
+    icuBedsAvailable: 8,
+    status: 'normal',
+    contactPerson: 'Dr. P. Rajan',
+    phone: '+91 44 4200 2288',
+    hasTraumaCenter: true
+  },
+  {
+    id: 'hosp-06',
+    name: 'Sri Ramachandra Medical Centre',
+    address: 'Porur, Chennai',
+    lat: 13.039,
+    lng: 80.147,
+    totalCapacity: 500,
+    occupiedCapacity: 480,
+    icuBedsTotal: 60,
+    icuBedsAvailable: 2,
+    status: 'near_capacity',
+    contactPerson: 'Dr. Ramesh Kumar',
+    phone: '+91 44 4592 8500',
+    hasTraumaCenter: true
+  },
+  {
+    id: 'hosp-07',
+    name: 'Gleneagles Global Health City',
+    address: '439, Cheran Nagar, Perumbakkam, Chennai',
+    lat: 12.899,
+    lng: 80.191,
+    totalCapacity: 250,
+    occupiedCapacity: 250,
+    icuBedsTotal: 30,
+    icuBedsAvailable: 0,
+    status: 'full',
+    contactPerson: 'Dr. V. Srinivasan',
+    phone: '+91 44 4477 3300',
+    hasTraumaCenter: true
   }
 ];

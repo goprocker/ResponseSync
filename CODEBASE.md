@@ -1,12 +1,12 @@
 # 🗺️ ResponSync — System Architecture & Codebase Map
 
-> **Reference Document**: Complete codebase blueprint, file dependency matrix, component map, backend endpoints, database schema, and 12-Agent AI orchestration engine for **ResponSync**.
+> **Reference Document**: Complete codebase blueprint, file dependency matrix, component map, backend endpoints, database schema, and 3-Agent AI orchestration engine for **ResponSync**.
 
 ---
 
 ## 📌 Executive Summary
 
-**ResponSync** is an AI-powered **Digital Twin for Predictive Disaster Response**, specifically designed for the **Chennai Velachery–Adyar flood corridor** (South India's most vulnerable urban flood basin). It integrates real-time weather data, satellite radar imagery (ESA Sentinel-1 & NASA FIRMS), IoT sensor streams, citizen emergency reports, and a **12-Agent AI Orchestration Pipeline** (powered by Google Gemini GenAI SDK) into a unified command platform.
+**ResponSync** is an AI-powered **Digital Twin for Predictive Disaster Response**, specifically designed for the **Chennai Velachery–Adyar flood corridor** (South India's most vulnerable urban flood basin). It integrates real-time weather data, satellite radar imagery (ESA Sentinel-1 & NASA FIRMS), IoT sensor streams, citizen emergency reports, and a **3-Agent AI Orchestration Pipeline** (powered by Google Gemini GenAI SDK) into a unified command platform.
 
 ---
 
@@ -44,7 +44,7 @@ responsesync/
 │   ├── main.tsx                    # React 19 root entry point
 │   ├── index.css                   # Global styles & Tailwind CSS 4 imports
 │   ├── backend/                    # Node.js / Express Server & Microservices
-│   │   ├── server.ts               # Primary Express server (32 endpoints, SSE engine, 12-Agent AI pipeline)
+│   │   ├── server.ts               # Primary Express server (32 endpoints, SSE engine, 3-Agent AI pipeline)
 │   │   ├── authMiddleware.ts       # JWT authentication & RBAC authorization middleware
 │   │   ├── notificationsService.ts # FCM push notification & SMS dispatch handlers
 │   │   └── satelliteService.ts     # ESA Sentinel-1 SAR & NASA FIRMS satellite data integration
@@ -54,7 +54,7 @@ responsesync/
 │   │       ├── AlertNotificationBanner.tsx # Live emergency alert bar
 │   │       ├── AnalyticsHub.tsx            # Real-time resource & incident analytics charts
 │   │       ├── AuthorityDashboard.tsx      # Emergency HQ decision center & dispatch control
-│   │       ├── CascadingImpactView.tsx     # 12-Agent cascading failure simulation matrix
+│   │       ├── CascadingImpactView.tsx     # Cascading failure simulation matrix
 │   │       ├── CitizenPortal.tsx           # Citizen SOS report submission & track status
 │   │       ├── DashboardOverview.tsx       # System overview & live metrics grid
 │   │       ├── DigitalTwinMap.tsx          # Leaflet GIS map with basemaps, measuring & routing
@@ -68,10 +68,15 @@ responsesync/
 │   │       ├── SheltersPanel.tsx           # Relief shelter capacity & occupancy tracker
 │   │       └── SimulationStudio.tsx        # Disaster what-if physics simulation sandbox
 │   ├── hooks/                      # Custom React Hooks
+│   │   ├── useAgentPipeline.ts     # 3-Agent pipeline execution & stream logging hook
 │   │   ├── useEvacuationRoute.ts   # OSRM evacuation path calculation hook
+│   │   ├── useMapControls.ts       # Tile basemaps, distance measurement & layer visibility hook
 │   │   └── useSSEStream.ts         # Real-time SSE connection & event dispatcher hook
 │   ├── landing/                    # Public Landing Page
 │   │   └── LandingPage.tsx         # Hero section, feature overview & portal navigation links
+│   ├── services/                   # API & Validation Services
+│   │   ├── api.ts                  # Centralized type-safe Express endpoint API client
+│   │   └── schema.ts               # Zod validation schemas for forms & telemetry
 │   └── shared/                     # Types, Mock Data & Constants
 │       ├── cascadingData.ts        # Pre-computed cascading failure scenarios & graph nodes
 │       ├── cascadingTypes.ts       # Type definitions for cascading impact analysis
@@ -91,43 +96,25 @@ responsesync/
 
 ---
 
-## 🤖 12-Agent AI Orchestration Pipeline
+## 🤖 3-Agent AI Orchestration Pipeline
 
-The AI engine in `src/backend/server.ts` orchestrates 12 dedicated specialist agents using Google Gemini (`gemini-2.5-flash`) with a fail-safe physics/heuristic engine fallback:
+The AI engine in `src/backend/server.ts` orchestrates 3 dedicated specialist agents using Google Gemini (`gemini-2.5-flash`) with a fail-safe physics/heuristic engine fallback:
 
 ```mermaid
 graph TD
-    A[Raw Input: Telemetry / SOS Report / Simulation Request] --> B[1. Meteorological Agent]
-    B --> C[2. Hydrological Inundation Agent]
-    C --> D[3. Infrastructure Cascade Agent]
-    D --> E[4. Citizen Hazard Classifier Agent]
-    E --> F[5. Emergency Fleet Router Agent]
-    F --> G[6. Resource Allocation Agent]
-    G --> H[7. Shelter Capacity Agent]
-    H --> I[8. Hospital Triage Agent]
-    I --> J[9. Public Alert Dispatcher Agent]
-    J --> K[10. Historical Pattern Matcher Agent]
-    K --> L[11. Explainable AI Audit Agent]
-    L --> M[12. Command Strategy Orchestrator]
-    M --> N[SSE Broadcast & Dashboard UI Update]
+    A[Raw Input: Telemetry / SOS Report / Simulation Request] --> B[1. Hydro-Risk Ingestion Agent]
+    B --> C[2. Decision & Resource Agent]
+    C --> D[3. Command & Dispatch Agent]
+    D --> E[SSE Broadcast & Dashboard UI Update]
 ```
 
 ### Agent Roles & Descriptions
 
 | # | Agent Name | Function & Responsibility | Primary Output |
 | :-: | :--- | :--- | :--- |
-| **1** | **Meteorological Agent** | Analyzes rainfall intensity (mm/hr), wind, and high-tide status | Preprocessing threat level |
-| **2** | **Hydrological Inundation Agent** | Calculates water depth, inundation spread rate & time horizon | 30m / 1h / 3h depth projections |
-| **3** | **Infrastructure Cascade Agent** | Evaluates power grid, subway, and road blockage risks | Node failure propagation |
-| **4** | **Citizen Hazard Classifier Agent** | Validates incoming citizen reports, detects spam, assigns severity | Report score & hazard tag |
-| **5** | **Emergency Fleet Router Agent** | Computes safe evacuation detours avoiding submerged roads | Safe OSRM coordinates |
-| **6** | **Resource Allocation Agent** | Optimizes rescue boat, pump, ambulance, and bus assignments | Dispatch recommendation |
-| **7** | **Shelter Capacity Agent** | Tracks relief camp occupancy, food, and medical stock | Shelter re-routing recommendation |
-| **8** | **Hospital Triage Agent** | Monitors ICU bed availability & emergency medical capacity | Hospital diversion guidance |
-| **9** | **Public Alert Dispatcher Agent** | Drafts multilingual citizen warnings & FCM/SMS alerts | Alert payload & advisory text |
-| **10**| **Historical Pattern Matcher Agent** | Matches current flood parameters with 2015/2021/2023 disaster logs | Similarity index & lessons learned |
-| **11**| **Explainable AI Audit Agent** | Generates human-readable rationale & confidence breakdown | Transparency report |
-| **12**| **Command Strategy Orchestrator** | Synthesizes outputs into single actionable HQ command plan | Master response strategy |
+| **1** | **Hydro-Risk Ingestion Agent** | Ingests weather radar, river discharge, IoT depth sensors, and citizen SOS calls. Calculates short-term inundation probabilities and water rise rates across Velachery, Guindy, and Kotturpuram. | Risk scores, predicted water depth & zone priority updates |
+| **2** | **Decision & Resource Agent** | Performs vector similarity matching against historical disaster incidents in Supabase Knowledge Base, formulates optimal fleet resource allocation (NDRF boats, 500HP dewatering pumps, transit buses), and calculates safe evacuation detours. | Fleet dispatch plan & safe evacuation routes |
+| **3** | **Command & Dispatch Agent** | Synthesizes multi-agent rationale with Explainable AI (XAI) confidence scores, formats broadcast alerts for emergency agencies, and generates dispatch orders. | Multilingual alert payload, XAI rationale & dispatch orders |
 
 ---
 
@@ -152,7 +139,7 @@ graph TD
 | **Resources** | `/api/resources` | GET | None | Retrieves emergency fleet & response equipment |
 | **Resources** | `/api/recommendations` | GET | None | Active AI action recommendations for HQ |
 | **AI Routing** | `/api/ai/evacuation-route` | POST | None | Calculates safe evacuation path using OSRM |
-| **AI Cascade** | `/api/ai/cascading-impact` | POST | None | Runs 12-Agent cascading failure analysis |
+| **AI Cascade** | `/api/ai/cascading-impact` | POST | None | Runs cascading failure analysis |
 | **Reports** | `/api/reports` | GET | None | Lists citizen SOS reports |
 | **Reports** | `/api/reports` | POST | None | Submits new citizen SOS report |
 | **Shelters** | `/api/shelters` | GET | None | Retrieves relief shelter status & occupancy |
@@ -160,7 +147,7 @@ graph TD
 | **Simulation** | `/api/simulations` | GET | None | Lists historical & active simulation runs |
 | **Simulation** | `/api/simulation/:id` | GET | None | Retrieves detailed simulation record |
 | **AI Engine** | `/api/ai/scenario-match` | POST | None | Matches current telemetry against past disasters |
-| **AI Engine** | `/api/ai/multiagent-run` | POST | None | Executes complete 12-Agent orchestration pipeline |
+| **AI Engine** | `/api/ai/multiagent-run` | POST | None | Executes complete 3-Agent orchestration pipeline |
 | **AI Engine** | `/api/ai/simulate` | POST | None | Runs custom What-If disaster scenario simulation |
 | **AI Engine** | `/api/ai/validate-report` | POST | None | AI validation & spam detection for SOS reports |
 | **AI Engine** | `/api/ai/explain-decision` | POST | None | Generates XAI rationale for authority decisions |

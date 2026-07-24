@@ -488,7 +488,6 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
 
         {/* Alert Notification Banner */}
         <AlertNotificationBanner alerts={alerts} onAcknowledge={handleAcknowledgeAlert} />
-
         {/* 3. Main Workspace Screen */}
         <main className={`flex-1 min-h-0 relative overflow-hidden ${activeTab === 'twin_map' ? 'p-0' : 'p-6 overflow-y-auto no-scrollbar'}`}>
           

@@ -157,7 +157,7 @@ export const Header: React.FC<HeaderProps> = ({
                   console.warn('JWT role switch sync error:', err);
                 }
               }}
-              className="bg-transparent text-xs font-mono font-bold text-white focus:outline-none cursor-pointer"
+              className="bg-transparent text-xs font-mono font-bold text-white focus:outline-none cursor-pointer appearance-none [-webkit-appearance:none] [-moz-appearance:none]"
             >
               <option value="authority" className="bg-[#0e0e14] text-white">🏛️ Disaster Mgmt HQ</option>
               <option value="fire_rescue" className="bg-[#0e0e14] text-white">🚒 Fire & Rescue</option>
