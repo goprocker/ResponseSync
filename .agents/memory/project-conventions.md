@@ -14,3 +14,7 @@ updated: 2026-07-12
 - AG Kit **only supports Gemini CLI and Google Antigravity**.
 - Do not claim compatibility with Claude Code, Cursor, Copilot, Windsurf, or other assistants unless the user explicitly expands scope.
 - Copy on the website, docs, FAQ, README, and marketing should describe AG Kit as a toolkit for Gemini CLI / Antigravity-style agent setups.
+
+## Feature Documentation Rule
+- Whenever a new feature is created, updated, or refactored in ResponSync, the AI agent MUST update `.agents/memory/feature-set.md` with its specification, data flows, API endpoints, data models, and operation rules.
+
