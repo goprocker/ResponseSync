@@ -1,6 +1,6 @@
 <p align="center">
   <img
-    src="./assets/banner.png"
+    src="banner.png"
     alt="ResponSync — AI Decision Digital Twin for Predictive Flood Management"
     width="100%"
   />
