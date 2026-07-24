@@ -7,15 +7,18 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/api': {
-        target: 'http://127.0.0.1:8000',
-        changeOrigin: true,
-      },
-      '/health': {
-        target: 'http://127.0.0.1:8000',
-        changeOrigin: true,
-      },
+      '/health': 'http://127.0.0.1:8000',
+      '/weather': 'http://127.0.0.1:8000',
+      '/reports': 'http://127.0.0.1:8000',
+      '/risk': 'http://127.0.0.1:8000',
+      '/resources': 'http://127.0.0.1:8000',
+      '/shelters': 'http://127.0.0.1:8000',
+      '/hospitals': 'http://127.0.0.1:8000',
+      '/evacuation': 'http://127.0.0.1:8000',
+      '/simulate': 'http://127.0.0.1:8000',
+      '/simulations': 'http://127.0.0.1:8000',
+      '/recommendations': 'http://127.0.0.1:8000',
+      '/api': 'http://127.0.0.1:8000',
     },
   },
 })
-
