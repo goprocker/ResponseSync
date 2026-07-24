@@ -490,6 +490,7 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
               shelters={shelters}
               reports={reports}
               hospitals={hospitals}
+              agentLogs={agentLogs}
               evacuationRoute={evacuationRoute}
               timeHorizon={timeHorizon}
               setTimeHorizon={setTimeHorizon}

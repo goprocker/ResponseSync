@@ -18,7 +18,8 @@ import {
   EmergencyShelter, 
   CitizenReport, 
   EvacuationRoute,
-  EmergencyHospital
+  EmergencyHospital,
+  AgentActivityLog
 } from '../../shared/types';
 import { DigitalTwinMap } from './DigitalTwinMap';
 
@@ -29,6 +30,7 @@ interface DashboardOverviewProps {
   shelters: EmergencyShelter[];
   reports: CitizenReport[];
   hospitals: EmergencyHospital[];
+  agentLogs?: AgentActivityLog[];
   evacuationRoute: EvacuationRoute | null;
   timeHorizon: number;
   setTimeHorizon: (val: number) => void;
@@ -44,6 +46,7 @@ export default function DashboardOverview({
   shelters,
   reports,
   hospitals,
+  agentLogs,
   evacuationRoute,
   timeHorizon,
   setTimeHorizon,
@@ -330,62 +333,48 @@ export default function DashboardOverview({
           </div>
         </div>
 
-        {/* Timeline Log */}
+        {/* Timeline & 12-Agent Intelligence Stream */}
         <div className="bg-[#0e0e14] border border-white/10 p-5 flex flex-col h-full max-h-[300px] lg:max-h-none overflow-hidden">
           <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-3">
             <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-brand" />
+              <Sparkles className="w-4 h-4 text-brand" />
               <h3 className="text-sm font-bold text-white uppercase tracking-wider font-sans">
-                Timeline
+                12-Agent Activity Feed
               </h3>
             </div>
             <button 
               onClick={() => onNavigateToTab('multi_agent')}
-              className="text-[10px] font-mono text-neutral-400 hover:text-white transition-colors cursor-pointer uppercase"
+              className="text-[10px] font-mono text-brand hover:text-white transition-colors cursor-pointer uppercase font-bold flex items-center gap-1"
             >
-              View All
+              <span>HQ View ({agentLogs?.length || 0})</span>
+              <ArrowRight className="w-3 h-3" />
             </button>
           </div>
 
           {/* Scrollable list */}
-          <div className="flex-1 overflow-y-auto space-y-3.5 pr-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-            
-            {/* Entry 1 */}
-            <div className="flex gap-3 text-xs items-start">
-              <span className="text-[10px] text-neutral-500 font-mono pt-0.5 min-w-[55px]">10:25 AM</span>
-              <div className="flex flex-col">
-                <span className="font-bold text-[#e0e0e6]">Flash Flood Alert Issued</span>
-                <span className="text-[10px] text-neutral-400">Automatic command AI Broadcast dispatch</span>
+          <div className="flex-1 overflow-y-auto space-y-3 pr-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            {(agentLogs && agentLogs.length > 0 ? agentLogs : [
+              { id: '1', timestamp: '10:25 AM', agentName: 'Coordinator Agent', action: 'System Monitoring Active', details: 'Continuous telemetry stream ingest across 12 production agents', severity: 'info' }
+            ]).map((log, i) => (
+              <div key={log.id || i} className="flex gap-2.5 text-xs items-start border-b border-white/5 pb-2">
+                <span className="text-[10px] text-neutral-400 font-mono pt-0.5 min-w-[55px]">{log.timestamp}</span>
+                <div className="flex flex-col flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="font-bold text-white text-[11px] font-mono">{log.agentName}</span>
+                    <span className={`text-[9px] px-1 rounded font-mono uppercase font-semibold ${
+                      log.severity === 'critical' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+                      log.severity === 'high' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' :
+                      log.severity === 'warning' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
+                      log.severity === 'success' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+                      'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                    }`}>
+                      {log.action}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-neutral-300 truncate mt-0.5">{log.details}</span>
+                </div>
               </div>
-            </div>
-
-            {/* Entry 2 */}
-            <div className="flex gap-3 text-xs items-start">
-              <span className="text-[10px] text-neutral-500 font-mono pt-0.5 min-w-[55px]">10:20 AM</span>
-              <div className="flex flex-col">
-                <span className="font-bold text-[#e0e0e6]">New Incident Report</span>
-                <span className="text-[10px] text-neutral-400">Flooding reported Velachery 100ft Road</span>
-              </div>
-            </div>
-
-            {/* Entry 3 */}
-            <div className="flex gap-3 text-xs items-start">
-              <span className="text-[10px] text-neutral-500 font-mono pt-0.5 min-w-[55px]">10:18 AM</span>
-              <div className="flex flex-col">
-                <span className="font-bold text-[#e0e0e6]">Rescue Team Dispatched</span>
-                <span className="text-[10px] text-neutral-400">Team Bravo deployed to Lake Colony</span>
-              </div>
-            </div>
-
-            {/* Entry 4 */}
-            <div className="flex gap-3 text-xs items-start">
-              <span className="text-[10px] text-neutral-500 font-mono pt-0.5 min-w-[55px]">10:15 AM</span>
-              <div className="flex flex-col">
-                <span className="font-bold text-[#e0e0e6]">Shelter Activated</span>
-                <span className="text-[10px] text-neutral-400">Velachery Community Hall camp opened</span>
-              </div>
-            </div>
-
+            ))}
           </div>
         </div>
 
