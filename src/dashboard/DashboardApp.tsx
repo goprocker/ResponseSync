@@ -463,89 +463,31 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
       {/* 2. Right Operations Workspace */}
       <div className="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden bg-[#050507]">
         
-        {/* Return to Home Switcher Ribbon */}
+        {/* Return to Landing Banner */}
         <div 
           onClick={onBackToLanding}
-          className="bg-[#0d0d12] hover:bg-white/5 text-brand hover:text-[#e0e0e6] text-[10px] font-mono font-bold uppercase tracking-wider py-1 px-4 text-center cursor-pointer transition-colors flex items-center justify-center gap-2 select-none z-50 border-b border-white/10 flex-shrink-0"
+          className="bg-[#0d0d12] hover:bg-white/5 text-brand hover:text-white text-[11px] font-mono font-semibold uppercase tracking-wider py-1 px-4 text-center cursor-pointer transition-colors flex items-center justify-center gap-2 select-none z-50 border-b border-white/10 flex-shrink-0"
         >
-          <span>⚡ Viewing LIVE ResponSync Command OS. Click here to return to the ResponSync Landing Page.</span>
+          <span>⚡ LIVE ResponSync Command OS — Click here to return to Landing Page</span>
         </div>
+
+        {/* Top Operational Header Bar */}
+        <Header 
+          disasterType={disasterType}
+          setDisasterType={setDisasterType}
+          agencyRole={agencyRole}
+          setAgencyRole={handleAgencyRoleChange}
+          activeTab={activeTab as any}
+          setActiveTab={(tab) => setActiveTab(tab)}
+          isSyncing={isSyncing}
+          onTriggerSync={handleTriggerSync}
+          alertsCount={alerts.filter(a => !a.acknowledged).length}
+          lastSyncTime={lastSyncTime}
+          activePreset={activePreset}
+        />
 
         {/* Alert Notification Banner */}
         <AlertNotificationBanner alerts={alerts} onAcknowledge={handleAcknowledgeAlert} />
-
-        {/* Top Header Bar */}
-        <header className="h-[55px] bg-[#0e0e14] border-b border-white/10 px-5 flex items-center justify-between flex-shrink-0 z-20">
-          
-          {/* Active Flashing Alert Box */}
-          <div className="flex items-center gap-2">
-            {activeAlert ? (
-              <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-500 px-3 py-1.5 text-[11px] font-sans font-bold">
-                <AlertTriangle className="w-3.5 h-3.5 text-red-500 animate-pulse" />
-                <span className="uppercase tracking-wider">FLASH FLOOD ALERT</span>
-                <span className="text-[#e0e0e6] font-normal font-mono">• {activeAlert.zone}</span>
-                <span className="text-neutral-500 font-normal font-mono ml-1">{activeAlert.timestamp}</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 bg-[#050507] border border-white/5 text-neutral-400 px-3 py-1 text-xs">
-                <span>ALL SECTORS SECURE</span>
-              </div>
-            )}
-          </div>
-
-          {/* User Profile and Roles */}
-          <div className="flex items-center gap-4">
-            
-            {/* Sync trigger shortcut */}
-            <button 
-              onClick={() => handleTriggerSync()}
-              disabled={isSyncing}
-              className="p-1.5 border border-white/10 hover:border-brand/40 text-brand bg-[#050507] hover:bg-brand/5 cursor-pointer disabled:opacity-50"
-              title="Run 12 Agents Sync Loop"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-            </button>
-
-            {/* Notification bell badge */}
-            <button 
-              onClick={() => setIsNotificationDrawerOpen(prev => !prev)}
-              className="relative cursor-pointer text-neutral-400 hover:text-white p-1.5 border border-white/5 hover:border-brand/40 bg-[#050507] transition-all"
-              title="Open Emergency Notification Drawer"
-            >
-              <Bell className="w-4 h-4 text-brand" />
-              {alerts.filter(a => !a.acknowledged).length > 0 && (
-                <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-brand text-black text-[8px] font-extrabold rounded-full flex items-center justify-center font-mono animate-pulse">
-                  {alerts.filter(a => !a.acknowledged).length}
-                </span>
-              )}
-            </button>
-
-            {/* Department Role Selector Dropdown Container */}
-            <div className="flex items-center gap-2 bg-[#050507] px-3 py-1.5 border border-brand/40 hover:border-brand rounded-none shadow-sm transition-all">
-              <div className="w-6 h-6 rounded-none bg-brand text-black font-extrabold text-[10px] flex items-center justify-center font-mono select-none">
-                {agencyRole === 'fire_rescue' ? 'FR' : agencyRole === 'police' ? 'PD' : agencyRole === 'health_hospitals' ? 'HH' : agencyRole === 'citizen' ? 'CV' : 'DM'}
-              </div>
-              
-              <div className="flex items-center gap-1 cursor-pointer text-xs font-mono text-[#e0e0e6] select-none">
-                <span className="text-[9px] uppercase text-neutral-400 font-mono tracking-wider hidden sm:inline">Role:</span>
-                <select 
-                  value={agencyRole} 
-                  onChange={(e) => handleAgencyRoleChange(e.target.value as AgencyRole)}
-                  className="bg-transparent border-none text-brand hover:text-white font-mono uppercase focus:outline-none cursor-pointer text-xs tracking-wider font-extrabold appearance-none [-webkit-appearance:none] [-moz-appearance:none] pr-1"
-                >
-                  <option value="authority" className="bg-[#0e0e14] text-white">🏛️ DISASTER MGMT HQ</option>
-                  <option value="fire_rescue" className="bg-[#0e0e14] text-white">🚒 FIRE & RESCUE</option>
-                  <option value="police" className="bg-[#0e0e14] text-white">🚓 POLICE DEPT</option>
-                  <option value="health_hospitals" className="bg-[#0e0e14] text-white">🏥 HOSPITALS GROUP</option>
-                  <option value="citizen" className="bg-[#0e0e14] text-white">👤 CITIZEN VIEW</option>
-                </select>
-                <ChevronDown className="w-3.5 h-3.5 text-brand shrink-0 pointer-events-none" />
-              </div>
-            </div>
-
-          </div>
-
-        </header>
 
         {/* 3. Main Workspace Screen */}
         <main className={`flex-1 min-h-0 relative overflow-hidden ${activeTab === 'twin_map' ? 'p-0' : 'p-6 overflow-y-auto no-scrollbar'}`}>
