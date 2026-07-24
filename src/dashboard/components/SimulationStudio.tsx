@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SimulationParams, SimulationResult } from '../types';
+import { SimulationParams, SimulationResult } from '../../shared/types';
 import {
   Sliders,
   Play,
@@ -144,13 +144,13 @@ export const SimulationStudio: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-6 text-[#e0e0e6] font-sans">
       
       {/* Title Header */}
-      <div className="bg-[#0a0a0f] p-6 rounded-lg border border-[#ffffff15] shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-[#040806] p-6 rounded-none border border-[#10b98125] shadow-none flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-[0.2em] bg-[#ff4e00]/15 text-[#ff4e00] border border-[#ff4e00]/30 flex items-center gap-1.5 w-fit mb-2">
-            <Sliders className="w-3.5 h-3.5 text-[#ff4e00]" />
+          <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-[0.2em] bg-[#10b981]/15 text-emerald-100 border border-[#10b981]/30 flex items-center gap-1.5 w-fit mb-2">
+            <Sliders className="w-3.5 h-3.5 text-emerald-100" />
             Simulation & Decision Knowledge Base Studio
           </span>
-          <h2 className="text-2xl font-bold text-white tracking-tight font-sans">
+          <h2 className="text-2xl font-bold text-emerald-100 tracking-tight font-sans">
             Disaster Simulation & Scenario Matching Engine
           </h2>
           <p className="text-sm text-[#aaa]">
@@ -159,13 +159,13 @@ export const SimulationStudio: React.FC = () => {
         </div>
 
         {/* Sub-Tab Navigation Switch */}
-        <div className="flex items-center gap-1.5 bg-[#151520] p-1 rounded border border-[#ffffff15]">
+        <div className="flex items-center gap-1.5 bg-[#040806] p-1 rounded border border-[#10b98125]">
           <button
             onClick={() => setActiveSubTab('simulation')}
             className={`flex items-center gap-2 px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
               activeSubTab === 'simulation'
-                ? 'bg-[#ff4e00] text-black shadow-md shadow-[#ff4e00]/20'
-                : 'text-[#888] hover:text-white'
+                ? 'bg-[#10b981] text-black shadow-none shadow-none'
+                : 'text-[#888] hover:text-emerald-100'
             }`}
           >
             <Sliders className="w-3.5 h-3.5" />
@@ -175,8 +175,8 @@ export const SimulationStudio: React.FC = () => {
             onClick={() => setActiveSubTab('knowledge_base')}
             className={`flex items-center gap-2 px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
               activeSubTab === 'knowledge_base'
-                ? 'bg-[#ff4e00] text-black shadow-md shadow-[#ff4e00]/20'
-                : 'text-[#888] hover:text-white'
+                ? 'bg-[#10b981] text-black shadow-none shadow-none'
+                : 'text-[#888] hover:text-emerald-100'
             }`}
           >
             <Database className="w-3.5 h-3.5" />
@@ -190,15 +190,15 @@ export const SimulationStudio: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
           {/* Left Column: Parameter Controls (5 cols) */}
-          <div className="lg:col-span-5 bg-[#0d0d14] rounded-lg border border-[#ffffff15] p-5 shadow-xl space-y-5">
-            <div className="flex items-center justify-between border-b border-[#ffffff15] pb-3">
-              <h3 className="font-bold text-white text-sm uppercase tracking-wider flex items-center gap-2 font-sans">
-                <Sliders className="w-4 h-4 text-[#ff4e00]" />
+          <div className="lg:col-span-5 bg-[#040806] rounded-none border border-[#10b98125] p-5 shadow-none space-y-5">
+            <div className="flex items-center justify-between border-b border-[#10b98125] pb-3">
+              <h3 className="font-bold text-emerald-100 text-sm uppercase tracking-wider flex items-center gap-2 font-sans">
+                <Sliders className="w-4 h-4 text-emerald-100" />
                 Scenario Input Controls
               </h3>
               <button
                 onClick={handleReset}
-                className="text-[10px] text-[#888] hover:text-white font-mono uppercase underline flex items-center gap-1 cursor-pointer"
+                className="text-[10px] text-[#888] hover:text-emerald-100 font-mono uppercase underline flex items-center gap-1 cursor-pointer"
               >
                 <RotateCcw className="w-3 h-3" />
                 Reset
@@ -209,10 +209,10 @@ export const SimulationStudio: React.FC = () => {
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
                 <span className="text-[#ccc] font-semibold flex items-center gap-1.5">
-                  <CloudRain className="w-4 h-4 text-[#ff4e00]" />
+                  <CloudRain className="w-4 h-4 text-emerald-100" />
                   Rainfall Rate Intensity
                 </span>
-                <span className="font-mono font-bold text-[#ff4e00]">{params.rainfallMmHr} mm/hr</span>
+                <span className="font-mono font-bold text-emerald-100">{params.rainfallMmHr} mm/hr</span>
               </div>
               <input
                 type="range"
@@ -220,7 +220,7 @@ export const SimulationStudio: React.FC = () => {
                 max="200"
                 value={params.rainfallMmHr}
                 onChange={(e) => setParams({ ...params, rainfallMmHr: Number(e.target.value) })}
-                className="w-full accent-[#ff4e00] bg-[#151520] rounded cursor-pointer h-2"
+                className="w-full accent-[#ff4e00] bg-[#040806] rounded cursor-pointer h-2"
               />
               <div className="flex justify-between text-[10px] text-[#666] font-mono">
                 <span>20 mm/hr (Light)</span>
@@ -245,7 +245,7 @@ export const SimulationStudio: React.FC = () => {
                 step="100"
                 value={params.chembarambakkamReleaseM3s}
                 onChange={(e) => setParams({ ...params, chembarambakkamReleaseM3s: Number(e.target.value) })}
-                className="w-full accent-blue-500 bg-[#151520] rounded cursor-pointer h-2"
+                className="w-full accent-blue-500 bg-[#040806] rounded cursor-pointer h-2"
               />
               <div className="flex justify-between text-[10px] text-[#666] font-mono">
                 <span>100 m³/s</span>
@@ -269,7 +269,7 @@ export const SimulationStudio: React.FC = () => {
                 max="100"
                 value={params.canalBlockagePct}
                 onChange={(e) => setParams({ ...params, canalBlockagePct: Number(e.target.value) })}
-                className="w-full accent-amber-500 bg-[#151520] rounded cursor-pointer h-2"
+                className="w-full accent-amber-500 bg-[#040806] rounded cursor-pointer h-2"
               />
             </div>
 
@@ -277,7 +277,7 @@ export const SimulationStudio: React.FC = () => {
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
                 <span className="text-[#ccc] font-semibold">Simulation Duration</span>
-                <span className="font-mono font-bold text-white">{params.durationHours} Hours</span>
+                <span className="font-mono font-bold text-emerald-100">{params.durationHours} Hours</span>
               </div>
               <input
                 type="range"
@@ -285,12 +285,12 @@ export const SimulationStudio: React.FC = () => {
                 max="12"
                 value={params.durationHours}
                 onChange={(e) => setParams({ ...params, durationHours: Number(e.target.value) })}
-                className="w-full accent-gray-400 bg-[#151520] rounded cursor-pointer h-2"
+                className="w-full accent-gray-400 bg-[#040806] rounded cursor-pointer h-2"
               />
             </div>
 
             {/* Toggles */}
-            <div className="pt-2 border-t border-[#ffffff15] space-y-3">
+            <div className="pt-2 border-t border-[#10b98125] space-y-3">
               <label className="flex items-center justify-between cursor-pointer text-xs">
                 <span className="text-[#ccc] font-semibold">High-Tide Estuarine Backwater Overlap</span>
                 <input
@@ -306,7 +306,7 @@ export const SimulationStudio: React.FC = () => {
                 <select
                   value={params.bridgeStatus}
                   onChange={(e) => setParams({ ...params, bridgeStatus: e.target.value as any })}
-                  className="bg-[#151520] border border-[#ffffff15] text-xs font-mono font-bold text-[#ff4e00] rounded p-1.5 focus:outline-none"
+                  className="bg-[#040806] border border-[#10b98125] text-xs font-mono font-bold text-emerald-100 rounded p-1.5 focus:outline-none"
                 >
                   <option value="open">Open (All Lanes Clear)</option>
                   <option value="restricted">Restricted (1 Lane Submerged)</option>
@@ -318,7 +318,7 @@ export const SimulationStudio: React.FC = () => {
             <button
               onClick={handleRunSimulation}
               disabled={isLoading}
-              className="w-full py-3 bg-[#ff4e00] hover:bg-[#ff6a2b] text-black font-bold uppercase tracking-wider text-xs rounded shadow-lg shadow-[#ff4e00]/20 transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-3 bg-[#10b981] hover:bg-[#0fa06e] text-black font-bold uppercase tracking-wider text-xs rounded shadow-lg shadow-none transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <Play className={`w-3.5 h-3.5 fill-black ${isLoading ? 'animate-spin' : ''}`} />
               <span>{isLoading ? 'Running Hydrodynamic Physics Model...' : 'Execute What-If Simulation'}</span>
@@ -327,10 +327,10 @@ export const SimulationStudio: React.FC = () => {
           </div>
 
           {/* Right Column: AI Simulation Results (7 cols) */}
-          <div className="lg:col-span-7 bg-[#0d0d14] rounded-lg border border-[#ffffff15] p-5 shadow-xl space-y-5">
-            <div className="flex items-center justify-between border-b border-[#ffffff15] pb-3">
-              <h3 className="font-bold text-white text-sm uppercase tracking-wider flex items-center gap-2 font-sans">
-                <Cpu className="w-4 h-4 text-[#ff4e00]" />
+          <div className="lg:col-span-7 bg-[#040806] rounded-none border border-[#10b98125] p-5 shadow-none space-y-5">
+            <div className="flex items-center justify-between border-b border-[#10b98125] pb-3">
+              <h3 className="font-bold text-emerald-100 text-sm uppercase tracking-wider flex items-center gap-2 font-sans">
+                <Cpu className="w-4 h-4 text-emerald-100" />
                 Simulation Forecast Output
               </h3>
               <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/15 px-2.5 py-1 rounded border border-emerald-500/30 uppercase tracking-widest">
@@ -343,23 +343,23 @@ export const SimulationStudio: React.FC = () => {
                 
                 {/* Metrics Grid */}
                 <div className="grid grid-cols-3 gap-3">
-                  <div className="bg-[#151520] p-3.5 rounded border border-[#ffffff10] text-center font-mono">
+                  <div className="bg-[#040806] p-3.5 rounded border border-[#10b98115] text-center font-mono">
                     <span className="text-[10px] text-[#888] uppercase font-bold block tracking-wider">Flooded Sectors</span>
-                    <span className="text-xl font-bold text-[#ff4e00] mt-1 block">{result.affectedZonesCount} Zones</span>
+                    <span className="text-xl font-bold text-emerald-100 mt-1 block">{result.affectedZonesCount} Zones</span>
                   </div>
-                  <div className="bg-[#151520] p-3.5 rounded border border-[#ffffff10] text-center font-mono">
+                  <div className="bg-[#040806] p-3.5 rounded border border-[#10b98115] text-center font-mono">
                     <span className="text-[10px] text-[#888] uppercase font-bold block tracking-wider">Submerged Area</span>
                     <span className="text-xl font-bold text-blue-400 mt-1 block">{result.predictedSubmergedAreaKm2} km²</span>
                   </div>
-                  <div className="bg-[#151520] p-3.5 rounded border border-[#ffffff10] text-center font-mono">
+                  <div className="bg-[#040806] p-3.5 rounded border border-[#10b98115] text-center font-mono">
                     <span className="text-[10px] text-[#888] uppercase font-bold block tracking-wider">Pop. Impacted</span>
                     <span className="text-xl font-bold text-amber-400 mt-1 block">{result.estimatedAffectedPeople.toLocaleString()}</span>
                   </div>
                 </div>
 
                 {/* AI Narrative */}
-                <div className="bg-[#151520] border-l-4 border-[#ff4e00] border-t border-b border-r border-[#ffffff10] p-4 rounded text-xs space-y-1.5 font-sans">
-                  <span className="font-mono font-bold text-[#ff4e00] uppercase text-[10px] tracking-widest block">
+                <div className="bg-[#040806] border-l-4 border-[#10b981] border-t border-b border-r border-[#10b98115] p-4 rounded text-xs space-y-1.5 font-sans">
+                  <span className="font-mono font-bold text-emerald-100 uppercase text-[10px] tracking-widest block">
                     AI Hydrodynamic Rationale:
                   </span>
                   <p className="text-[#ccc] leading-relaxed font-medium">
@@ -374,8 +374,8 @@ export const SimulationStudio: React.FC = () => {
                   </h4>
                   <div className="space-y-1.5">
                     {result.criticalRoadBlocks.map((block, idx) => (
-                      <div key={idx} className="flex items-center gap-2 bg-[#151520] p-2.5 rounded border border-[#ff4e00]/30 text-xs text-[#ff4e00] font-mono">
-                        <AlertTriangle className="w-3.5 h-3.5 text-[#ff4e00] shrink-0" />
+                      <div key={idx} className="flex items-center gap-2 bg-[#040806] p-2.5 rounded border border-[#10b981]/30 text-xs text-emerald-100 font-mono">
+                        <AlertTriangle className="w-3.5 h-3.5 text-emerald-100 shrink-0" />
                         <span>{block}</span>
                       </div>
                     ))}
@@ -389,7 +389,7 @@ export const SimulationStudio: React.FC = () => {
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     {result.recommendedDeployments.map((dep, idx) => (
-                      <div key={idx} className="bg-[#151520] p-2.5 rounded border border-[#ffffff10] text-xs font-mono">
+                      <div key={idx} className="bg-[#040806] p-2.5 rounded border border-[#10b98115] text-xs font-mono">
                         <span className="font-bold text-emerald-400 block">{dep.count}x {dep.type}</span>
                         <span className="text-[10px] text-[#888]">Target: {dep.zone}</span>
                       </div>
@@ -412,13 +412,13 @@ export const SimulationStudio: React.FC = () => {
         <div className="space-y-6">
           
           {/* Matcher Trigger Banner */}
-          <div className="bg-[#0d0d14] p-5 rounded-lg border border-[#ffffff15] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="bg-[#040806] p-5 rounded-none border border-[#10b98125] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
               <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-[0.2em] bg-blue-500/15 text-blue-400 border border-blue-500/30 flex items-center gap-1.5 w-fit mb-2">
                 <GitCompare className="w-3.5 h-3.5 text-blue-400" />
                 Live-to-Knowledge Base Matcher
               </span>
-              <h3 className="text-lg font-bold text-white font-sans">
+              <h3 className="text-lg font-bold text-emerald-100 font-sans">
                 Match Live Disaster State Against Top-K Historical Simulations
               </h3>
               <p className="text-xs text-[#aaa]">
@@ -429,7 +429,7 @@ export const SimulationStudio: React.FC = () => {
             <button
               onClick={handleRunScenarioMatch}
               disabled={isMatching}
-              className="px-5 py-2.5 bg-[#ff4e00] hover:bg-[#ff6a2b] text-black font-bold uppercase tracking-wider text-xs rounded shadow-lg shadow-[#ff4e00]/20 transition-all flex items-center gap-2 cursor-pointer shrink-0 disabled:opacity-50"
+              className="px-5 py-2.5 bg-[#10b981] hover:bg-[#0fa06e] text-black font-bold uppercase tracking-wider text-xs rounded shadow-lg shadow-none transition-all flex items-center gap-2 cursor-pointer shrink-0 disabled:opacity-50"
             >
               <Search className={`w-3.5 h-3.5 ${isMatching ? 'animate-spin' : ''}`} />
               <span>{isMatching ? 'Searching Knowledge Base...' : 'Run Scenario Matching Engine'}</span>
@@ -439,8 +439,8 @@ export const SimulationStudio: React.FC = () => {
           {/* Matched Scenarios Display */}
           {scenarioMatches && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-[#ffffff15] pb-2">
-                <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-[#ff4e00]">
+              <div className="flex items-center justify-between border-b border-[#10b98125] pb-2">
+                <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-emerald-100">
                   Top Matched Historical Disaster Scenarios:
                 </h4>
                 <span className="text-[10px] font-mono text-[#888]">
@@ -450,17 +450,17 @@ export const SimulationStudio: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {scenarioMatches.matchedScenarios.map((sim: any) => (
-                  <div key={sim.id} className="bg-[#0d0d14] border border-[#ffffff15] p-5 rounded-lg space-y-3 font-sans">
+                  <div key={sim.id} className="bg-[#040806] border border-[#10b98125] p-5 rounded-none space-y-3 font-sans">
                     <div className="flex items-start justify-between">
                       <div>
                         <span className="text-[9px] font-mono font-bold uppercase bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded border border-blue-500/30">
                           {sim.similarityPct}% HISTORICAL SIMILARITY
                         </span>
-                        <h4 className="font-bold text-white text-sm mt-1.5">{sim.historicalEvent}</h4>
+                        <h4 className="font-bold text-emerald-100 text-sm mt-1.5">{sim.historicalEvent}</h4>
                       </div>
                     </div>
 
-                    <div className="bg-[#151520] p-3 rounded border border-[#ffffff10] text-xs space-y-1.5 font-mono">
+                    <div className="bg-[#040806] p-3 rounded border border-[#10b98115] text-xs space-y-1.5 font-mono">
                       <span className="text-[10px] text-[#888] uppercase block font-bold">Key Pattern Matches:</span>
                       <ul className="list-disc list-inside text-[#ccc] space-y-0.5 text-[11px]">
                         {sim.keyMatches.map((km: string, idx: number) => (
@@ -470,15 +470,15 @@ export const SimulationStudio: React.FC = () => {
                     </div>
 
                     <div className="space-y-1 text-xs">
-                      <span className="text-[10px] font-mono font-bold text-[#ff4e00] uppercase block">Retrieved Effective Strategy:</span>
-                      <p className="text-[#ccc] bg-[#151520] p-2.5 rounded border border-[#ffffff10] font-sans">
+                      <span className="text-[10px] font-mono font-bold text-emerald-100 uppercase block">Retrieved Effective Strategy:</span>
+                      <p className="text-[#ccc] bg-[#040806] p-2.5 rounded border border-[#10b98115] font-sans">
                         {sim.retrievedStrategy}
                       </p>
                     </div>
 
                     <div className="space-y-1 text-xs">
                       <span className="text-[10px] font-mono font-bold text-emerald-400 uppercase block">AI Refinement For Live Event:</span>
-                      <p className="text-[#ccc] bg-[#151520] p-2.5 rounded border border-emerald-500/30 font-sans">
+                      <p className="text-[#ccc] bg-[#040806] p-2.5 rounded border border-emerald-500/30 font-sans">
                         {sim.aiRefinement}
                       </p>
                     </div>
@@ -490,10 +490,10 @@ export const SimulationStudio: React.FC = () => {
           )}
 
           {/* Decision Knowledge Base Repository Table */}
-          <div className="bg-[#0d0d14] rounded-lg border border-[#ffffff15] p-5 shadow-xl space-y-4">
-            <div className="flex items-center justify-between border-b border-[#ffffff15] pb-3">
-              <h3 className="font-bold text-white text-sm uppercase tracking-wider flex items-center gap-2 font-sans">
-                <BookOpen className="w-4 h-4 text-[#ff4e00]" />
+          <div className="bg-[#040806] rounded-none border border-[#10b98125] p-5 shadow-none space-y-4">
+            <div className="flex items-center justify-between border-b border-[#10b98125] pb-3">
+              <h3 className="font-bold text-emerald-100 text-sm uppercase tracking-wider flex items-center gap-2 font-sans">
+                <BookOpen className="w-4 h-4 text-emerald-100" />
                 Decision Knowledge Base Repository
               </h3>
               <span className="text-[10px] font-mono text-[#888]">
@@ -503,7 +503,7 @@ export const SimulationStudio: React.FC = () => {
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-[#ccc]">
-                <thead className="bg-[#0a0a0f] text-[#888] uppercase text-[10px] font-mono tracking-widest border-b border-[#ffffff15]">
+                <thead className="bg-[#040806] text-[#888] uppercase text-[10px] font-mono tracking-widest border-b border-[#10b98125]">
                   <tr>
                     <th className="p-3">Scenario ID</th>
                     <th className="p-3">Rainfall / Dam Parameters</th>
@@ -513,22 +513,22 @@ export const SimulationStudio: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#ffffff10] font-mono">
-                  <tr className="hover:bg-[#151520] transition-all">
-                    <td className="p-3 font-bold text-white">SIM-2015-12-01</td>
+                  <tr className="hover:bg-[#040806] transition-all">
+                    <td className="p-3 font-bold text-emerald-100">SIM-2015-12-01</td>
                     <td className="p-3 text-[#aaa]">Rain: 120mm/hr | Dam: 2200m³/s</td>
                     <td className="p-3 text-emerald-400">Pre-evacuate Kotturpuram + Deploy 6 Boats</td>
                     <td className="p-3 font-bold text-emerald-400">92% Score</td>
                     <td className="p-3 text-[#888] font-sans">Pre-positioning boats prior to T+30m cuts rescue delays by 42%.</td>
                   </tr>
-                  <tr className="hover:bg-[#151520] transition-all">
-                    <td className="p-3 font-bold text-white">SIM-2021-11-25</td>
+                  <tr className="hover:bg-[#040806] transition-all">
+                    <td className="p-3 font-bold text-emerald-100">SIM-2021-11-25</td>
                     <td className="p-3 text-[#aaa]">Rain: 85mm/hr | Silt Block: 80%</td>
                     <td className="p-3 text-emerald-400">Station 500HP Pumps at Velachery Canal</td>
                     <td className="p-3 font-bold text-emerald-400">88% Score</td>
                     <td className="p-3 text-[#888] font-sans">Early dewatering prevents standing water accumulation in ground floors.</td>
                   </tr>
-                  <tr className="hover:bg-[#151520] transition-all">
-                    <td className="p-3 font-bold text-white">SIM-2023-12-04</td>
+                  <tr className="hover:bg-[#040806] transition-all">
+                    <td className="p-3 font-bold text-emerald-100">SIM-2023-12-04</td>
                     <td className="p-3 text-[#aaa]">Rain: 140mm/hr | High Tide Overlap</td>
                     <td className="p-3 text-amber-400">Automated Barrier at Guindy Railway Subway</td>
                     <td className="p-3 font-bold text-emerald-400">95% Score</td>

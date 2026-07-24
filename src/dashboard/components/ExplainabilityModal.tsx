@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ExplainableAIRecommendation } from '../types';
+import { ExplainableAIRecommendation } from '../../shared/types';
 import {
   HelpCircle,
   ShieldCheck,
@@ -56,20 +56,20 @@ export const ExplainabilityModal: React.FC<ExplainabilityModalProps> = ({
   if (!recommendation) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="bg-[#0d0d14] border border-[#ffffff15] w-full max-w-3xl rounded-lg shadow-2xl p-6 text-[#e0e0e6] font-sans space-y-6 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-[#040806]/80 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="bg-[#040806] border border-[#10b98125] w-full max-w-3xl rounded-none shadow-none p-6 text-[#e0e0e6] font-sans space-y-6 max-h-[90vh] overflow-y-auto">
         
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-[#ffffff15] pb-4">
+        <div className="flex items-start justify-between border-b border-[#10b98125] pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded bg-[#ff4e00]/15 border border-[#ff4e00]/30 flex items-center justify-center text-[#ff4e00]">
+            <div className="w-9 h-9 rounded bg-[#10b981]/15 border border-[#10b981]/30 flex items-center justify-center text-emerald-100">
               <Cpu className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#ff4e00] bg-[#ff4e00]/15 px-2 py-0.5 rounded border border-[#ff4e00]/30">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-emerald-100 bg-[#10b981]/15 px-2 py-0.5 rounded border border-[#10b981]/30">
                 EXPLAINABLE AI DECISION AUDIT
               </span>
-              <h3 className="text-lg font-bold text-white mt-1 font-sans">
+              <h3 className="text-lg font-bold text-emerald-100 mt-1 font-sans">
                 {recommendation.title}
               </h3>
             </div>
@@ -77,14 +77,14 @@ export const ExplainabilityModal: React.FC<ExplainabilityModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-1 text-[#888] hover:text-white rounded hover:bg-[#ffffff10] cursor-pointer"
+            className="p-1 text-[#888] hover:text-emerald-100 rounded hover:bg-[#ffffff10] cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Confidence Meter Banner */}
-        <div className="bg-[#151520] p-4 rounded border border-[#ffffff10] flex items-center justify-between font-mono">
+        <div className="bg-[#040806] p-4 rounded border border-[#10b98115] flex items-center justify-between font-mono">
           <div>
             <span className="text-xs text-[#888] font-sans">Model Confidence Score:</span>
             <div className="flex items-center gap-2 mt-0.5">
@@ -97,7 +97,7 @@ export const ExplainabilityModal: React.FC<ExplainabilityModalProps> = ({
 
           <div className="text-right">
             <span className="text-xs text-[#888] font-sans">Target Sector:</span>
-            <span className="text-sm font-bold text-[#ff4e00] block">{recommendation.targetZoneName}</span>
+            <span className="text-sm font-bold text-emerald-100 block">{recommendation.targetZoneName}</span>
           </div>
         </div>
 
@@ -110,7 +110,7 @@ export const ExplainabilityModal: React.FC<ExplainabilityModalProps> = ({
 
           <div className="space-y-2 font-mono">
             {recommendation.reasoning.evidenceData.map((ev, idx) => (
-              <div key={idx} className="bg-[#151520] p-3 rounded border border-[#ffffff10] flex items-start gap-2 text-xs text-[#ccc]">
+              <div key={idx} className="bg-[#040806] p-3 rounded border border-[#10b98115] flex items-start gap-2 text-xs text-[#ccc]">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                 <span>{ev}</span>
               </div>
@@ -119,8 +119,8 @@ export const ExplainabilityModal: React.FC<ExplainabilityModalProps> = ({
         </div>
 
         {/* Counterfactual "What-If Delayed" Risk */}
-        <div className="bg-[#151520] border-l-4 border-[#ff4e00] border-t border-b border-r border-[#ffffff10] p-4 rounded space-y-2 text-xs font-sans">
-          <h4 className="font-mono font-bold text-[#ff4e00] uppercase text-[10px] tracking-widest flex items-center gap-2">
+        <div className="bg-[#040806] border-l-4 border-[#10b981] border-t border-b border-r border-[#10b98115] p-4 rounded space-y-2 text-xs font-sans">
+          <h4 className="font-mono font-bold text-emerald-100 uppercase text-[10px] tracking-widest flex items-center gap-2">
             <AlertTriangle className="w-4 h-4" />
             Counterfactual Risk Analysis (If Action is Delayed or Omitted):
           </h4>
@@ -132,17 +132,17 @@ export const ExplainabilityModal: React.FC<ExplainabilityModalProps> = ({
         {/* Deep AI Causal Flow (if loaded) */}
         {loading ? (
           <div className="text-center py-4 text-[#888] text-xs flex items-center justify-center gap-2 font-mono">
-            <Cpu className="w-4 h-4 animate-spin text-[#ff4e00]" />
+            <Cpu className="w-4 h-4 animate-spin text-emerald-100" />
             Generating Deep Causal Flow & Trade-Off Matrix...
           </div>
         ) : deepExplain ? (
-          <div className="space-y-3 pt-2 border-t border-[#ffffff15]">
+          <div className="space-y-3 pt-2 border-t border-[#10b98125]">
             <h4 className="text-[10px] font-mono font-bold uppercase text-[#888] tracking-widest">
               Deep Causal Reasoning Sequence:
             </h4>
             <div className="space-y-1.5 text-xs font-mono">
               {deepExplain.causalChain?.map((step: string, i: number) => (
-                <div key={i} className="bg-[#151520] p-2.5 rounded border border-[#ffffff10] text-[#ccc]">
+                <div key={i} className="bg-[#040806] p-2.5 rounded border border-[#10b98115] text-[#ccc]">
                   {step}
                 </div>
               ))}
@@ -151,12 +151,12 @@ export const ExplainabilityModal: React.FC<ExplainabilityModalProps> = ({
         ) : null}
 
         {/* Footer Actions */}
-        <div className="flex items-center justify-between pt-4 border-t border-[#ffffff15]">
+        <div className="flex items-center justify-between pt-4 border-t border-[#10b98125]">
           <button
             onClick={() => {
               alert('AI Explainability Log exported for Government Audit & Compliance.');
             }}
-            className="flex items-center gap-1.5 text-xs text-[#888] hover:text-white cursor-pointer font-mono"
+            className="flex items-center gap-1.5 text-xs text-[#888] hover:text-emerald-100 cursor-pointer font-mono"
           >
             <FileText className="w-4 h-4" />
             Export Audit Compliance Log
@@ -165,7 +165,7 @@ export const ExplainabilityModal: React.FC<ExplainabilityModalProps> = ({
           <div className="flex items-center gap-3 font-sans">
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-transparent hover:bg-[#ffffff08] border border-[#ffffff20] text-[#ccc] rounded text-xs font-bold uppercase cursor-pointer"
+              className="px-4 py-2 bg-transparent hover:bg-[#ffffff08] border border-[#10b98125] text-[#ccc] rounded text-xs font-bold uppercase cursor-pointer"
             >
               Close
             </button>
@@ -174,7 +174,7 @@ export const ExplainabilityModal: React.FC<ExplainabilityModalProps> = ({
                 onApprove(recommendation.id);
                 onClose();
               }}
-              className="px-5 py-2 bg-[#ff4e00] hover:bg-[#ff6a2b] text-black font-bold uppercase tracking-wider rounded text-xs shadow-lg shadow-[#ff4e00]/20 cursor-pointer"
+              className="px-5 py-2 bg-[#10b981] hover:bg-[#0fa06e] text-black font-bold uppercase tracking-wider rounded text-xs shadow-lg shadow-none cursor-pointer"
             >
               Approve & Dispatch Fleet
             </button>

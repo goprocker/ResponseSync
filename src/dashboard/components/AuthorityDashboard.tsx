@@ -5,7 +5,7 @@ import {
   ExplainableAIRecommendation,
   EmergencyResource,
   AutomatedAlert
-} from '../types';
+} from '../../shared/types';
 import {
   Cpu,
   ShieldAlert,
@@ -77,13 +77,13 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-6 text-[#e0e0e6] font-sans">
       
       {/* Top Banner & Multi-Agent Headline */}
-      <div className="bg-[#0a0a0f] p-6 rounded-lg border border-[#ffffff15] shadow-2xl relative overflow-hidden flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#ff4e00]/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="bg-[#040806] p-6 rounded-none border border-[#10b98125] shadow-none relative overflow-hidden flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#10b981]/10 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="space-y-2 z-10">
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-[0.2em] bg-[#ff4e00]/15 text-[#ff4e00] border border-[#ff4e00]/30 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-[#ff4e00]" />
+            <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-[0.2em] bg-[#10b981]/15 text-emerald-100 border border-[#10b981]/30 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-100" />
               Multi-Agent AI Command OS
             </span>
             <span className="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
@@ -92,7 +92,7 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
             </span>
           </div>
 
-          <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight font-sans">
+          <h2 className="text-2xl lg:text-3xl font-bold text-emerald-100 tracking-tight font-sans">
             Disaster Management Command & Control HQ
           </h2>
           <p className="text-sm text-[#aaa] max-w-2xl leading-relaxed">
@@ -104,7 +104,7 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
           <button
             onClick={onTriggerSync}
             disabled={isSyncing}
-            className="flex items-center justify-center gap-2 px-5 py-3 bg-[#ff4e00] hover:bg-[#ff6a2b] text-black font-bold uppercase tracking-wider text-xs rounded shadow-lg shadow-[#ff4e00]/20 transition-all cursor-pointer disabled:opacity-50"
+            className="flex items-center justify-center gap-2 px-5 py-3 bg-[#10b981] hover:bg-[#0fa06e] text-black font-bold uppercase tracking-wider text-xs rounded shadow-lg shadow-none transition-all cursor-pointer disabled:opacity-50"
           >
             <Cpu className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
             <span>{isSyncing ? 'Executing Loop...' : 'Trigger Agent Reasoning'}</span>
@@ -116,11 +116,11 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left Column: Multi-Agent Intelligence Activity Feed (5 cols) */}
-        <div className="lg:col-span-5 bg-[#0d0d14] rounded-lg border border-[#ffffff15] p-5 shadow-xl flex flex-col h-[520px]">
-          <div className="flex items-center justify-between border-b border-[#ffffff15] pb-3 mb-3">
+        <div className="lg:col-span-5 bg-[#040806] rounded-none border border-[#10b98125] p-5 shadow-none flex flex-col h-[520px]">
+          <div className="flex items-center justify-between border-b border-[#10b98125] pb-3 mb-3">
             <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-[#ff4e00]" />
-              <h3 className="font-bold text-white text-sm uppercase tracking-wider font-sans">
+              <Activity className="w-4 h-4 text-emerald-100" />
+              <h3 className="font-bold text-emerald-100 text-sm uppercase tracking-wider font-sans">
                 Multi-Agent Execution Stream
               </h3>
             </div>
@@ -133,8 +133,8 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
               onClick={() => setSelectedAgentFilter('all')}
               className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer ${
                 selectedAgentFilter === 'all'
-                  ? 'bg-[#ff4e00] text-black'
-                  : 'bg-[#151520] text-[#888] hover:text-white border border-[#ffffff10]'
+                  ? 'bg-[#10b981] text-black'
+                  : 'bg-[#040806] text-[#888] hover:text-emerald-100 border border-[#10b98115]'
               }`}
             >
               All 12 Agents
@@ -145,8 +145,8 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
                 onClick={() => setSelectedAgentFilter(agent)}
                 className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer ${
                   selectedAgentFilter === agent
-                    ? 'bg-[#ff4e00] text-black'
-                    : 'bg-[#151520] text-[#888] hover:text-white border border-[#ffffff10]'
+                    ? 'bg-[#10b981] text-black'
+                    : 'bg-[#040806] text-[#888] hover:text-emerald-100 border border-[#10b98115]'
                 }`}
               >
                 {agent}
@@ -157,8 +157,8 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
           {/* Logs Scroll Area */}
           <div className="flex-1 overflow-y-auto space-y-3 pr-1">
             {filteredLogs.map((log) => {
-              let borderCol = 'border-l-2 border-[#ff4e00]';
-              let badgeBg = 'bg-[#ff4e00]/15 text-[#ff4e00] border border-[#ff4e00]/30';
+              let borderCol = 'border-l-2 border-[#10b981]';
+              let badgeBg = 'bg-[#10b981]/15 text-emerald-100 border border-[#10b981]/30';
               if (log.severity === 'alert') {
                 borderCol = 'border-l-2 border-rose-500';
                 badgeBg = 'bg-rose-500/20 text-rose-300 border border-rose-500/30';
@@ -173,7 +173,7 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
               return (
                 <div
                   key={log.id}
-                  className={`p-3 rounded bg-[#151520] ${borderCol} border border-[#ffffff10] space-y-1.5 hover:border-[#ffffff20] transition-all`}
+                  className={`p-3 rounded bg-[#040806] ${borderCol} border border-[#10b98115] space-y-1.5 hover:border-[#10b98125] transition-all`}
                 >
                   <div className="flex items-center justify-between text-xs">
                     <span className={`px-2 py-0.5 rounded font-mono font-bold text-[9px] uppercase ${badgeBg}`}>
@@ -182,7 +182,7 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
                     <span className="text-[10px] text-[#666] font-mono">{log.timestamp}</span>
                   </div>
 
-                  <p className="font-bold text-xs text-white">
+                  <p className="font-bold text-xs text-emerald-100">
                     {log.action}
                   </p>
                   <p className="text-[11px] text-[#aaa] leading-normal font-sans">
@@ -195,15 +195,15 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
         </div>
 
         {/* Right Column: AI Explainable Recommendations Panel (7 cols) */}
-        <div className="lg:col-span-7 bg-[#0d0d14] rounded-lg border border-[#ffffff15] p-5 shadow-xl flex flex-col h-[520px]">
-          <div className="flex items-center justify-between border-b border-[#ffffff15] pb-3 mb-3">
+        <div className="lg:col-span-7 bg-[#040806] rounded-none border border-[#10b98125] p-5 shadow-none flex flex-col h-[520px]">
+          <div className="flex items-center justify-between border-b border-[#10b98125] pb-3 mb-3">
             <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-[#ff4e00]" />
-              <h3 className="font-bold text-white text-sm uppercase tracking-wider font-sans">
+              <Zap className="w-4 h-4 text-emerald-100" />
+              <h3 className="font-bold text-emerald-100 text-sm uppercase tracking-wider font-sans">
                 AI Action Recommendations
               </h3>
             </div>
-            <span className="text-[10px] font-mono font-bold text-[#ff4e00] bg-[#ff4e00]/15 px-2.5 py-1 rounded border border-[#ff4e00]/30 uppercase tracking-widest">
+            <span className="text-[10px] font-mono font-bold text-emerald-100 bg-[#10b981]/15 px-2.5 py-1 rounded border border-[#10b981]/30 uppercase tracking-widest">
               {recommendations.filter(r => r.status === 'pending').length} Pending Approval
             </span>
           </div>
@@ -222,8 +222,8 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
                 return (
                   <div
                     key={rec.id}
-                    className={`p-4 rounded bg-[#151520] border ${
-                      isCritical ? 'border-[#ff4e00] border-l-4' : 'border-[#ffffff15]'
+                    className={`p-4 rounded bg-[#040806] border ${
+                      isCritical ? 'border-[#10b981] border-l-4' : 'border-[#10b98125]'
                     } space-y-3 relative overflow-hidden`}
                   >
                     {/* Header */}
@@ -232,16 +232,16 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
                         <div className="flex items-center gap-2 mb-1">
                           <span
                             className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-widest ${
-                              isCritical ? 'bg-[#ff4e00] text-black' : 'bg-amber-500 text-black'
+                              isCritical ? 'bg-[#10b981] text-black' : 'bg-amber-500 text-black'
                             }`}
                           >
                             {rec.priority} PRIORITY
                           </span>
-                          <span className="text-xs font-mono font-bold text-[#ff4e00]">
+                          <span className="text-xs font-mono font-bold text-emerald-100">
                             TARGET: {rec.targetZoneName}
                           </span>
                         </div>
-                        <h4 className="text-sm font-bold text-white leading-snug font-sans">
+                        <h4 className="text-sm font-bold text-emerald-100 leading-snug font-sans">
                           {rec.title}
                         </h4>
                       </div>
@@ -255,12 +255,12 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
                     </div>
 
                     {/* Reasoning & Evidence Summary */}
-                    <div className="bg-[#0d0d14] p-3 rounded border border-[#ffffff10] text-xs space-y-1.5 font-sans">
+                    <div className="bg-[#040806] p-3 rounded border border-[#10b98115] text-xs space-y-1.5 font-sans">
                       <p className="text-[#ccc] font-medium leading-relaxed">
-                        <strong className="text-[#ff4e00] font-mono uppercase text-[10px]">Rationale:</strong> {rec.reasoning.coreReason}
+                        <strong className="text-emerald-100 font-mono uppercase text-[10px]">Rationale:</strong> {rec.reasoning.coreReason}
                       </p>
                       
-                      <div className="pt-1 border-t border-[#ffffff10]">
+                      <div className="pt-1 border-t border-[#10b98115]">
                         <span className="text-[10px] font-mono font-bold uppercase text-[#888] tracking-wider block mb-1">
                           Key Evidence & Data Fusion:
                         </span>
@@ -276,7 +276,7 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
                     <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
                       <button
                         onClick={() => onOpenExplainModal(rec)}
-                        className="flex items-center gap-1.5 text-xs text-[#ff4e00] hover:underline font-mono font-bold cursor-pointer"
+                        className="flex items-center gap-1.5 text-xs text-emerald-100 hover:underline font-mono font-bold cursor-pointer"
                       >
                         <HelpCircle className="w-3.5 h-3.5" />
                         Explain AI Rationale
@@ -287,13 +287,13 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
                           <>
                             <button
                               onClick={() => onRejectRecommendation(rec.id)}
-                              className="px-3 py-1.5 bg-transparent border border-[#ffffff20] hover:bg-[#ffffff08] text-[#ccc] font-bold text-xs uppercase rounded transition-all cursor-pointer"
+                              className="px-3 py-1.5 bg-transparent border border-[#10b98125] hover:bg-[#ffffff08] text-[#ccc] font-bold text-xs uppercase rounded-none transition-all cursor-pointer"
                             >
                               Reject
                             </button>
                             <button
                               onClick={() => onApproveRecommendation(rec.id)}
-                              className="flex items-center gap-1.5 px-4 py-1.5 bg-[#ff4e00] hover:bg-[#ff6a2b] text-black font-bold text-xs uppercase tracking-wider rounded shadow-md shadow-[#ff4e00]/20 transition-all cursor-pointer"
+                              className="flex items-center gap-1.5 px-4 py-1.5 bg-[#10b981] hover:bg-[#0fa06e] text-black font-bold text-xs uppercase tracking-wider rounded shadow-none shadow-none transition-all cursor-pointer"
                             >
                               <CheckCircle2 className="w-3.5 h-3.5" />
                               Approve & Dispatch
@@ -317,11 +317,11 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
       </div>
 
       {/* Bottom Section: Predictive Risk Matrix Table */}
-      <div className="bg-[#0d0d14] rounded-lg border border-[#ffffff15] p-5 shadow-xl space-y-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#ffffff15] pb-3">
+      <div className="bg-[#040806] rounded-none border border-[#10b98125] p-5 shadow-none space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#10b98125] pb-3">
           <div>
-            <h3 className="font-bold text-white text-base font-sans flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4 text-[#ff4e00]" />
+            <h3 className="font-bold text-emerald-100 text-base font-sans flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-emerald-100" />
               Predictive Disaster Risk Matrix (Chennai Pilot Region)
             </h3>
             <p className="text-xs text-[#888]">
@@ -337,7 +337,7 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
         {/* Matrix Table */}
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs text-[#ccc]">
-            <thead className="bg-[#0a0a0f] text-[#888] uppercase text-[10px] font-mono tracking-widest border-b border-[#ffffff15]">
+            <thead className="bg-[#040806] text-[#888] uppercase text-[10px] font-mono tracking-widest border-b border-[#10b98125]">
               <tr>
                 <th className="p-3">Zone Sector</th>
                 <th className="p-3">Risk Score</th>
@@ -352,26 +352,26 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
             <tbody className="divide-y divide-[#ffffff10] font-mono">
               {zones.map((zone) => {
                 let badgeClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-                if (zone.priorityLevel === 'CRITICAL') badgeClass = 'bg-[#ff4e00]/20 text-[#ff4e00] border-[#ff4e00]/40 font-bold';
+                if (zone.priorityLevel === 'CRITICAL') badgeClass = 'bg-[#10b981]/20 text-emerald-100 border-[#10b981]/40 font-bold';
                 if (zone.priorityLevel === 'HIGH') badgeClass = 'bg-orange-500/20 text-orange-300 border-orange-500/30';
                 if (zone.priorityLevel === 'MEDIUM') badgeClass = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
 
                 return (
-                  <tr key={zone.id} className="hover:bg-[#151520] transition-all">
-                    <td className="p-3 font-bold text-white font-sans">
+                  <tr key={zone.id} className="hover:bg-[#040806] transition-all">
+                    <td className="p-3 font-bold text-emerald-100 font-sans">
                       {zone.name}
                     </td>
                     <td className="p-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-16 bg-[#151520] h-2 rounded overflow-hidden border border-[#ffffff10]">
+                        <div className="w-16 bg-[#040806] h-2 rounded overflow-hidden border border-[#10b98115]">
                           <div
                             className={`h-full ${
-                              zone.riskScore > 80 ? 'bg-[#ff4e00]' : zone.riskScore > 60 ? 'bg-orange-500' : 'bg-emerald-500'
+                              zone.riskScore > 80 ? 'bg-[#10b981]' : zone.riskScore > 60 ? 'bg-orange-500' : 'bg-emerald-500'
                             }`}
                             style={{ width: `${zone.riskScore}%` }}
                           ></div>
                         </div>
-                        <span className="font-mono font-bold text-white">{zone.riskScore}/100</span>
+                        <span className="font-mono font-bold text-emerald-100">{zone.riskScore}/100</span>
                       </div>
                     </td>
                     <td className="p-3">
@@ -385,16 +385,16 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
                     <td className="p-3 font-mono text-amber-400 font-bold">
                       {zone.predictedWaterLevel1h} m
                     </td>
-                    <td className="p-3 font-mono text-white">
+                    <td className="p-3 font-mono text-emerald-100">
                       {zone.populationAtRisk.toLocaleString()}
                     </td>
-                    <td className="p-3 font-bold text-[#ff4e00]">
+                    <td className="p-3 font-bold text-emerald-100">
                       {zone.estimatedTimeToInundationMin} Mins
                     </td>
                     <td className="p-3 text-right">
                       <button
                         onClick={() => onOpenDispatchModal(zone.id)}
-                        className="px-3 py-1 bg-[#ff4e00]/20 hover:bg-[#ff4e00]/30 text-[#ff4e00] border border-[#ff4e00]/40 rounded text-[11px] font-bold uppercase transition-all cursor-pointer"
+                        className="px-3 py-1 bg-[#10b981]/20 hover:bg-[#10b981]/30 text-emerald-100 border border-[#10b981]/40 rounded text-[11px] font-bold uppercase transition-all cursor-pointer"
                       >
                         Dispatch Fleet
                       </button>

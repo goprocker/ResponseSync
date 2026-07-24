@@ -8,7 +8,7 @@ import {
   ExplainableAIRecommendation,
   AutomatedAlert,
   EvacuationRoute
-} from '../types';
+} from './types';
 
 export const CHENNAI_CENTER: [number, number] = [12.988, 80.230];
 
