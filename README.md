@@ -19,38 +19,36 @@
 
 <br />
 
-📖 Project Overview
+## 📖 Project Overview
 
-ResponSync is a production-grade, full-stack emergency response platform that transforms how disaster situations are managed — from citizen reporting to AI-driven resource allocation.
+**ResponSync** is a production-grade, full-stack emergency response platform that transforms how disaster situations are managed — from citizen reporting to AI-driven resource allocation.
 
-Traditional disaster management relies on fragmented communication, delayed response chains, and manual resource coordination. ResponSync eliminates these bottlenecks by combining real-time geospatial intelligence, multi-agent AI orchestration, and live citizen hazard reporting into a unified command platform.
+Traditional disaster management relies on fragmented communication, delayed response chains, and manual resource coordination. ResponSync eliminates these bottlenecks by combining **real-time geospatial intelligence**, **multi-agent AI orchestration**, and **live citizen hazard reporting** into a unified command platform.
 
-Powered by Google Gemini and a multi-agent architecture (Threat Assessment → Strategic Planning → Explainability), ResponSync autonomously analyzes incoming reports, predicts risk propagation, optimizes evacuation routes, and dispatches resources — all while providing transparent, explainable reasoning to emergency coordinators.
+Powered by **Google Gemini** and a multi-agent architecture (Threat Assessment → Strategic Planning → Explainability), ResponSync autonomously analyzes incoming reports, predicts risk propagation, optimizes evacuation routes, and dispatches resources — all while providing transparent, explainable reasoning to emergency coordinators.
 
-✨ Key Features
+---
 
-🚨 Citizen Hazard Reporting: Citizens submit geo-tagged emergency reports (floods, road blocks, medical emergencies) with severity levels and real-time status tracking through a complete lifecycle (Pending → Verified → Dispatched → Resolved).
+## ✨ Key Features
 
-🤖 Multi-Agent AI Orchestration: Three specialized Gemini agents work in concert — a Threat Assessment Agent analyzes incoming data, a Strategic Planner Agent generates optimized response plans, and an Explainability Agent translates AI decisions into human-readable reasoning.
+- **🚨 Citizen Hazard Reporting:** Citizens submit geo-tagged emergency reports (floods, road blocks, medical emergencies) with severity levels and real-time status tracking through a complete lifecycle (Pending → Verified → Dispatched → Resolved).
+- **🤖 Multi-Agent AI Orchestration:** Three specialized Gemini agents work in concert — a **Threat Assessment Agent** analyzes incoming data, a **Strategic Planner Agent** generates optimized response plans, and an **Explainability Agent** translates AI decisions into human-readable reasoning.
+- **🗺️ Geospatial Intelligence:** Full PostGIS/GeoAlchemy2 integration for spatial queries — risk zone detection, nearest-shelter routing, hospital proximity analysis, and evacuation zone management with real-time geographic coordinates.
+- **🏥 Hospital & Shelter Management:** Track hospital capacity (bed counts, emergency status), shelter availability, and resource deployment status across the disaster zone with live updates.
+- **📊 Disaster Simulation Engine:** Run predictive simulations with configurable parameters (population, severity, affected area) to forecast resource needs, generate risk scores, and plan preemptive evacuations.
+- **🌦️ Weather Intelligence:** Real-time OpenWeather API integration for weather monitoring, flood risk assessment, and environmental condition tracking in affected zones.
+- **⚡ Resource Matching & Dispatch:** Intelligent matching service that optimizes deployment of rescue boats, ambulances, fire trucks, food supplies, and personnel based on proximity, urgency, and availability.
+- **📡 Real-time Health Monitoring:** Live fullstack integration dashboard with backend health checks, service status monitoring, latency tracking, and automatic reconnection.
 
-🗺️ Geospatial Intelligence: Full PostGIS/GeoAlchemy2 integration for spatial queries — risk zone detection, nearest-shelter routing, hospital proximity analysis, and evacuation zone management with real-time geographic coordinates.
+---
 
-🏥 Hospital & Shelter Management: Track hospital capacity (bed counts, emergency status), shelter availability, and resource deployment status across the disaster zone with live updates.
-
-📊 Disaster Simulation Engine: Run predictive simulations with configurable parameters (population, severity, affected area) to forecast resource needs, generate risk scores, and plan preemptive evacuations.
-
-🌦️ Weather Intelligence: Real-time OpenWeather API integration for weather monitoring, flood risk assessment, and environmental condition tracking in affected zones.
-
-⚡ Resource Matching & Dispatch: Intelligent matching service that optimizes deployment of rescue boats, ambulances, fire trucks, food supplies, and personnel based on proximity, urgency, and availability.
-
-📡 Real-time Health Monitoring: Live fullstack integration dashboard with backend health checks, service status monitoring, latency tracking, and automatic reconnection.
-
-🏗️ System Architecture
+## 🏗️ System Architecture
 
 ResponSync follows a fully decoupled, production-grade architecture with a React SPA frontend communicating through a Vite dev proxy to a FastAPI async backend, backed by Supabase PostgreSQL with PostGIS extensions and AI-powered by Google Gemini.
 
-High-Level Architecture
+### High-Level Architecture
 
+```mermaid
 flowchart TD
     %% Define Nodes
     User([👤 Citizen / Authority])
@@ -126,11 +124,13 @@ flowchart TD
     ORM --> DB
     Geo --> PostGIS
     Alembic --> DB
+```
 
-Multi-Agent AI Workflow
+### Multi-Agent AI Workflow
 
 The intelligence layer uses a coordinated multi-agent pipeline where each agent has a specialized role in the decision chain:
 
+```mermaid
 sequenceDiagram
     participant C as 🚨 Citizen Report
     participant O as 🎯 Orchestrator
@@ -161,9 +161,11 @@ sequenceDiagram
 
     O->>D: Store final assessment + plan
     O-->>C: Response dispatched ✅
+```
 
-Request Lifecycle
+### Request Lifecycle
 
+```mermaid
 flowchart LR
     A["HTTP Request"] --> B["CORS Middleware"]
     B --> C["Logging Middleware"]
@@ -185,11 +187,15 @@ flowchart LR
     style A fill:#4A90D9,color:#fff
     style L fill:#3ECF8E,color:#fff
     style N fill:#009688,color:#fff
+```
 
-🗄️ Database Schema
+---
+
+## 🗄️ Database Schema
 
 The data model is defined with SQLAlchemy 2.0 ORM and runs on PostgreSQL with PostGIS spatial extensions. The schema captures users, hazard reports, emergency resources, shelters, hospitals, risk zones, evacuation routes, weather data, simulation runs, and AI knowledge bases.
 
+```mermaid
 erDiagram
     USER ||--o{ REPORT : "submits"
     USER ||--o{ SIMULATION : "runs"
@@ -297,9 +303,13 @@ erDiagram
         string source
         datetime created_at
     }
+```
 
-📁 Project Structure
+---
 
+## 📁 Project Structure
+
+```
 responsync/
 ├── 📦 package.json                # Root frontend dependencies & scripts
 ├── 🔧 vite.config.ts             # Vite dev server + proxy configuration
@@ -392,47 +402,42 @@ responsync/
     └── tests/                     # Automated test suite
         ├── conftest.py            # Shared fixtures
         └── test_health.py         # Health endpoint tests
+```
 
-🚀 Quick Start
+---
 
-Prerequisites
+## 🚀 Quick Start
 
-Requirement
+### Prerequisites
 
-Version
+| Requirement | Version |
+| :--- | :--- |
+| **Node.js** | 20+ |
+| **Python** | 3.12+ |
+| **PostgreSQL** | 15+ with PostGIS extension |
+| **Supabase** | Cloud project (or local) |
 
-Node.js
+### 1. Clone & Install
 
-20+
-
-Python
-
-3.12+
-
-PostgreSQL
-
-15+ with PostGIS extension
-
-Supabase
-
-Cloud project (or local)
-
-1. Clone & Install
-
+```bash
 # Clone the repository
 git clone https://github.com/NINJA981/ResponseSync.git
 cd ResponseSync
+```
 
-Frontend Setup:
+**Frontend Setup:**
 
+```bash
 # Install Node.js dependencies
 npm install
 
 # Start the Vite dev server (port 5173)
 npm run dev
+```
 
-Backend Setup:
+**Backend Setup:**
 
+```bash
 # Navigate to backend
 cd backend
 
@@ -446,172 +451,92 @@ source .venv/bin/activate
 
 # Install Python dependencies
 pip install -r requirements.txt
+```
 
-2. Configure Environment
+### 2. Configure Environment
 
+```bash
 # Copy the environment template
 cp backend/.env.example backend/.env
+```
 
 Fill in your credentials:
 
-Variable
+| Variable | Description |
+| :--- | :--- |
+| `DATABASE_URL` | PostgreSQL async connection string (`postgresql+asyncpg://...`) |
+| `SUPABASE_URL` | Supabase Project URL |
+| `SUPABASE_KEY` | Supabase Anon Key |
+| `GEMINI_API_KEY` | Google Gemini API Key |
+| `OPENWEATHER_API_KEY` | OpenWeather API Key |
+| `MAPBOX_API_KEY` | Mapbox GL API Key |
+| `JWT_SECRET` | Secret key for JWT signing |
+| `REDIS_URL` | Redis connection string (caching layer) |
 
-Description
+### 3. Run Database Migrations
 
-DATABASE_URL
-
-PostgreSQL async connection string (postgresql+asyncpg://...)
-
-SUPABASE_URL
-
-Supabase Project URL
-
-SUPABASE_KEY
-
-Supabase Anon Key
-
-GEMINI_API_KEY
-
-Google Gemini API Key
-
-OPENWEATHER_API_KEY
-
-OpenWeather API Key
-
-MAPBOX_API_KEY
-
-Mapbox GL API Key
-
-JWT_SECRET
-
-Secret key for JWT signing
-
-REDIS_URL
-
-Redis connection string (caching layer)
-
-3. Run Database Migrations
-
+```bash
 cd backend
 alembic upgrade head
+```
 
-4. Start the Backend Server
+### 4. Start the Backend Server
 
+```bash
 cd backend
 uvicorn app.main:app --reload --port 8000
+```
 
-5. Access the Platform
+### 5. Access the Platform
 
-Service
+| Service | URL |
+| :--- | :--- |
+| **Frontend Dashboard** | `http://localhost:5173` |
+| **Backend API** | `http://127.0.0.1:8000` |
+| **OpenAPI (Swagger)** | `http://127.0.0.1:8000/docs` |
+| **ReDoc API Docs** | `http://127.0.0.1:8000/redoc` |
+| **Health Check** | `http://127.0.0.1:8000/health` |
 
-URL
+---
 
-Frontend Dashboard
+## ⚙️ Tech Stack Deep Dive
 
-http://localhost:5173
+### Frontend
 
-Backend API
+| Technology | Purpose |
+| :--- | :--- |
+| **React 19** | UI component library with latest concurrent features |
+| **TypeScript 6** | Type-safe frontend development |
+| **Vite 8** | Lightning-fast dev server with HMR & proxy |
+| **Oxlint** | Blazing-fast linter (Rust-based) |
 
-http://127.0.0.1:8000
+### Backend
 
-OpenAPI (Swagger)
+| Technology | Purpose |
+| :--- | :--- |
+| **FastAPI** | Async Python web framework with auto OpenAPI docs |
+| **SQLAlchemy 2.0** | Async ORM with modern mapped column syntax |
+| **GeoAlchemy2** | PostGIS integration for spatial queries |
+| **Pydantic v2** | Data validation & serialization |
+| **Alembic** | Database schema migrations |
+| **httpx** | Async HTTP client for external APIs |
+| **Google GenAI SDK** | Gemini LLM integration for AI agents |
 
-http://127.0.0.1:8000/docs
+### Infrastructure
 
-ReDoc API Docs
+| Technology | Purpose |
+| :--- | :--- |
+| **Supabase (PostgreSQL)** | Managed database with PostGIS extensions |
+| **PostGIS** | Geospatial indexing & spatial queries |
+| **Redis** | Caching layer & session management |
+| **OpenWeather API** | Real-time weather data |
+| **Mapbox GL** | Map rendering & geocoding |
 
-http://127.0.0.1:8000/redoc
+---
 
-Health Check
+## 🧪 Running Tests
 
-http://127.0.0.1:8000/health
-
-⚙️ Tech Stack Deep Dive
-
-Frontend
-
-Technology
-
-Purpose
-
-React 19
-
-UI component library with latest concurrent features
-
-TypeScript 6
-
-Type-safe frontend development
-
-Vite 8
-
-Lightning-fast dev server with HMR & proxy
-
-Oxlint
-
-Blazing-fast linter (Rust-based)
-
-Backend
-
-Technology
-
-Purpose
-
-FastAPI
-
-Async Python web framework with auto OpenAPI docs
-
-SQLAlchemy 2.0
-
-Async ORM with modern mapped column syntax
-
-GeoAlchemy2
-
-PostGIS integration for spatial queries
-
-Pydantic v2
-
-Data validation & serialization
-
-Alembic
-
-Database schema migrations
-
-httpx
-
-Async HTTP client for external APIs
-
-Google GenAI SDK
-
-Gemini LLM integration for AI agents
-
-Infrastructure
-
-Technology
-
-Purpose
-
-Supabase (PostgreSQL)
-
-Managed database with PostGIS extensions
-
-PostGIS
-
-Geospatial indexing & spatial queries
-
-Redis
-
-Caching layer & session management
-
-OpenWeather API
-
-Real-time weather data
-
-Mapbox GL
-
-Map rendering & geocoding
-
-🧪 Running Tests
-
+```bash
 cd backend
 
 # Run all tests
@@ -622,9 +547,13 @@ pytest -v
 
 # Run specific test file
 pytest tests/test_health.py
+```
 
-🗄 Database Migrations
+---
 
+## 🗄 Database Migrations
+
+```bash
 cd backend
 
 # Generate a new migration after model changes
@@ -638,26 +567,29 @@ alembic downgrade -1
 
 # View migration history
 alembic history
+```
 
-🤝 Contributing
+---
 
-Fork the repository
+## 🤝 Contributing
 
-Create a feature branch (git checkout -b feature/amazing-feature)
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'feat: add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
 
-Commit your changes (git commit -m 'feat: add amazing feature')
+> **Note:** Always create a new dedicated branch for major code changes.
 
-Push to the branch (git push origin feature/amazing-feature)
+---
 
-Open a Pull Request
-
-Note: Always create a new dedicated branch for major code changes.
-
-📄 License
+## 📄 License
 
 MIT
+
+---
 
 <div align="center">
   <p><strong>ResponSync Emergency Response Platform</strong> © 2026</p>
   <p>Built with ⚡ by <a href="https://github.com/NINJA981">NINJA981</a></p>
-</div>
+</div>tell e from this tech stack
