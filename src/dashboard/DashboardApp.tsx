@@ -36,12 +36,32 @@ import { AlertNotificationBanner } from './components/AlertNotificationBanner';
 
 import { useSSEStream } from '../hooks/useSSEStream';
 import { useEvacuationRoute } from '../hooks/useEvacuationRoute';
+import { useEffect } from 'react';
 
-export default function DashboardApp({ onBackToLanding }: { onBackToLanding: () => void }) {
+interface DashboardAppProps {
+  onBackToLanding: () => void;
+  initialTab?: 'twin_map' | 'multi_agent' | 'simulation' | 'citizen_portal' | 'analytics';
+  onNavigateTab?: (tab: 'twin_map' | 'multi_agent' | 'simulation' | 'citizen_portal' | 'analytics') => void;
+}
+
+export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTab }: DashboardAppProps) {
   // Global State
   const [disasterType, setDisasterType] = useState<DisasterType>('flood');
   const [agencyRole, setAgencyRole] = useState<AgencyRole>('authority');
-  const [activeTab, setActiveTab] = useState<'twin_map' | 'multi_agent' | 'simulation' | 'citizen_portal' | 'analytics'>('twin_map');
+  const [activeTab, setActiveTabState] = useState<'twin_map' | 'multi_agent' | 'simulation' | 'citizen_portal' | 'analytics'>(initialTab || 'twin_map');
+
+  useEffect(() => {
+    if (initialTab && initialTab !== activeTab) {
+      setActiveTabState(initialTab);
+    }
+  }, [initialTab]);
+
+  const setActiveTab = (tab: 'twin_map' | 'multi_agent' | 'simulation' | 'citizen_portal' | 'analytics') => {
+    setActiveTabState(tab);
+    if (onNavigateTab) {
+      onNavigateTab(tab);
+    }
+  };
 
   const [zones, setZones] = useState<ZoneRisk[]>(INITIAL_ZONES);
   const [sensors, setSensors] = useState<IoTSensorNode[]>(INITIAL_IOT_SENSORS);

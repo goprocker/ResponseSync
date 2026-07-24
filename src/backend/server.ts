@@ -451,6 +451,19 @@ app.post('/api/ai/scenario-match', async (req, res) => {
   try {
     const { liveConditions } = req.body;
 
+    // Fetch ground-truth historical incidents from Supabase Knowledge Base
+    let historicalKnowledgeBase: any[] = [];
+    if (supabase) {
+      try {
+        const { data } = await supabase.from('decision_knowledge').select('*');
+        if (data && data.length > 0) {
+          historicalKnowledgeBase = data;
+        }
+      } catch (e) {
+        console.warn('Failed to fetch decision_knowledge from Supabase:', e);
+      }
+    }
+
     const prompt = `
 Act as ResponSync Scenario Matching Engine (PRD/TDD Section 10).
 Given live disaster conditions for Chennai (Velachery/Adyar):
@@ -459,9 +472,14 @@ Given live disaster conditions for Chennai (Velachery/Adyar):
 - River Stage: ${liveConditions?.riverStage || 3.4} meters
 - Traffic Congestion: ${liveConditions?.trafficCongestion || 82}%
 
-Search the Decision Knowledge Base and retrieve the Top 3 most similar historical disaster scenarios (e.g. 2015 Chennai Heavy Inundation, 2021 Cyclone Nivar Cloudburst, 2023 Cyclone Michaung Overflow).
+Authoritative Historical Incident Knowledge Base from Database:
+${JSON.stringify(historicalKnowledgeBase, null, 2)}
 
-Calculate similarity percentage, retrieved effective strategy, outcome, and AI refinement recommendation.
+Match the live conditions against the historical incidents provided in the Knowledge Base above.
+Select the Top 3 most relevant historical events (e.g. 2015 Cloudburst, 2021 Cyclone Nivar, 2023 Cyclone Michaung, 2024 Cloudburst, etc.).
+
+Calculate similarity percentage based on rain intensity, dam release, and waterlogging impact.
+Return retrieved effective strategy, historical outcome, and AI refinement recommendation for the active scenario.
 
 Return JSON response:
 {
@@ -470,22 +488,13 @@ Return JSON response:
       "id": "sim-2015-12-01",
       "historicalEvent": "December 2015 Chennai Cloudburst & Chembarambakkam Release",
       "similarityPct": 94,
-      "keyMatches": ["85mm/hr rain intensity", "High tide backwater overlap", "Lake sluice breach"],
-      "retrievedStrategy": "Immediate deployment of 4 NDRF boat units to Velachery Vijaya Nagar & pre-evacuation of Kotturpuram tenements",
-      "historicalOutcome": "Saved 4,200 stranded residents with 91% effectiveness score",
-      "aiRefinement": "Apply 2015 strategy but add automated road barricading at Guindy subway to avoid vehicle stalling."
-    },
-    {
-      "id": "sim-2021-11-25",
-      "historicalEvent": "November 2021 Cyclone Nivar Waterlogging",
-      "similarityPct": 86,
-      "keyMatches": ["Heavy rainfall in Adyar catchment", "Urban drainage congestion 80%"],
-      "retrievedStrategy": "High-capacity dewatering pumps stationed at 100ft road canal sluice",
-      "historicalOutcome": "Reduced standing water duration by 14 hours",
-      "aiRefinement": "Deploy pumps 30 minutes earlier based on live IoT sensor water depth derivative."
+      "keyMatches": ["494mm/24h Cloudburst rainfall intensity", "Estuarine high tide backwater overlap"],
+      "retrievedStrategy": "Immediate deployment of 6 NDRF boat units to Velachery Vijaya Nagar & pre-evacuation of Kotturpuram tenements",
+      "historicalOutcome": "Rescued 14,200 stranded residents with 91% effectiveness score",
+      "aiRefinement": "Apply 2015 rescue protocol but add automated hydraulic flood barriers at Guindy Railway Subway 45 mins prior to peak surge."
     }
   ],
-  "recommendedMasterPlan": "Combine 2015 pre-evacuation protocol with 2021 early dewatering pump placement."
+  "recommendedMasterPlan": "Synthesize best historical strategies into an actionable master plan."
 }
 `;
 
