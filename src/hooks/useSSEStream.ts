@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { CitizenReport, AgentActivityLog, AutomatedAlert } from '../types';
+import { CitizenReport, AgentActivityLog, AutomatedAlert } from '../shared/types';
 
 interface UseSSEStreamProps {
   onNewReport: (report: CitizenReport) => void;

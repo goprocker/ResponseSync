@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
-import { EvacuationRoute, EmergencyShelter } from '../types';
-import { MOCK_EVACUATION_ROUTE } from '../data/mockDigitalTwinData';
+import { EvacuationRoute, EmergencyShelter } from '../shared/types';
+import { MOCK_EVACUATION_ROUTE } from '../shared/mockDigitalTwinData';
 
 export function useEvacuationRoute(shelters: EmergencyShelter[]) {
   const [evacuationRoute, setEvacuationRoute] = useState<EvacuationRoute>(MOCK_EVACUATION_ROUTE);

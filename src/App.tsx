@@ -9,5 +9,5 @@ export default function App() {
     return <DashboardApp onBackToLanding={() => setView('landing')} />;
   }
 
-  return <LandingPage onEnterDashboard={() => setView('dashboard')} />;
+  return <LandingPage onLaunchDashboard={() => setView('dashboard')} />;
 }

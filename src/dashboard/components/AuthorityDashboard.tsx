@@ -120,12 +120,8 @@ export const AuthorityDashboard: React.FC<AuthorityDashboardProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         
         {/* Left Column: Multi-Agent Intelligence Activity Feed (5 cols) */}
-        <div className="lg:col-span-5 bg-[#101018] rounded-lg border border-[#ffffff12] p-5 shadow-xl flex flex-col h-[520px]">
-          <div className="flex items-center justify-between border-b border-[#ffffff15] pb-3 mb-3">
-=======
         <div className="lg:col-span-5 bg-[#040806] rounded-none border border-[#10b98125] p-5 shadow-none flex flex-col h-[520px]">
           <div className="flex items-center justify-between border-b border-[#10b98125] pb-3 mb-3">
->>>>>>> origin/main:src/dashboard/components/AuthorityDashboard.tsx
             <div className="flex items-center gap-2">
               <Activity className="w-4 h-4 text-emerald-100" />
               <h3 className="font-bold text-emerald-100 text-sm uppercase tracking-wider font-sans">

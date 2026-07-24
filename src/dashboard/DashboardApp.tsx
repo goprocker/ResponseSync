@@ -257,18 +257,7 @@ export default function DashboardApp({ onBackToLanding }: { onBackToLanding: () 
 
   // Route Shelter Selector
   const handleSelectRouteShelter = (shelterId: string) => {
-    const shelter = shelters.find(s => s.id === shelterId);
-    if (shelter) {
-      setEvacuationRoute({
-        ...MOCK_EVACUATION_ROUTE,
-        destinationShelterName: shelter.name,
-        waypoints: [
-          [12.977, 80.221],
-          [12.985, 80.225],
-          [shelter.lat, shelter.lng]
-        ]
-      });
-    }
+    selectShelter(shelterId);
   };
 
   // Alert Acknowledgment
