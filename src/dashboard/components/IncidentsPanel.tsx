@@ -1,13 +1,27 @@
 import React from 'react';
 import { ShieldAlert, AlertTriangle, CheckCircle2, User, Phone, MapPin, Sparkles, PlusCircle } from 'lucide-react';
-import { CitizenReport } from '../../shared/types';
+import { CitizenReport, AgencyRole } from '../../shared/types';
 
 interface IncidentsPanelProps {
   reports: CitizenReport[];
   onOpenDispatchModal: (zoneId: string) => void;
+  agencyRole?: AgencyRole;
 }
 
-export default function IncidentsPanel({ reports, onOpenDispatchModal }: IncidentsPanelProps) {
+export default function IncidentsPanel({ reports, onOpenDispatchModal, agencyRole = 'authority' }: IncidentsPanelProps) {
+  const filteredReports = reports.filter(report => {
+    if (agencyRole === 'fire_rescue') {
+      return ['waterlogging', 'flooding', 'rescue', 'structural'].some(c => report.category.toLowerCase().includes(c));
+    }
+    if (agencyRole === 'police') {
+      return ['traffic', 'evacuation', 'roadblock', 'security', 'waterlogging'].some(c => report.category.toLowerCase().includes(c));
+    }
+    if (agencyRole === 'health_hospitals') {
+      return ['medical', 'casualty', 'injury', 'ambulance', 'health'].some(c => report.category.toLowerCase().includes(c) || report.description.toLowerCase().includes(c));
+    }
+    return true;
+  });
+
   return (
     <div className="space-y-6">
       
@@ -16,11 +30,11 @@ export default function IncidentsPanel({ reports, onOpenDispatchModal }: Inciden
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-brand/10 text-brand border border-brand/20">
-              Emergency Intel
+              Emergency Intel ({agencyRole.replace('_', ' ').toUpperCase()})
             </span>
           </div>
           <h2 className="text-xl font-bold text-white tracking-tight">
-            Chennai Citizen Incident Feed
+            Chennai Incident Feed
           </h2>
           <p className="text-xs text-neutral-400">
             Real-time feed of citizen reports, severity levels, and AI-validated incident locations.
@@ -33,7 +47,7 @@ export default function IncidentsPanel({ reports, onOpenDispatchModal }: Inciden
 
       {/* Incidents List */}
       <div className="space-y-4">
-        {reports.map((report) => {
+        {filteredReports.map((report) => {
           return (
             <div key={report.id} className="bg-[#0e0e14] border border-white/10 p-5 space-y-4 shadow-sm relative">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/5">

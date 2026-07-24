@@ -1,12 +1,26 @@
 import React from 'react';
 import { Truck, Shield, AlertTriangle, Users, Fuel, Phone, MapPin } from 'lucide-react';
-import { EmergencyResource } from '../../shared/types';
+import { EmergencyResource, AgencyRole } from '../../shared/types';
 
 interface ResourcesPanelProps {
   resources: EmergencyResource[];
+  agencyRole?: AgencyRole;
 }
 
-export default function ResourcesPanel({ resources }: ResourcesPanelProps) {
+export default function ResourcesPanel({ resources, agencyRole = 'authority' }: ResourcesPanelProps) {
+  const filteredResources = resources.filter(r => {
+    if (agencyRole === 'fire_rescue') {
+      return ['rescue_boat', 'fire_truck', 'ndrf_team'].includes(r.type);
+    }
+    if (agencyRole === 'police') {
+      return ['police_patrol', 'relief_truck'].includes(r.type);
+    }
+    if (agencyRole === 'health_hospitals') {
+      return ['ambulance', 'medical_unit'].includes(r.type);
+    }
+    return true;
+  });
+
   return (
     <div className="space-y-6">
       
@@ -32,7 +46,7 @@ export default function ResourcesPanel({ resources }: ResourcesPanelProps) {
 
       {/* Fleet Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {resources.map((res) => {
+        {filteredResources.map((res) => {
           return (
             <div key={res.id} className="bg-[#0e0e14] border border-white/10 p-5 space-y-4 shadow-sm">
               <div className="flex items-start justify-between gap-4">

@@ -23,6 +23,8 @@ import {
 } from '../../shared/types';
 import { DigitalTwinMap } from './DigitalTwinMap';
 
+import { AgencyRole } from '../../shared/types';
+
 interface DashboardOverviewProps {
   zones: ZoneRisk[];
   sensors: IoTSensorNode[];
@@ -37,6 +39,7 @@ interface DashboardOverviewProps {
   onSelectReport: (report: CitizenReport) => void;
   onSelectZone: (zoneId: string) => void;
   onNavigateToTab: (tabId: string) => void;
+  agencyRole?: AgencyRole;
 }
 
 export default function DashboardOverview({
@@ -52,14 +55,29 @@ export default function DashboardOverview({
   setTimeHorizon,
   onSelectReport,
   onSelectZone,
-  onNavigateToTab
+  onNavigateToTab,
+  agencyRole = 'authority'
 }: DashboardOverviewProps) {
 
-  // Dynamic calculations from real datasets
+  // Role-filtered resources
+  const filteredResources = resources.filter(r => {
+    if (agencyRole === 'fire_rescue') {
+      return ['rescue_boat', 'fire_truck', 'ndrf_team'].includes(r.type);
+    }
+    if (agencyRole === 'police') {
+      return ['police_patrol', 'relief_truck'].includes(r.type);
+    }
+    if (agencyRole === 'health_hospitals') {
+      return ['ambulance', 'medical_unit'].includes(r.type);
+    }
+    return true;
+  });
+
+  // Dynamic calculations from datasets
   const activeReports = reports.filter(r => r.status !== 'resolved');
   const criticalReports = activeReports.filter(r => r.severity === 'critical' || r.severity === 'high');
-  const deployedResources = resources.filter(r => r.status === 'deployed' || r.status === 'en_route');
-  const availableResources = resources.filter(r => r.status === 'available');
+  const deployedResources = filteredResources.filter(r => r.status === 'deployed' || r.status === 'en_route');
+  const availableResources = filteredResources.filter(r => r.status === 'available');
   const openSheltersCount = shelters.filter(s => s.status === 'open' || s.status === 'near_capacity').length;
   const fullShelters = shelters.filter(s => s.status === 'near_capacity' || s.status === 'full').length;
   const capacityHospitalsCount = hospitals.filter(h => h.status === 'near_capacity' || h.status === 'full').length;
@@ -67,6 +85,30 @@ export default function DashboardOverview({
   return (
     <div className="space-y-6 text-[#e0e0e6] font-sans pb-8">
       
+      {/* Active Agency Operational Mode Banner */}
+      <div className="bg-[#0e0e14] border border-brand/30 p-3 flex items-center justify-between font-mono text-xs shadow-sm">
+        <div className="flex items-center gap-3">
+          <span className="w-2.5 h-2.5 rounded-full bg-brand animate-pulse"></span>
+          <span className="font-bold text-white uppercase tracking-wider">
+            {agencyRole === 'authority' && '🏛️ DISASTER MGMT HQ OPERATIONAL MODE'}
+            {agencyRole === 'fire_rescue' && '🚒 FIRE & RESCUE OPERATIONAL MODE'}
+            {agencyRole === 'police' && '🚓 POLICE DEPT OPERATIONAL MODE'}
+            {agencyRole === 'health_hospitals' && '🏥 HEALTH & HOSPITALS OPERATIONAL MODE'}
+            {agencyRole === 'citizen' && '👤 CITIZEN PUBLIC VIEW MODE'}
+          </span>
+          <span className="text-[10px] text-neutral-400 border-l border-white/10 pl-3 hidden sm:inline">
+            {agencyRole === 'authority' && 'Cross-agency unified command telemetry'}
+            {agencyRole === 'fire_rescue' && 'Rescue boats, dewatering fleets & inundation tracking'}
+            {agencyRole === 'police' && 'Traffic control, patrol units & evacuation corridor management'}
+            {agencyRole === 'health_hospitals' && 'Trauma units, ICU capacity & ambulance dispatch'}
+            {agencyRole === 'citizen' && 'Public emergency announcements & safety routes'}
+          </span>
+        </div>
+        <span className="text-[9px] bg-brand/15 text-brand border border-brand/40 px-2 py-0.5 font-bold uppercase">
+          Role Filter Active
+        </span>
+      </div>
+
       {/* 1. Stat Cards Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         

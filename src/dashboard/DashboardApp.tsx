@@ -35,6 +35,9 @@ import { AnalyticsHub } from './components/AnalyticsHub';
 import { ExplainabilityModal } from './components/ExplainabilityModal';
 import { ResourceDispatchModal } from './components/ResourceDispatchModal';
 import { AlertNotificationBanner } from './components/AlertNotificationBanner';
+import { NotificationDrawer } from './components/NotificationDrawer';
+import { FireRescueDashboard } from './components/FireRescueDashboard';
+import { PoliceDashboard } from './components/PoliceDashboard';
 
 import DashboardOverview from './components/DashboardOverview';
 import HospitalsPanel from './components/HospitalsPanel';
@@ -61,7 +64,9 @@ import {
   Activity,
   AlertTriangle,
   GitBranch,
-  Zap
+  Zap,
+  Flame,
+  Siren
 } from 'lucide-react';
 
 import { useSSEStream } from '../hooks/useSSEStream';
@@ -78,6 +83,41 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
   const [disasterType, setDisasterType] = useState<DisasterType>('flood');
   const [agencyRole, setAgencyRole] = useState<AgencyRole>('authority');
   const [activeTab, setActiveTabState] = useState<string>(initialTab || 'dashboard');
+  const [isNotificationDrawerOpen, setIsNotificationDrawerOpen] = useState<boolean>(false);
+
+  const handleAgencyRoleChange = async (newRole: AgencyRole) => {
+    setAgencyRole(newRole);
+
+    // Auto-switch dashboard workspace to match selected agency role
+    if (newRole === 'fire_rescue') {
+      setActiveTab('fire_rescue');
+    } else if (newRole === 'police') {
+      setActiveTab('police');
+    } else if (newRole === 'health_hospitals') {
+      setActiveTab('hospitals');
+    } else if (newRole === 'citizen') {
+      setActiveTab('citizen_portal');
+    } else if (newRole === 'authority') {
+      setActiveTab('dashboard');
+    }
+
+    try {
+      const resp = await fetch('/api/auth/switch-role', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: newRole })
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.token) {
+          localStorage.setItem('jwt_token', data.token);
+          localStorage.setItem('user_payload', JSON.stringify(data.user));
+        }
+      }
+    } catch (err) {
+      console.warn('Role switch sync error:', err);
+    }
+  };
 
   useEffect(() => {
     if (initialTab && initialTab !== activeTab) {
@@ -467,32 +507,39 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
             </button>
 
             {/* Notification bell badge */}
-            <div className="relative cursor-pointer text-neutral-400 hover:text-white p-1">
-              <Bell className="w-4 h-4" />
-              <span className="absolute top-0 right-0 w-3 h-3 bg-brand text-black text-[8px] font-extrabold rounded-full flex items-center justify-center font-mono">
-                3
-              </span>
-            </div>
+            <button 
+              onClick={() => setIsNotificationDrawerOpen(prev => !prev)}
+              className="relative cursor-pointer text-neutral-400 hover:text-white p-1.5 border border-white/5 hover:border-brand/40 bg-[#050507] transition-all"
+              title="Open Emergency Notification Drawer"
+            >
+              <Bell className="w-4 h-4 text-brand" />
+              {alerts.filter(a => !a.acknowledged).length > 0 && (
+                <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-brand text-black text-[8px] font-extrabold rounded-full flex items-center justify-center font-mono animate-pulse">
+                  {alerts.filter(a => !a.acknowledged).length}
+                </span>
+              )}
+            </button>
 
-            {/* User Initial Avatar */}
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-sm bg-brand text-black font-extrabold text-xs flex items-center justify-center font-mono select-none">
-                DM
+            {/* Department Role Selector Dropdown Container */}
+            <div className="flex items-center gap-2 bg-[#050507] px-3 py-1.5 border border-brand/40 hover:border-brand rounded-none shadow-sm transition-all">
+              <div className="w-6 h-6 rounded-none bg-brand text-black font-extrabold text-[10px] flex items-center justify-center font-mono select-none">
+                {agencyRole === 'fire_rescue' ? 'FR' : agencyRole === 'police' ? 'PD' : agencyRole === 'health_hospitals' ? 'HH' : agencyRole === 'citizen' ? 'CV' : 'DM'}
               </div>
               
-              {/* Dropdown details */}
-              <div className="flex items-center gap-1.5 cursor-pointer text-xs font-mono text-[#e0e0e6] select-none">
+              <div className="flex items-center gap-1 cursor-pointer text-xs font-mono text-[#e0e0e6] select-none">
+                <span className="text-[9px] uppercase text-neutral-400 font-mono tracking-wider hidden sm:inline">Role:</span>
                 <select 
                   value={agencyRole} 
-                  onChange={(e) => setAgencyRole(e.target.value as AgencyRole)}
-                  className="bg-transparent border-none text-neutral-300 hover:text-white font-mono uppercase focus:outline-none cursor-pointer text-[10px] tracking-wide"
+                  onChange={(e) => handleAgencyRoleChange(e.target.value as AgencyRole)}
+                  className="bg-transparent border-none text-brand hover:text-white font-mono uppercase focus:outline-none cursor-pointer text-xs tracking-wider font-extrabold appearance-none [-webkit-appearance:none] [-moz-appearance:none] pr-1"
                 >
-                  <option value="authority" className="bg-[#0e0e14]">Disaster Mgmt HQ</option>
-                  <option value="fire_rescue" className="bg-[#0e0e14]">Fire & Rescue</option>
-                  <option value="police" className="bg-[#0e0e14]">Police Dept</option>
-                  <option value="health_hospitals" className="bg-[#0e0e14]">Hospitals Group</option>
+                  <option value="authority" className="bg-[#0e0e14] text-white">🏛️ DISASTER MGMT HQ</option>
+                  <option value="fire_rescue" className="bg-[#0e0e14] text-white">🚒 FIRE & RESCUE</option>
+                  <option value="police" className="bg-[#0e0e14] text-white">🚓 POLICE DEPT</option>
+                  <option value="health_hospitals" className="bg-[#0e0e14] text-white">🏥 HOSPITALS GROUP</option>
+                  <option value="citizen" className="bg-[#0e0e14] text-white">👤 CITIZEN VIEW</option>
                 </select>
-                <ChevronDown className="w-3.5 h-3.5 text-neutral-400" />
+                <ChevronDown className="w-3.5 h-3.5 text-brand shrink-0 pointer-events-none" />
               </div>
             </div>
 
@@ -519,6 +566,27 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
               onSelectReport={(rep) => setActiveTab('incidents')}
               onSelectZone={(zoneId) => setDispatchZoneId(zoneId)}
               onNavigateToTab={setActiveTab}
+              agencyRole={agencyRole}
+            />
+          )}
+
+          {activeTab === 'fire_rescue' && (
+            <FireRescueDashboard
+              resources={resources}
+              reports={reports}
+              zones={zones}
+              sensors={sensors}
+              onOpenDispatchModal={(zoneId) => setDispatchZoneId(zoneId)}
+            />
+          )}
+
+          {activeTab === 'police' && (
+            <PoliceDashboard
+              resources={resources}
+              reports={reports}
+              zones={zones}
+              evacuationRoute={evacuationRoute}
+              onOpenDispatchModal={(zoneId) => setDispatchZoneId(zoneId)}
             />
           )}
 
@@ -530,6 +598,7 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
             <IncidentsPanel 
               reports={reports} 
               onOpenDispatchModal={(zoneId) => setDispatchZoneId(zoneId)} 
+              agencyRole={agencyRole}
             />
           )}
 
@@ -555,6 +624,7 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
           {activeTab === 'resources' && (
             <ResourcesPanel 
               resources={resources} 
+              agencyRole={agencyRole}
             />
           )}
 
@@ -628,6 +698,16 @@ export default function DashboardApp({ onBackToLanding, initialTab, onNavigateTa
           onClose={() => setDispatchZoneId(null)}
         />
       )}
+
+      <NotificationDrawer
+        isOpen={isNotificationDrawerOpen}
+        onClose={() => setIsNotificationDrawerOpen(false)}
+        alerts={alerts}
+        reports={reports}
+        agentLogs={agentLogs}
+        onAcknowledgeAlert={handleAcknowledgeAlert}
+        agencyRole={agencyRole}
+      />
 
     </div>
   );
