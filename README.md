@@ -12,7 +12,16 @@ The platform is purpose-built for the **Chennai Velachery–Adyar flood corridor
 - **Project Name:** ResponSync
 - **Target Region:** Chennai Velachery & Adyar Corridor (Velachery South, Guindy Railway Subway, Kotturpuram Adyar River Bank, Taramani 100ft Canal Link, Madipakkam Lake Basin)
 - **Repository:** [https://github.com/goprocker/ResponseSync](https://github.com/goprocker/ResponseSync)
-- **Team Lead & Core Developers:** Team ResponseSync (Ananya Harish & Contributors)
+
+### 👨‍💻 Team Members
+
+| # | Name | Role / Focus Area | GitHub Profile |
+|:-:|---|---|---|
+| 1 | **GOPINATH R** | Team Lead & Frontend Engineering | [@goprocker](https://github.com/goprocker) |
+| 2 | **MEDA VENKATA SAI CHARAN** | Backend Infrastructure & API Services | [@NINJA981](https://github.com/NINJA981) |
+| 3 | **ANANYA HARISH** | Disaster Simulations Engine & Physics | [@ananyadharish](https://github.com/ananyadharish) |
+| 4 | **GOPI K** | Database Schemas & Supabase PostGIS | [@K-Gopi2007](https://github.com/K-Gopi2007) |
+| 5 | **SHIVANI SK** | Research & Development (R&D) | [@shivaniisk](https://github.com/shivaniisk) |
 
 ---
 
