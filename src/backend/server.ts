@@ -1264,7 +1264,7 @@ Return JSON response:
     if (ai) {
       try {
         const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
+          model: 'gemini-2.0-flash',
           contents: prompt,
           config: {
             responseMimeType: 'application/json'
@@ -1497,7 +1497,7 @@ Return a JSON object with this EXACT structure:
     let parsedResult: any = null;
     if (ai) {
       const response = await callGeminiContent(ai, {
-        model: 'gemini-2.5-flash',
+        model: 'gemini-2.0-flash',
         contents: multiAgentPrompt,
         config: {
           responseMimeType: 'application/json'
