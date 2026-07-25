@@ -206,3 +206,14 @@ export interface EmergencyHospital {
   phone: string;
   hasTraumaCenter: boolean;
 }
+
+export function censorPhoneNumber(phone?: string): string {
+  if (!phone) return '+91 94440 XXXX';
+  const trimmed = phone.trim();
+  if (trimmed.endsWith('XXXX')) return trimmed;
+  if (trimmed.length >= 4) {
+    return trimmed.slice(0, -4) + 'XXXX';
+  }
+  return 'XXXX';
+}
+

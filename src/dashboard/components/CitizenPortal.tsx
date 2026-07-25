@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { EmergencyShelter, CitizenReport, EvacuationRoute } from '../../shared/types.js';
+import { EmergencyShelter, CitizenReport, EvacuationRoute, censorPhoneNumber } from '../../shared/types.js';
 import { CitizenReportSchema } from '../../services/schema.js';
 import {
   Users,
@@ -477,7 +477,7 @@ export const CitizenPortal: React.FC<CitizenPortalProps> = ({
                   className="w-full py-1.5 bg-transparent hover:bg-[#ffffff08] text-[#ccc] border border-white/10 rounded text-xs font-mono font-bold uppercase flex items-center justify-center gap-1.5 transition-all"
                 >
                   <Phone className="w-3.5 h-3.5" />
-                  Call Officer ({shelter.contactPerson})
+                  Call ({censorPhoneNumber(shelter.phone)})
                 </a>
               </div>
             );

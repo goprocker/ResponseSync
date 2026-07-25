@@ -1,6 +1,6 @@
 import React from 'react';
 import { Truck, Shield, AlertTriangle, Users, Fuel, Phone, MapPin } from 'lucide-react';
-import { EmergencyResource } from '../../shared/types';
+import { EmergencyResource, censorPhoneNumber } from '../../shared/types';
 
 interface ResourcesPanelProps {
   resources: EmergencyResource[];
@@ -102,7 +102,7 @@ export default function ResourcesPanel({ resources }: ResourcesPanelProps) {
                   <MapPin className="w-3.5 h-3.5 text-brand" /> Lat: {res.lat.toFixed(3)}, Lng: {res.lng.toFixed(3)}
                 </span>
                 <span className="flex items-center gap-1 text-brand">
-                  <Phone className="w-3.5 h-3.5" /> {res.contactNumber}
+                  <Phone className="w-3.5 h-3.5" /> {censorPhoneNumber(res.contactNumber)}
                 </span>
               </div>
 

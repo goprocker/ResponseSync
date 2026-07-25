@@ -423,75 +423,168 @@ async function populateAllDetailedKnowledge() {
   const hospitals = [
     {
       id: 'hosp-01',
-      name: 'Gleneagles Global Health City (Velachery)',
-      total_beds: 450,
-      available_icu_beds: 18,
+      name: 'Chennai General Trauma Hospital & Medical Center',
+      address: 'Velachery 100ft Road, near Vijaya Nagar, Chennai',
+      total_beds: 120,
+      available_icu_beds: 2,
       trauma_center_active: true,
-      status: 'operational',
-      coordinates: [12.9750, 80.2240]
+      status: 'strained',
+      phone: '+91 94441 XXXX',
+      coordinates: [12.9800, 80.2200]
     },
     {
       id: 'hosp-02',
-      name: 'Guindy Super Specialty Hospital',
-      total_beds: 300,
-      available_icu_beds: 8,
+      name: 'Fortis Emergency Specialty Clinic - Adyar',
+      address: 'LB Road, Adyar, Chennai',
+      total_beds: 80,
+      available_icu_beds: 6,
       trauma_center_active: true,
-      status: 'strained',
-      coordinates: [13.0095, 80.2150]
+      status: 'operational',
+      phone: '+91 94441 XXXX',
+      coordinates: [13.0030, 80.2450]
     },
     {
       id: 'hosp-03',
-      name: 'Apollo Speciality Hospital (Perungudi OMR)',
-      total_beds: 250,
-      available_icu_beds: 15,
+      name: 'Apollo Hospital & Emergency Response Unit',
+      address: '21, Greams Lane, Thousand Lights, Chennai',
+      total_beds: 600,
+      available_icu_beds: 4,
       trauma_center_active: true,
-      status: 'operational',
-      coordinates: [12.9650, 80.2480]
+      status: 'strained',
+      phone: '+91 44 2829 XXXX',
+      coordinates: [13.0600, 80.2510]
     },
     {
       id: 'hosp-04',
-      name: 'Miot International Hospital (Manapakkam)',
-      total_beds: 500,
-      available_icu_beds: 24,
-      trauma_center_active: true,
+      name: 'KMC Disaster Support Clinic - Taramani',
+      address: 'Taramani Link Road, Chennai',
+      total_beds: 60,
+      available_icu_beds: 3,
+      trauma_center_active: false,
       status: 'operational',
-      coordinates: [13.0280, 80.1920]
+      phone: '+91 94441 XXXX',
+      coordinates: [12.9890, 80.2460]
     },
     {
       id: 'hosp-05',
-      name: 'Fortis Malar Hospital (Adyar)',
-      total_beds: 180,
-      available_icu_beds: 10,
+      name: 'MIOT International Hospital (Manapakkam)',
+      address: '4/112, Mount Poonamallee Road, Manapakkam, Chennai',
+      total_beds: 500,
+      available_icu_beds: 12,
       trauma_center_active: true,
-      status: 'strained',
-      coordinates: [13.0060, 80.2570]
+      status: 'operational',
+      phone: '+91 44 4200 XXXX',
+      coordinates: [13.0160, 80.1810]
     },
     {
       id: 'hosp-06',
-      name: 'Rajiv Gandhi Government General Hospital',
-      total_beds: 2700,
-      available_icu_beds: 45,
+      name: 'Sri Ramachandra Medical Centre (Porur)',
+      address: 'No.1 Ramachandra Nagar, Porur, Chennai',
+      total_beds: 1500,
+      available_icu_beds: 15,
       trauma_center_active: true,
-      status: 'operational',
-      coordinates: [13.0810, 80.2780]
+      status: 'strained',
+      phone: '+91 44 4592 XXXX',
+      coordinates: [13.0390, 80.1470]
     },
     {
       id: 'hosp-07',
-      name: 'Sri Ramachandra Medical Centre (Porur)',
-      total_beds: 1500,
-      available_icu_beds: 30,
+      name: 'Gleneagles Global Health City (Perumbakkam)',
+      address: '439, Cheran Nagar, Perumbakkam, Chennai',
+      total_beds: 450,
+      available_icu_beds: 3,
       trauma_center_active: true,
-      status: 'operational',
-      coordinates: [13.0390, 80.1480]
+      status: 'strained',
+      phone: '+91 44 4477 XXXX',
+      coordinates: [12.8990, 80.1910]
     },
     {
       id: 'hosp-08',
-      name: 'Stanley Medical College Hospital',
+      name: 'Rajiv Gandhi Government General Hospital',
+      address: 'EVR Periyar Salai, Park Town, Chennai',
+      total_beds: 2700,
+      available_icu_beds: 32,
+      trauma_center_active: true,
+      status: 'operational',
+      phone: '+91 44 2530 XXXX',
+      coordinates: [13.0810, 80.2780]
+    },
+    {
+      id: 'hosp-09',
+      name: 'Government Stanley Medical College Hospital',
+      address: 'Old Jail Road, Royapuram, Chennai',
       total_beds: 1200,
-      available_icu_beds: 20,
+      available_icu_beds: 14,
       trauma_center_active: true,
       status: 'strained',
+      phone: '+91 44 2528 XXXX',
       coordinates: [13.1060, 80.2860]
+    },
+    {
+      id: 'hosp-10',
+      name: 'Guindy Government Super Specialty Hospital',
+      address: 'King Institute Campus, Guindy, Chennai',
+      total_beds: 300,
+      available_icu_beds: 4,
+      trauma_center_active: true,
+      status: 'strained',
+      phone: '+91 44 2234 XXXX',
+      coordinates: [13.0090, 80.2150]
+    },
+    {
+      id: 'hosp-11',
+      name: 'Sundaram Medical Foundation Hospital',
+      address: '9C, 4th Avenue, Shanthi Colony, Anna Nagar, Chennai',
+      total_beds: 220,
+      available_icu_beds: 7,
+      trauma_center_active: true,
+      status: 'operational',
+      phone: '+91 44 2626 XXXX',
+      coordinates: [13.0860, 80.2100]
+    },
+    {
+      id: 'hosp-12',
+      name: 'Kauvery Hospital Alwarpet',
+      address: '199, Luz Church Road, Alwarpet, Chennai',
+      total_beds: 250,
+      available_icu_beds: 5,
+      trauma_center_active: true,
+      status: 'operational',
+      phone: '+91 44 4000 XXXX',
+      coordinates: [13.0330, 80.2520]
+    },
+    {
+      id: 'hosp-13',
+      name: 'Vijaya Hospital Vadapalani',
+      address: '434, NSK Salai, Vadapalani, Chennai',
+      total_beds: 350,
+      available_icu_beds: 9,
+      trauma_center_active: true,
+      status: 'operational',
+      phone: '+91 44 2480 XXXX',
+      coordinates: [13.0510, 80.2120]
+    },
+    {
+      id: 'hosp-14',
+      name: 'Billroth Hospitals Shenoy Nagar',
+      address: '43, Lakshmi Talkies Road, Shenoy Nagar, Chennai',
+      total_beds: 180,
+      available_icu_beds: 3,
+      trauma_center_active: true,
+      status: 'strained',
+      phone: '+91 44 2664 XXXX',
+      coordinates: [13.0780, 80.2260]
+    },
+    {
+      id: 'hosp-15',
+      name: 'MGM Healthcare Aminjikarai',
+      address: 'New No 72, Nelson Manickam Road, Aminjikarai, Chennai',
+      total_beds: 400,
+      available_icu_beds: 8,
+      trauma_center_active: true,
+      status: 'operational',
+      phone: '+91 44 4524 XXXX',
+      coordinates: [13.0740, 80.2230]
     }
   ];
 
@@ -506,60 +599,120 @@ async function populateAllDetailedKnowledge() {
       name: 'Velachery Community Center Relief Camp',
       address: '100ft Road, Velachery, Chennai',
       capacity: 1200,
-      current_occupancy: 480,
+      current_occupancy: 840,
       status: 'open',
-      contact_phone: '+91 44 2243 0001',
+      contact_phone: '+91 94451 XXXX',
       has_medical_unit: true,
       has_food_supply: true,
-      coordinates: [12.9815, 80.2225]
+      coordinates: [12.9830, 80.2180]
     },
     {
       id: 'sh-02',
-      name: 'Guindy Government Higher Secondary School',
-      address: 'GST Road, Guindy, Chennai',
-      capacity: 850,
-      current_occupancy: 620,
-      status: 'filling_fast',
-      contact_phone: '+91 44 2234 1122',
+      name: 'Adyar Govt Higher Secondary School Relief Hub',
+      address: 'Lattice Bridge Road, Adyar, Chennai',
+      capacity: 2000,
+      current_occupancy: 1150,
+      status: 'open',
+      contact_phone: '+91 94451 XXXX',
       has_medical_unit: true,
       has_food_supply: true,
-      coordinates: [13.0089, 80.2135]
+      coordinates: [13.0050, 80.2520]
     },
     {
       id: 'sh-03',
-      name: 'Kotturpuram Corporation Relief Hall',
-      address: 'Adyar River Road, Kotturpuram, Chennai',
-      capacity: 600,
-      current_occupancy: 150,
+      name: 'Guindy Government Higher Secondary School',
+      address: 'GST Road, Guindy, Chennai',
+      capacity: 3500,
+      current_occupancy: 1200,
       status: 'open',
-      contact_phone: '+91 44 2441 5566',
+      contact_phone: '+91 94451 XXXX',
       has_medical_unit: true,
       has_food_supply: true,
-      coordinates: [13.0245, 80.2425]
+      coordinates: [13.0090, 80.2120]
     },
     {
       id: 'sh-04',
+      name: 'Kotturpuram Corporation Relief Hall',
+      address: 'Adyar River Road, Kotturpuram, Chennai',
+      capacity: 800,
+      current_occupancy: 320,
+      status: 'open',
+      contact_phone: '+91 44 2441 XXXX',
+      has_medical_unit: true,
+      has_food_supply: true,
+      coordinates: [13.0240, 80.2420]
+    },
+    {
+      id: 'sh-05',
       name: 'Taramani Dr. MGR Janaki College Relief Hub',
       address: 'Velachery-Taramani Link Road, Chennai',
       capacity: 1500,
-      current_occupancy: 310,
+      current_occupancy: 410,
       status: 'open',
-      contact_phone: '+91 44 2254 9988',
+      contact_phone: '+91 44 2254 XXXX',
       has_medical_unit: true,
       has_food_supply: true,
       coordinates: [12.9870, 80.2440]
     },
     {
-      id: 'sh-05',
+      id: 'sh-06',
       name: 'Saidapet Government Boys High School Relief Center',
       address: 'Anna Salai, Saidapet, Chennai',
-      capacity: 1000,
-      current_occupancy: 520,
+      capacity: 1100,
+      current_occupancy: 680,
       status: 'filling_fast',
-      contact_phone: '+91 44 2435 7766',
+      contact_phone: '+91 44 2435 XXXX',
       has_medical_unit: true,
       has_food_supply: true,
-      coordinates: [13.0215, 80.2240]
+      coordinates: [13.0210, 80.2240]
+    },
+    {
+      id: 'sh-07',
+      name: 'Anna Nagar Tower Park Community Hall',
+      address: '3rd Main Road, Anna Nagar, Chennai',
+      capacity: 1800,
+      current_occupancy: 500,
+      status: 'open',
+      contact_phone: '+91 44 2621 XXXX',
+      has_medical_unit: true,
+      has_food_supply: true,
+      coordinates: [13.0850, 80.2120]
+    },
+    {
+      id: 'sh-08',
+      name: 'Perambur Don Bosco Relief Shelter',
+      address: 'Paper Mills Road, Perambur, Chennai',
+      capacity: 1400,
+      current_occupancy: 950,
+      status: 'filling_fast',
+      contact_phone: '+91 44 2551 XXXX',
+      has_medical_unit: true,
+      has_food_supply: true,
+      coordinates: [13.1100, 80.2330]
+    },
+    {
+      id: 'sh-09',
+      name: 'Tambaram Municipal Marriage Hall Shelter',
+      address: 'GST Road, Tambaram, Chennai',
+      capacity: 2500,
+      current_occupancy: 1400,
+      status: 'open',
+      contact_phone: '+91 44 2226 XXXX',
+      has_medical_unit: true,
+      has_food_supply: true,
+      coordinates: [12.9250, 80.1270]
+    },
+    {
+      id: 'sh-10',
+      name: 'Sholinganallur St. Josephs Relief Hub',
+      address: 'OMR, Sholinganallur, Chennai',
+      capacity: 3000,
+      current_occupancy: 820,
+      status: 'open',
+      contact_phone: '+91 44 2450 XXXX',
+      has_medical_unit: true,
+      has_food_supply: true,
+      coordinates: [12.9010, 80.2270]
     }
   ];
 
@@ -575,6 +728,7 @@ async function populateAllDetailedKnowledge() {
       type: 'boat',
       status: 'deployed',
       assigned_zone_id: 'zone-velachery-south',
+      contact_number: '+91 94440 XXXX',
       coordinates: [12.9790, 80.2210]
     },
     {
@@ -583,6 +737,7 @@ async function populateAllDetailedKnowledge() {
       type: 'pump',
       status: 'deployed',
       assigned_zone_id: 'zone-guindy-subway',
+      contact_number: '+91 44 2234 XXXX',
       coordinates: [13.0060, 80.2110]
     },
     {
@@ -591,6 +746,7 @@ async function populateAllDetailedKnowledge() {
       type: 'ambulance',
       status: 'available',
       assigned_zone_id: null,
+      contact_number: '+91 94440 XXXX',
       coordinates: [12.9850, 80.2260]
     },
     {
@@ -599,6 +755,7 @@ async function populateAllDetailedKnowledge() {
       type: 'bus',
       status: 'en_route',
       assigned_zone_id: 'zone-kotturpuram',
+      contact_number: '+91 98400 XXXX',
       coordinates: [13.0210, 80.2400]
     },
     {
@@ -607,6 +764,7 @@ async function populateAllDetailedKnowledge() {
       type: 'boat',
       status: 'deployed',
       assigned_zone_id: 'zone-madipakkam-lake',
+      contact_number: '+91 44 2243 XXXX',
       coordinates: [12.9650, 80.1990]
     },
     {
@@ -615,7 +773,62 @@ async function populateAllDetailedKnowledge() {
       type: 'pump',
       status: 'available',
       assigned_zone_id: null,
+      contact_number: '+91 44 2234 XXXX',
       coordinates: [12.9860, 80.2420]
+    },
+    {
+      id: 'res-07',
+      name: '108 ALS Ambulance Unit 04',
+      type: 'ambulance',
+      status: 'deployed',
+      assigned_zone_id: 'zone-velachery-south',
+      contact_number: '+91 94441 XXXX',
+      coordinates: [12.9750, 80.2240]
+    },
+    {
+      id: 'res-08',
+      name: 'NDRF Battalion 04 - Amphibious Vehicle Unit',
+      type: 'boat',
+      status: 'deployed',
+      assigned_zone_id: 'zone-kotturpuram',
+      contact_number: '+91 94442 XXXX',
+      coordinates: [13.0240, 80.2420]
+    },
+    {
+      id: 'res-09',
+      name: 'Traffic Division Mobile Barricade Unit',
+      type: 'police',
+      status: 'deployed',
+      assigned_zone_id: 'zone-guindy-subway',
+      contact_number: '+91 44 2345 XXXX',
+      coordinates: [12.9980, 80.2110]
+    },
+    {
+      id: 'res-10',
+      name: 'Civil Supplies Mobile Kitchen Unit B',
+      type: 'truck',
+      status: 'available',
+      assigned_zone_id: 'zone-velachery-south',
+      contact_number: '+91 98401 XXXX',
+      coordinates: [12.9850, 80.2220]
+    },
+    {
+      id: 'res-11',
+      name: 'Disaster Recon Drone Squadron A',
+      type: 'drone',
+      status: 'deployed',
+      assigned_zone_id: 'zone-taramani-omr',
+      contact_number: '+91 98402 XXXX',
+      coordinates: [12.9860, 80.2480]
+    },
+    {
+      id: 'res-12',
+      name: 'TN Fire & Rescue Heavy Tree Clearing Squad',
+      type: 'fire_engine',
+      status: 'available',
+      assigned_zone_id: null,
+      contact_number: '+91 44 2491 XXXX',
+      coordinates: [12.9650, 80.2480]
     }
   ];
 
@@ -628,7 +841,7 @@ async function populateAllDetailedKnowledge() {
     {
       id: 'rep-001',
       reporter_name: 'Ramesh Kumar',
-      phone: '+91 98401 23456',
+      phone: '+91 98401 XXXX',
       location_name: 'Velachery Vijaya Nagar Bus Stand',
       coordinates: [12.9785, 80.2205],
       hazard_type: 'waterlogging',
@@ -642,7 +855,7 @@ async function populateAllDetailedKnowledge() {
     {
       id: 'rep-002',
       reporter_name: 'Priya Sundaram',
-      phone: '+91 94440 98765',
+      phone: '+91 94440 XXXX',
       location_name: 'Guindy Railway Subway',
       coordinates: [13.0067, 80.2117],
       hazard_type: 'road_submerged',
@@ -656,7 +869,7 @@ async function populateAllDetailedKnowledge() {
     {
       id: 'rep-003',
       reporter_name: 'Anand Viswanathan',
-      phone: '+91 97900 11223',
+      phone: '+91 97900 XXXX',
       location_name: 'Kotturpuram Riverbank Tenements',
       coordinates: [13.0231, 80.2411],
       hazard_type: 'trapped_citizens',

@@ -221,7 +221,7 @@ export const INITIAL_RESOURCES: EmergencyResource[] = [
     crewCount: 16,
     fuelOrSuppliesPct: 85,
     equipment: ['4x Inflatable Motor Boats', 'Life Jackets x60', 'Satellite Comm', 'Thermal Scanners'],
-    contactNumber: '+91 94440 12345'
+    contactNumber: '+91 94440 XXXX'
   },
   {
     id: 'res-amb-02',
@@ -234,7 +234,7 @@ export const INITIAL_RESOURCES: EmergencyResource[] = [
     crewCount: 3,
     fuelOrSuppliesPct: 92,
     equipment: ['Advanced Life Support', 'Portable Ventilator', 'Trauma Kit'],
-    contactNumber: '+91 94440 67890'
+    contactNumber: '+91 94440 XXXX'
   },
   {
     id: 'res-fire-03',
@@ -247,7 +247,7 @@ export const INITIAL_RESOURCES: EmergencyResource[] = [
     crewCount: 10,
     fuelOrSuppliesPct: 78,
     equipment: ['Heavy High-Capacity Water Pumps (500 HP)', 'Hydraulic Cutters', 'Search Lights'],
-    contactNumber: '+91 44 2243 0101'
+    contactNumber: '+91 44 2243 XXXX'
   },
   {
     id: 'res-police-04',
@@ -260,7 +260,7 @@ export const INITIAL_RESOURCES: EmergencyResource[] = [
     crewCount: 8,
     fuelOrSuppliesPct: 90,
     equipment: ['Road Block Barricades', 'Public Address System', 'Drones'],
-    contactNumber: '+91 44 2345 2000'
+    contactNumber: '+91 44 2345 XXXX'
   },
   {
     id: 'res-relief-05',
@@ -273,7 +273,98 @@ export const INITIAL_RESOURCES: EmergencyResource[] = [
     crewCount: 5,
     fuelOrSuppliesPct: 100,
     equipment: ['2500 Packaged Meals', '5000L Drinking Water Bottles', 'Dry Ration Kits'],
-    contactNumber: '+91 98400 99881'
+    contactNumber: '+91 98400 XXXX'
+  },
+  {
+    id: 'res-pump-06',
+    name: 'Heavy Dewatering Pump 500HP #1',
+    type: 'fire_truck',
+    lat: 13.006,
+    lng: 80.211,
+    assignedZoneId: 'zone-guindy-underpass',
+    status: 'deployed',
+    crewCount: 4,
+    fuelOrSuppliesPct: 88,
+    equipment: ['500HP Diesel Dewatering Pump', 'Suction Hoses', 'Fuel Tanker Unit'],
+    contactNumber: '+91 44 2234 XXXX'
+  },
+  {
+    id: 'res-amb-07',
+    name: '108 ALS Ambulance Unit 04',
+    type: 'ambulance',
+    lat: 12.975,
+    lng: 80.224,
+    assignedZoneId: 'zone-velachery-south',
+    status: 'deployed',
+    crewCount: 3,
+    fuelOrSuppliesPct: 95,
+    equipment: ['ICU Support System', 'Defibrillator', 'Oxygen Cylinders'],
+    contactNumber: '+91 94441 XXXX'
+  },
+  {
+    id: 'res-ndrf-08',
+    name: 'NDRF Battalion 04 - Amphibious Vehicle Unit',
+    type: 'rescue_boat',
+    lat: 13.024,
+    lng: 80.242,
+    assignedZoneId: 'zone-adyar-riverbank',
+    status: 'deployed',
+    crewCount: 12,
+    fuelOrSuppliesPct: 80,
+    equipment: ['Amphibious Rescue Craft', 'Thermal Drone', 'Medical First Aid Kits'],
+    contactNumber: '+91 94442 XXXX'
+  },
+  {
+    id: 'res-police-09',
+    name: 'Traffic Division Mobile Barricade Unit',
+    type: 'police_patrol',
+    lat: 12.998,
+    lng: 80.211,
+    assignedZoneId: 'zone-guindy-underpass',
+    status: 'deployed',
+    crewCount: 6,
+    fuelOrSuppliesPct: 85,
+    equipment: ['LED Variable Message Signboards', 'Automated Hydraulic Barriers'],
+    contactNumber: '+91 44 2345 XXXX'
+  },
+  {
+    id: 'res-relief-10',
+    name: 'Civil Supplies Mobile Kitchen Unit B',
+    type: 'relief_truck',
+    lat: 12.985,
+    lng: 80.222,
+    assignedZoneId: 'zone-velachery-south',
+    status: 'available',
+    crewCount: 8,
+    fuelOrSuppliesPct: 90,
+    equipment: ['Mobile Cooking Facility', '3000 Food Packets', 'Clean Water Dispenser'],
+    contactNumber: '+91 98401 XXXX'
+  },
+  {
+    id: 'res-drone-11',
+    name: 'Disaster Recon Drone Squadron A',
+    type: 'medical_unit',
+    lat: 12.986,
+    lng: 80.248,
+    assignedZoneId: 'zone-taramani-omr',
+    status: 'deployed',
+    crewCount: 4,
+    fuelOrSuppliesPct: 92,
+    equipment: ['4x SAR Infrared Drones', 'Live Optical Stream', 'Payload Air-Drop Rig'],
+    contactNumber: '+91 98402 XXXX'
+  },
+  {
+    id: 'res-fire-12',
+    name: 'TN Fire & Rescue Heavy Tree Clearing Squad',
+    type: 'fire_truck',
+    lat: 12.965,
+    lng: 80.248,
+    assignedZoneId: undefined,
+    status: 'available',
+    crewCount: 10,
+    fuelOrSuppliesPct: 98,
+    equipment: ['Power Chainsaws x6', 'Heavy Crane Attachment', 'Debris Clearing Blades'],
+    contactNumber: '+91 44 2491 XXXX'
   }
 ];
 
@@ -291,7 +382,7 @@ export const INITIAL_SHELTERS: EmergencyShelter[] = [
     powerBackup: true,
     status: 'open',
     contactPerson: 'Officer S. Ramesh',
-    phone: '+91 94451 90100'
+    phone: '+91 94451 XXXX'
   },
   {
     id: 'shelter-adyar-govt-school',
@@ -306,7 +397,7 @@ export const INITIAL_SHELTERS: EmergencyShelter[] = [
     powerBackup: true,
     status: 'open',
     contactPerson: 'Dr. M. Deepa',
-    phone: '+91 94451 90200'
+    phone: '+91 94451 XXXX'
   },
   {
     id: 'shelter-guindy-sports-complex',
@@ -321,7 +412,112 @@ export const INITIAL_SHELTERS: EmergencyShelter[] = [
     powerBackup: true,
     status: 'open',
     contactPerson: 'Captain V. Kumar',
-    phone: '+91 94451 90300'
+    phone: '+91 94451 XXXX'
+  },
+  {
+    id: 'shelter-kotturpuram-corp',
+    name: 'Kotturpuram Corporation Relief Hall',
+    address: 'Adyar River Road, Kotturpuram, Chennai',
+    lat: 13.024,
+    lng: 80.242,
+    totalCapacity: 800,
+    currentOccupancy: 320,
+    foodSuppliesDays: 5,
+    medicalStaffPresent: true,
+    powerBackup: true,
+    status: 'open',
+    contactPerson: 'Officer K. Selvam',
+    phone: '+91 44 2441 XXXX'
+  },
+  {
+    id: 'shelter-taramani-college',
+    name: 'Taramani Dr. MGR Janaki Relief Center',
+    address: 'Velachery-Taramani Link Road, Chennai',
+    lat: 12.987,
+    lng: 80.244,
+    totalCapacity: 1500,
+    currentOccupancy: 410,
+    foodSuppliesDays: 5,
+    medicalStaffPresent: true,
+    powerBackup: true,
+    status: 'open',
+    contactPerson: 'Dean S. Parthasarathy',
+    phone: '+91 44 2254 XXXX'
+  },
+  {
+    id: 'shelter-saidapet-boys-school',
+    name: 'Saidapet Govt Boys High School Relief Camp',
+    address: 'Anna Salai, Saidapet, Chennai',
+    lat: 13.021,
+    lng: 80.224,
+    totalCapacity: 1100,
+    currentOccupancy: 680,
+    foodSuppliesDays: 3,
+    medicalStaffPresent: true,
+    powerBackup: true,
+    status: 'near_capacity',
+    contactPerson: 'Headmaster R. Swaminathan',
+    phone: '+91 44 2435 XXXX'
+  },
+  {
+    id: 'shelter-annanagar-tower',
+    name: 'Anna Nagar Tower Park Community Hall',
+    address: '3rd Main Road, Anna Nagar, Chennai',
+    lat: 13.085,
+    lng: 80.212,
+    totalCapacity: 1800,
+    currentOccupancy: 500,
+    foodSuppliesDays: 8,
+    medicalStaffPresent: true,
+    powerBackup: true,
+    status: 'open',
+    contactPerson: 'Officer P. Venkatesh',
+    phone: '+91 44 2621 XXXX'
+  },
+  {
+    id: 'shelter-perambur-donbosco',
+    name: 'Perambur Don Bosco Relief Shelter',
+    address: 'Paper Mills Road, Perambur, Chennai',
+    lat: 13.110,
+    lng: 80.233,
+    totalCapacity: 1400,
+    currentOccupancy: 950,
+    foodSuppliesDays: 4,
+    medicalStaffPresent: true,
+    powerBackup: true,
+    status: 'near_capacity',
+    contactPerson: 'Fr. Joseph Anthony',
+    phone: '+91 44 2551 XXXX'
+  },
+  {
+    id: 'shelter-tambaram-municipal',
+    name: 'Tambaram Municipal Marriage Hall Shelter',
+    address: 'GST Road, Tambaram, Chennai',
+    lat: 12.925,
+    lng: 80.127,
+    totalCapacity: 2500,
+    currentOccupancy: 1400,
+    foodSuppliesDays: 6,
+    medicalStaffPresent: true,
+    powerBackup: true,
+    status: 'open',
+    contactPerson: 'Commissioner N. Mohan',
+    phone: '+91 44 2226 XXXX'
+  },
+  {
+    id: 'shelter-sholinganallur-stjoseph',
+    name: 'Sholinganallur St. Josephs Relief Hub',
+    address: 'OMR, Sholinganallur, Chennai',
+    lat: 12.901,
+    lng: 80.227,
+    totalCapacity: 3000,
+    currentOccupancy: 820,
+    foodSuppliesDays: 7,
+    medicalStaffPresent: true,
+    powerBackup: true,
+    status: 'open',
+    contactPerson: 'Coordinator A. Francis',
+    phone: '+91 44 2450 XXXX'
   }
 ];
 
@@ -329,7 +525,7 @@ export const INITIAL_CITIZEN_REPORTS: CitizenReport[] = [
   {
     id: 'report-101',
     reporterName: 'Karthik Subramanian',
-    phone: '+91 98840 11223',
+    phone: '+91 98840 XXXX',
     timestamp: '10 mins ago',
     lat: 12.977,
     lng: 80.221,
@@ -347,7 +543,7 @@ export const INITIAL_CITIZEN_REPORTS: CitizenReport[] = [
   {
     id: 'report-102',
     reporterName: 'Anitha Rajan',
-    phone: '+91 97900 44556',
+    phone: '+91 97900 XXXX',
     timestamp: '22 mins ago',
     lat: 13.012,
     lng: 80.239,
@@ -365,7 +561,7 @@ export const INITIAL_CITIZEN_REPORTS: CitizenReport[] = [
   {
     id: 'report-103',
     reporterName: 'Senthil Kumar',
-    phone: '+91 94430 88776',
+    phone: '+91 94430 XXXX',
     timestamp: '35 mins ago',
     lat: 12.997,
     lng: 80.210,
@@ -528,7 +724,7 @@ export const INITIAL_HOSPITALS: EmergencyHospital[] = [
     icuBedsAvailable: 2,
     status: 'near_capacity',
     contactPerson: 'Dr. A. Vinodh',
-    phone: '+91 94441 55660',
+    phone: '+91 94441 XXXX',
     hasTraumaCenter: true
   },
   {
@@ -543,22 +739,22 @@ export const INITIAL_HOSPITALS: EmergencyHospital[] = [
     icuBedsAvailable: 6,
     status: 'normal',
     contactPerson: 'Dr. S. K. Roy',
-    phone: '+91 94441 77880',
+    phone: '+91 94441 XXXX',
     hasTraumaCenter: true
   },
   {
     id: 'hosp-03',
     name: 'Apollo Hospital & Emergency Response Unit',
-    address: 'Guindy Main Road, Chennai',
-    lat: 13.012,
-    lng: 80.215,
-    totalCapacity: 200,
-    occupiedCapacity: 195,
-    icuBedsTotal: 25,
-    icuBedsAvailable: 0,
+    address: '21, Greams Lane, Thousand Lights, Chennai',
+    lat: 13.060,
+    lng: 80.251,
+    totalCapacity: 600,
+    occupiedCapacity: 580,
+    icuBedsTotal: 80,
+    icuBedsAvailable: 4,
     status: 'full',
     contactPerson: 'Director R. K. Nair',
-    phone: '+91 44 2235 1234',
+    phone: '+91 44 2829 XXXX',
     hasTraumaCenter: true
   },
   {
@@ -573,7 +769,7 @@ export const INITIAL_HOSPITALS: EmergencyHospital[] = [
     icuBedsAvailable: 3,
     status: 'normal',
     contactPerson: 'Dr. Rita Sen',
-    phone: '+91 94441 99000',
+    phone: '+91 94441 XXXX',
     hasTraumaCenter: false
   },
   {
@@ -582,28 +778,28 @@ export const INITIAL_HOSPITALS: EmergencyHospital[] = [
     address: '4/112, Mount Poonamallee Road, Manapakkam, Chennai',
     lat: 13.016,
     lng: 80.181,
-    totalCapacity: 300,
-    occupiedCapacity: 210,
-    icuBedsTotal: 40,
-    icuBedsAvailable: 8,
+    totalCapacity: 500,
+    occupiedCapacity: 390,
+    icuBedsTotal: 50,
+    icuBedsAvailable: 12,
     status: 'normal',
     contactPerson: 'Dr. P. Rajan',
-    phone: '+91 44 4200 2288',
+    phone: '+91 44 4200 XXXX',
     hasTraumaCenter: true
   },
   {
     id: 'hosp-06',
     name: 'Sri Ramachandra Medical Centre',
-    address: 'Porur, Chennai',
+    address: 'No.1 Ramachandra Nagar, Porur, Chennai',
     lat: 13.039,
     lng: 80.147,
-    totalCapacity: 500,
-    occupiedCapacity: 480,
-    icuBedsTotal: 60,
-    icuBedsAvailable: 2,
+    totalCapacity: 1500,
+    occupiedCapacity: 1380,
+    icuBedsTotal: 120,
+    icuBedsAvailable: 15,
     status: 'near_capacity',
     contactPerson: 'Dr. Ramesh Kumar',
-    phone: '+91 44 4592 8500',
+    phone: '+91 44 4592 XXXX',
     hasTraumaCenter: true
   },
   {
@@ -612,13 +808,134 @@ export const INITIAL_HOSPITALS: EmergencyHospital[] = [
     address: '439, Cheran Nagar, Perumbakkam, Chennai',
     lat: 12.899,
     lng: 80.191,
-    totalCapacity: 250,
-    occupiedCapacity: 250,
-    icuBedsTotal: 30,
-    icuBedsAvailable: 0,
-    status: 'full',
+    totalCapacity: 450,
+    occupiedCapacity: 432,
+    icuBedsTotal: 40,
+    icuBedsAvailable: 3,
+    status: 'near_capacity',
     contactPerson: 'Dr. V. Srinivasan',
-    phone: '+91 44 4477 3300',
+    phone: '+91 44 4477 XXXX',
+    hasTraumaCenter: true
+  },
+  {
+    id: 'hosp-08',
+    name: 'Rajiv Gandhi Government General Hospital',
+    address: 'EVR Periyar Salai, Park Town, Chennai',
+    lat: 13.081,
+    lng: 80.278,
+    totalCapacity: 2700,
+    occupiedCapacity: 2510,
+    icuBedsTotal: 200,
+    icuBedsAvailable: 32,
+    status: 'normal',
+    contactPerson: 'Dean Dr. E. Theranirajan',
+    phone: '+91 44 2530 XXXX',
+    hasTraumaCenter: true
+  },
+  {
+    id: 'hosp-09',
+    name: 'Government Stanley Medical College Hospital',
+    address: 'Old Jail Road, Royapuram, Chennai',
+    lat: 13.106,
+    lng: 80.286,
+    totalCapacity: 1200,
+    occupiedCapacity: 1120,
+    icuBedsTotal: 90,
+    icuBedsAvailable: 14,
+    status: 'near_capacity',
+    contactPerson: 'Dr. P. Balaji',
+    phone: '+91 44 2528 XXXX',
+    hasTraumaCenter: true
+  },
+  {
+    id: 'hosp-10',
+    name: 'Guindy Government Super Specialty Hospital',
+    address: 'King Institute Campus, Guindy, Chennai',
+    lat: 13.009,
+    lng: 80.215,
+    totalCapacity: 300,
+    occupiedCapacity: 285,
+    icuBedsTotal: 35,
+    icuBedsAvailable: 4,
+    status: 'near_capacity',
+    contactPerson: 'Dr. L. Parthasarathy',
+    phone: '+91 44 2234 XXXX',
+    hasTraumaCenter: true
+  },
+  {
+    id: 'hosp-11',
+    name: 'Sundaram Medical Foundation Hospital',
+    address: '9C, 4th Avenue, Shanthi Colony, Anna Nagar, Chennai',
+    lat: 13.086,
+    lng: 80.210,
+    totalCapacity: 220,
+    occupiedCapacity: 190,
+    icuBedsTotal: 25,
+    icuBedsAvailable: 7,
+    status: 'normal',
+    contactPerson: 'Dr. S. Vijayan',
+    phone: '+91 44 2626 XXXX',
+    hasTraumaCenter: true
+  },
+  {
+    id: 'hosp-12',
+    name: 'Kauvery Hospital Alwarpet',
+    address: '199, Luz Church Road, Alwarpet, Chennai',
+    lat: 13.033,
+    lng: 80.252,
+    totalCapacity: 250,
+    occupiedCapacity: 230,
+    icuBedsTotal: 30,
+    icuBedsAvailable: 5,
+    status: 'normal',
+    contactPerson: 'Dr. Aravindan Selvaraj',
+    phone: '+91 44 4000 XXXX',
+    hasTraumaCenter: true
+  },
+  {
+    id: 'hosp-13',
+    name: 'Vijaya Hospital Vadapalani',
+    address: '434, NSK Salai, Vadapalani, Chennai',
+    lat: 13.051,
+    lng: 80.212,
+    totalCapacity: 350,
+    occupiedCapacity: 315,
+    icuBedsTotal: 40,
+    icuBedsAvailable: 9,
+    status: 'normal',
+    contactPerson: 'Dr. B. Bharathi',
+    phone: '+91 44 2480 XXXX',
+    hasTraumaCenter: true
+  },
+  {
+    id: 'hosp-14',
+    name: 'Billroth Hospitals Shenoy Nagar',
+    address: '43, Lakshmi Talkies Road, Shenoy Nagar, Chennai',
+    lat: 13.078,
+    lng: 80.226,
+    totalCapacity: 180,
+    occupiedCapacity: 165,
+    icuBedsTotal: 20,
+    icuBedsAvailable: 3,
+    status: 'near_capacity',
+    contactPerson: 'Dr. Rajesh Jeganathan',
+    phone: '+91 44 2664 XXXX',
+    hasTraumaCenter: true
+  },
+  {
+    id: 'hosp-15',
+    name: 'MGM Healthcare Aminjikarai',
+    address: 'New No 72, Nelson Manickam Road, Aminjikarai, Chennai',
+    lat: 13.074,
+    lng: 80.223,
+    totalCapacity: 400,
+    occupiedCapacity: 370,
+    icuBedsTotal: 50,
+    icuBedsAvailable: 8,
+    status: 'normal',
+    contactPerson: 'Dr. Prashanth Rajagopalan',
+    phone: '+91 44 4524 XXXX',
     hasTraumaCenter: true
   }
 ];
+

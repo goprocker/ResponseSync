@@ -1,6 +1,6 @@
 import React from 'react';
 import { Hospital, ShieldAlert, CheckCircle2, AlertCircle, Phone, MapPin } from 'lucide-react';
-import { EmergencyHospital } from '../../shared/types';
+import { EmergencyHospital, censorPhoneNumber } from '../../shared/types';
 
 interface HospitalsPanelProps {
   hospitals: EmergencyHospital[];
@@ -103,7 +103,7 @@ export default function HospitalsPanel({ hospitals }: HospitalsPanelProps) {
               <div className="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-neutral-400">
                 <span>Contact: {h.contactPerson || 'Disaster Desk'}</span>
                 <span className="flex items-center gap-1 text-brand">
-                  <Phone className="w-3.5 h-3.5" /> {h.phone || '108'}
+                  <Phone className="w-3.5 h-3.5" /> {censorPhoneNumber(h.phone)}
                 </span>
               </div>
 
@@ -115,3 +115,4 @@ export default function HospitalsPanel({ hospitals }: HospitalsPanelProps) {
     </div>
   );
 }
+

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Home, Zap, Heart, CheckCircle2, AlertCircle, Phone, MapPin, Navigation } from 'lucide-react';
-import { EmergencyShelter } from '../../shared/types';
+import { EmergencyShelter, censorPhoneNumber } from '../../shared/types';
 
 interface SheltersPanelProps {
   shelters: EmergencyShelter[];
@@ -104,7 +104,7 @@ export default function SheltersPanel({ shelters }: SheltersPanelProps) {
                 <div className="flex items-center justify-between text-[10px] font-mono text-neutral-400">
                   <span>Camp Lead: {shelter.contactPerson}</span>
                   <span className="flex items-center gap-1 text-brand">
-                    <Phone className="w-3.5 h-3.5" /> {shelter.phone}
+                    <Phone className="w-3.5 h-3.5" /> {censorPhoneNumber(shelter.phone)}
                   </span>
                 </div>
 
