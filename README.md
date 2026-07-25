@@ -397,3 +397,4 @@ Sensor nodes transmit water level depth rates ($d/dt$) every 30 seconds via LoRa
 3. **NASA FIRMS:** Fire Information for Resource Management System (Near Real-Time Thermal Anomalies).
 4. **Open-Meteo API:** Free Weather & Global Flood Hydro-Telemetry API.
 5. **OSRM:** Open Source Routing Machine for Street Network Navigation.
+
