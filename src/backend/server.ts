@@ -33,23 +33,25 @@ const ai = geminiKey ? new GoogleGenAI({
 
 async function callGeminiContent(aiClient: any, params: { model?: string, contents: any, config?: any }) {
   if (!aiClient) return null;
-  const modelName = params.model || 'gemini-2.5-flash';
-  try {
-    const response = await aiClient.models.generateContent({
-      model: modelName,
-      contents: params.contents,
-      config: params.config
-    });
-    return response;
-  } catch (err: any) {
-    const isQuota = err?.status === 'RESOURCE_EXHAUSTED' || err?.code === 429 || (err?.message && (err.message.includes('quota') || err.message.includes('429') || err.message.includes('RESOURCE_EXHAUSTED')));
-    if (isQuota) {
-      console.log(`[Gemini API] Quota limit active (429). Seamlessly using physics & rule engine fallback.`);
-    } else {
-      console.warn(`[Gemini API] Request notice:`, err?.message || err);
+  const targetModels = params.model ? [params.model] : ['gemini-2.0-flash', 'gemini-1.5-flash'];
+  for (const modelName of targetModels) {
+    try {
+      const response = await aiClient.models.generateContent({
+        model: modelName,
+        contents: params.contents,
+        config: params.config
+      });
+      return response;
+    } catch (err: any) {
+      const isQuota = err?.status === 'RESOURCE_EXHAUSTED' || err?.code === 429 || (err?.message && (err.message.includes('quota') || err.message.includes('429') || err.message.includes('RESOURCE_EXHAUSTED')));
+      if (isQuota) {
+        console.log(`[Gemini API] Quota limit active (429). Seamlessly using physics & rule engine fallback.`);
+      } else {
+        console.warn(`[Gemini API] Request notice for model ${modelName}:`, err?.message || err);
+      }
     }
-    return null;
   }
+  return null;
 }
 
 // Initialize Supabase Client with graceful fallback
