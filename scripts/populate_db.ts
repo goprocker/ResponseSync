@@ -508,7 +508,7 @@ async function populateAllDetailedKnowledge() {
       capacity: 1200,
       current_occupancy: 480,
       status: 'open',
-      contact_phone: '+91 44 2243 0001',
+      contact_phone: '+91 44 2243 XXXX',
       has_medical_unit: true,
       has_food_supply: true,
       coordinates: [12.9815, 80.2225]
@@ -520,7 +520,7 @@ async function populateAllDetailedKnowledge() {
       capacity: 850,
       current_occupancy: 620,
       status: 'filling_fast',
-      contact_phone: '+91 44 2234 1122',
+      contact_phone: '+91 44 2234 XXXX',
       has_medical_unit: true,
       has_food_supply: true,
       coordinates: [13.0089, 80.2135]
@@ -532,7 +532,7 @@ async function populateAllDetailedKnowledge() {
       capacity: 600,
       current_occupancy: 150,
       status: 'open',
-      contact_phone: '+91 44 2441 5566',
+      contact_phone: '+91 44 2441 XXXX',
       has_medical_unit: true,
       has_food_supply: true,
       coordinates: [13.0245, 80.2425]
@@ -544,7 +544,7 @@ async function populateAllDetailedKnowledge() {
       capacity: 1500,
       current_occupancy: 310,
       status: 'open',
-      contact_phone: '+91 44 2254 9988',
+      contact_phone: '+91 44 2254 XXXX',
       has_medical_unit: true,
       has_food_supply: true,
       coordinates: [12.9870, 80.2440]
@@ -556,10 +556,46 @@ async function populateAllDetailedKnowledge() {
       capacity: 1000,
       current_occupancy: 520,
       status: 'filling_fast',
-      contact_phone: '+91 44 2435 7766',
+      contact_phone: '+91 44 2435 XXXX',
       has_medical_unit: true,
       has_food_supply: true,
       coordinates: [13.0215, 80.2240]
+    },
+    {
+      id: 'sh-06',
+      name: 'Perungudi Community Hall & Relief Camp',
+      address: 'OMR Road, Perungudi, Chennai',
+      capacity: 900,
+      current_occupancy: 210,
+      status: 'open',
+      contact_phone: '+91 44 2242 XXXX',
+      has_medical_unit: true,
+      has_food_supply: true,
+      coordinates: [12.9680, 80.2450]
+    },
+    {
+      id: 'sh-07',
+      name: 'Madipakkam Panchayat Relief Shelter',
+      address: 'Medavakkam Main Road, Madipakkam, Chennai',
+      capacity: 750,
+      current_occupancy: 340,
+      status: 'open',
+      contact_phone: '+91 44 2491 XXXX',
+      has_medical_unit: false,
+      has_food_supply: true,
+      coordinates: [12.9620, 80.1970]
+    },
+    {
+      id: 'sh-08',
+      name: 'Pallikaranai Wetland Emergency Camp',
+      address: 'Velachery-Tambaram Main Road, Pallikaranai, Chennai',
+      capacity: 1100,
+      current_occupancy: 410,
+      status: 'open',
+      contact_phone: '+91 44 2257 XXXX',
+      has_medical_unit: true,
+      has_food_supply: true,
+      coordinates: [12.9360, 80.2130]
     }
   ];
 
@@ -616,6 +652,22 @@ async function populateAllDetailedKnowledge() {
       status: 'available',
       assigned_zone_id: null,
       coordinates: [12.9860, 80.2420]
+    },
+    {
+      id: 'res-07',
+      name: 'Mobile Medical Response Unit (108 ALS Ambulance #9)',
+      type: 'ambulance',
+      status: 'deployed',
+      assigned_zone_id: 'zone-saidapet-bridge',
+      coordinates: [13.0220, 80.2240]
+    },
+    {
+      id: 'res-08',
+      name: 'State Disaster Response Force (SDRF) Rescue Boat Fleet B',
+      type: 'boat',
+      status: 'available',
+      assigned_zone_id: null,
+      coordinates: [12.9700, 80.2460]
     }
   ];
 
@@ -628,7 +680,7 @@ async function populateAllDetailedKnowledge() {
     {
       id: 'rep-001',
       reporter_name: 'Ramesh Kumar',
-      phone: '+91 98401 23456',
+      phone: '+91 98401 XXXX',
       location_name: 'Velachery Vijaya Nagar Bus Stand',
       coordinates: [12.9785, 80.2205],
       hazard_type: 'waterlogging',
@@ -642,7 +694,7 @@ async function populateAllDetailedKnowledge() {
     {
       id: 'rep-002',
       reporter_name: 'Priya Sundaram',
-      phone: '+91 94440 98765',
+      phone: '+91 94440 XXXX',
       location_name: 'Guindy Railway Subway',
       coordinates: [13.0067, 80.2117],
       hazard_type: 'road_submerged',
@@ -656,7 +708,7 @@ async function populateAllDetailedKnowledge() {
     {
       id: 'rep-003',
       reporter_name: 'Anand Viswanathan',
-      phone: '+91 97900 11223',
+      phone: '+91 97900 XXXX',
       location_name: 'Kotturpuram Riverbank Tenements',
       coordinates: [13.0231, 80.2411],
       hazard_type: 'trapped_citizens',
@@ -666,6 +718,76 @@ async function populateAllDetailedKnowledge() {
       ai_validated_category: 'Verified Riverbank Tenement Flood Risk',
       ai_summary: 'Matches 2015 Chembarambakkam release inundation pattern. NDRF boat dispatch high priority.',
       status: 'pending'
+    },
+    {
+      id: 'rep-004',
+      reporter_name: 'Kavitha Natarajan',
+      phone: '+91 98840 XXXX',
+      location_name: 'Taramani 100ft Road Canal Sluice',
+      coordinates: [12.9863, 80.2432],
+      hazard_type: 'waterlogging',
+      severity: 'medium',
+      description: 'Stormwater canal overflowing onto main arterial road. Garbage silt blocking secondary drainage culvert.',
+      ai_validation_score: 91,
+      ai_validated_category: 'Verified Canal Silt Blockage',
+      ai_summary: 'Verified via IoT Flow Gauge SENSOR-TARAMANI-02. Dewatering pump team notified.',
+      status: 'verified'
+    },
+    {
+      id: 'rep-005',
+      reporter_name: 'Suresh Babu',
+      phone: '+91 91760 XXXX',
+      location_name: 'Madipakkam Bus Stop Junction',
+      coordinates: [12.9642, 80.1985],
+      hazard_type: 'waterlogging',
+      severity: 'high',
+      description: 'Water depth 2ft across residential street. Power transformer sparking near flooded corner.',
+      ai_validation_score: 95,
+      ai_validated_category: 'Verified Inundation & Electrical Risk',
+      ai_summary: 'Substation isolation alert dispatched to Electricity Board. SDRF boat en route.',
+      status: 'in_progress'
+    },
+    {
+      id: 'rep-006',
+      reporter_name: 'Lakshmi Narayanan',
+      phone: '+91 98412 XXXX',
+      location_name: 'Saidapet Bazaar Road',
+      coordinates: [13.0210, 80.2235],
+      hazard_type: 'road_submerged',
+      severity: 'high',
+      description: 'Adyar river overflowing onto Saidapet causeway. Pedestrian crossing closed by traffic police.',
+      ai_validation_score: 93,
+      ai_validated_category: 'Verified River Overflow',
+      ai_summary: 'Hydrodynamic model predicts peak surge at T+45m. Diversion active on OSRM routing.',
+      status: 'verified'
+    },
+    {
+      id: 'rep-007',
+      reporter_name: 'Ganesh Ram',
+      phone: '+91 94451 XXXX',
+      location_name: 'Perungudi Toll Plaza OMR',
+      coordinates: [12.9650, 80.2480],
+      hazard_type: 'other',
+      severity: 'medium',
+      description: 'Large banyan tree uprooted blocking 2 lanes of OMR northbound traffic near Apollo hospital.',
+      ai_validation_score: 89,
+      ai_validated_category: 'Verified Traffic Blockage',
+      ai_summary: 'Tree-cutting squad dispatched with heavy chainsaws.',
+      status: 'in_progress'
+    },
+    {
+      id: 'rep-008',
+      reporter_name: 'Meena Parthasarathy',
+      phone: '+91 98403 XXXX',
+      location_name: 'Pallikaranai Marshland Margin',
+      coordinates: [12.9360, 80.2130],
+      hazard_type: 'waterlogging',
+      severity: 'high',
+      description: 'Water level in residential layout reached 2.2ft. Ground floor residents evacuating to community center.',
+      ai_validation_score: 92,
+      ai_validated_category: 'Verified Marshland Inundation',
+      ai_summary: 'Evacuation bus unit assigned to relocate residents to Pallikaranai relief camp.',
+      status: 'verified'
     }
   ];
 

@@ -221,7 +221,7 @@ export const INITIAL_RESOURCES: EmergencyResource[] = [
     crewCount: 16,
     fuelOrSuppliesPct: 85,
     equipment: ['4x Inflatable Motor Boats', 'Life Jackets x60', 'Satellite Comm', 'Thermal Scanners'],
-    contactNumber: '+91 94440 12345'
+    contactNumber: '+91 94440 XXXX'
   },
   {
     id: 'res-amb-02',
@@ -234,7 +234,7 @@ export const INITIAL_RESOURCES: EmergencyResource[] = [
     crewCount: 3,
     fuelOrSuppliesPct: 92,
     equipment: ['Advanced Life Support', 'Portable Ventilator', 'Trauma Kit'],
-    contactNumber: '+91 94440 67890'
+    contactNumber: '+91 94440 XXXX'
   },
   {
     id: 'res-fire-03',
@@ -247,7 +247,7 @@ export const INITIAL_RESOURCES: EmergencyResource[] = [
     crewCount: 10,
     fuelOrSuppliesPct: 78,
     equipment: ['Heavy High-Capacity Water Pumps (500 HP)', 'Hydraulic Cutters', 'Search Lights'],
-    contactNumber: '+91 44 2243 0101'
+    contactNumber: '+91 44 2243 XXXX'
   },
   {
     id: 'res-police-04',
@@ -260,7 +260,7 @@ export const INITIAL_RESOURCES: EmergencyResource[] = [
     crewCount: 8,
     fuelOrSuppliesPct: 90,
     equipment: ['Road Block Barricades', 'Public Address System', 'Drones'],
-    contactNumber: '+91 44 2345 2000'
+    contactNumber: '+91 44 2345 XXXX'
   },
   {
     id: 'res-relief-05',
@@ -273,7 +273,7 @@ export const INITIAL_RESOURCES: EmergencyResource[] = [
     crewCount: 5,
     fuelOrSuppliesPct: 100,
     equipment: ['2500 Packaged Meals', '5000L Drinking Water Bottles', 'Dry Ration Kits'],
-    contactNumber: '+91 98400 99881'
+    contactNumber: '+91 98400 XXXX'
   }
 ];
 
@@ -291,7 +291,7 @@ export const INITIAL_SHELTERS: EmergencyShelter[] = [
     powerBackup: true,
     status: 'open',
     contactPerson: 'Officer S. Ramesh',
-    phone: '+91 94451 90100'
+    phone: '+91 94451 XXXX'
   },
   {
     id: 'shelter-adyar-govt-school',
@@ -306,7 +306,7 @@ export const INITIAL_SHELTERS: EmergencyShelter[] = [
     powerBackup: true,
     status: 'open',
     contactPerson: 'Dr. M. Deepa',
-    phone: '+91 94451 90200'
+    phone: '+91 94451 XXXX'
   },
   {
     id: 'shelter-guindy-sports-complex',
@@ -321,7 +321,7 @@ export const INITIAL_SHELTERS: EmergencyShelter[] = [
     powerBackup: true,
     status: 'open',
     contactPerson: 'Captain V. Kumar',
-    phone: '+91 94451 90300'
+    phone: '+91 94451 XXXX'
   }
 ];
 
@@ -329,7 +329,7 @@ export const INITIAL_CITIZEN_REPORTS: CitizenReport[] = [
   {
     id: 'report-101',
     reporterName: 'Karthik Subramanian',
-    phone: '+91 98840 11223',
+    phone: '+91 98840 XXXX',
     timestamp: '10 mins ago',
     lat: 12.977,
     lng: 80.221,
@@ -347,7 +347,7 @@ export const INITIAL_CITIZEN_REPORTS: CitizenReport[] = [
   {
     id: 'report-102',
     reporterName: 'Anitha Rajan',
-    phone: '+91 97900 44556',
+    phone: '+91 97900 XXXX',
     timestamp: '22 mins ago',
     lat: 13.012,
     lng: 80.239,
@@ -365,7 +365,7 @@ export const INITIAL_CITIZEN_REPORTS: CitizenReport[] = [
   {
     id: 'report-103',
     reporterName: 'Senthil Kumar',
-    phone: '+91 94430 88776',
+    phone: '+91 94430 XXXX',
     timestamp: '35 mins ago',
     lat: 12.997,
     lng: 80.210,
