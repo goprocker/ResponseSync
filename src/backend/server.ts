@@ -342,24 +342,63 @@ app.get('/api/weather', async (req, res) => {
   });
 });
 
-app.get('/api/risk', (req, res) => {
-  res.json({
-    pilotRegion: 'Chennai Velachery',
-    averageRiskScore: 75.4,
-    criticalZonesCount: 2,
-    totalPopulationAtRisk: 95100,
-    timestamp: new Date().toISOString()
-  });
+app.get('/api/risk', async (req, res) => {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('risk_zones').select('*');
+      if (!error && data && data.length > 0) {
+        const formatted = data.map((z: any) => ({
+          id: z.id,
+          name: z.name,
+          riskScore: z.risk_score,
+          priorityLevel: z.priority_level,
+          populationAtRisk: z.population_at_risk,
+          predictedWaterLevel30m: z.predicted_water_level_30m,
+          predictedWaterLevel1h: z.predicted_water_level_1h,
+          status: z.status,
+          center: z.center_coordinates,
+          coords: [
+            [z.center_coordinates[0] - 0.005, z.center_coordinates[1] - 0.005],
+            [z.center_coordinates[0] + 0.005, z.center_coordinates[1] - 0.005],
+            [z.center_coordinates[0] + 0.005, z.center_coordinates[1] + 0.005],
+            [z.center_coordinates[0] - 0.005, z.center_coordinates[1] + 0.005]
+          ]
+        }));
+        return res.json({ success: true, data: formatted });
+      }
+    } catch (e) {
+      console.warn('Supabase fetch failed for risk_zones:', e);
+    }
+  }
+  res.json({ success: true, data: [] });
 });
 
-app.get('/api/resources', (req, res) => {
-  res.json({
-    totalUnits: 18,
-    deployedCount: 8,
-    enRouteCount: 4,
-    availableCount: 6,
-    timestamp: new Date().toISOString()
-  });
+app.get('/api/hospitals', async (req, res) => {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('hospitals').select('*');
+      if (!error && data && data.length > 0) {
+        const formatted = data.map((h: any) => ({
+          id: h.id,
+          name: h.name,
+          total_beds: h.total_beds,
+          totalCapacity: h.total_beds,
+          available_icu_beds: h.available_icu_beds,
+          availableIcuBeds: h.available_icu_beds,
+          trauma_center_active: h.trauma_center_active,
+          hasTraumaCenter: h.trauma_center_active,
+          status: h.status,
+          coordinates: h.coordinates,
+          lat: h.coordinates?.[0] || 12.98,
+          lng: h.coordinates?.[1] || 80.22
+        }));
+        return res.json({ success: true, data: formatted });
+      }
+    } catch (e) {
+      console.warn('Supabase fetch failed for hospitals:', e);
+    }
+  }
+  res.json({ success: true, data: [] });
 });
 
 app.get('/api/recommendations', (req, res) => {
@@ -1028,9 +1067,31 @@ app.get('/api/shelters', async (req, res) => {
   if (supabase) {
     try {
       const { data, error } = await supabase.from('shelters').select('*');
-      if (!error && data) return res.json({ success: true, data });
+      if (!error && data && data.length > 0) {
+        const formatted = data.map((s: any) => ({
+          id: s.id,
+          name: s.name,
+          address: s.address,
+          totalCapacity: s.capacity || s.totalCapacity || 1000,
+          currentOccupancy: s.current_occupancy ?? s.currentOccupancy ?? 200,
+          capacity: s.capacity,
+          current_occupancy: s.current_occupancy,
+          status: s.status || 'open',
+          contact_phone: s.contact_phone || s.phone,
+          phone: s.contact_phone || s.phone,
+          contactPerson: 'Relief Officer',
+          hasMedicalUnit: s.has_medical_unit ?? true,
+          hasFoodSupply: s.has_food_supply ?? true,
+          has_medical_unit: s.has_medical_unit ?? true,
+          has_food_supply: s.has_food_supply ?? true,
+          coordinates: s.coordinates,
+          lat: s.coordinates?.[0] || 12.98,
+          lng: s.coordinates?.[1] || 80.22
+        }));
+        return res.json({ success: true, data: formatted });
+      }
     } catch (e) {
-      console.warn('Supabase fetch failed for shelters.');
+      console.warn('Supabase fetch failed for shelters:', e);
     }
   }
   res.json({ success: true, data: [] });
@@ -1041,18 +1102,28 @@ app.get('/api/resources', async (req, res) => {
   if (supabase) {
     try {
       const { data, error } = await supabase.from('resources').select('*');
-      if (!error && data) return res.json({ success: true, data });
+      if (!error && data && data.length > 0) {
+        const formatted = data.map((r: any) => ({
+          id: r.id,
+          name: r.name,
+          type: r.type,
+          status: r.status,
+          assignedZoneId: r.assigned_zone_id,
+          assigned_zone_id: r.assigned_zone_id,
+          coordinates: r.coordinates,
+          lat: r.coordinates?.[0] || 12.98,
+          lng: r.coordinates?.[1] || 80.22,
+          crewCount: 4,
+          fuelOrSuppliesPct: 90,
+          contactNumber: '+91 94440 XXXX'
+        }));
+        return res.json({ success: true, data: formatted });
+      }
     } catch (e) {
-      console.warn('Supabase fetch failed for resources.');
+      console.warn('Supabase fetch failed for resources:', e);
     }
   }
-  res.json({
-    totalUnits: 18,
-    deployedCount: 8,
-    enRouteCount: 4,
-    availableCount: 6,
-    timestamp: new Date().toISOString()
-  });
+  res.json({ success: true, data: [] });
 });
 
 // Decision Knowledge Base Endpoint

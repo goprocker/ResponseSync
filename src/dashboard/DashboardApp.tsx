@@ -133,22 +133,43 @@ export default function DashboardApp({ onBackToLanding, initialTab, initialRole,
   const [recommendations, setRecommendations] = useState<ExplainableAIRecommendation[]>(INITIAL_RECOMMENDATIONS);
   const [alerts, setAlerts] = useState<AutomatedAlert[]>(INITIAL_ALERTS);
 
-  // Fetch active citizen reports from backend/Supabase on mount
+  // Fetch active database records from backend/Supabase on mount
   useEffect(() => {
-    async function fetchReports() {
+    async function fetchAllData() {
       try {
-        const resp = await fetch('/api/reports');
-        if (resp.ok) {
-          const json = await resp.json();
-          if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-            setReports(json.data);
-          }
+        const [repRes, shRes, hospRes, resRes, zoneRes] = await Promise.all([
+          fetch('/api/reports'),
+          fetch('/api/shelters'),
+          fetch('/api/hospitals'),
+          fetch('/api/resources'),
+          fetch('/api/risk')
+        ]);
+
+        if (repRes.ok) {
+          const json = await repRes.json();
+          if (json.success && Array.isArray(json.data) && json.data.length > 0) setReports(json.data);
+        }
+        if (shRes.ok) {
+          const json = await shRes.json();
+          if (json.success && Array.isArray(json.data) && json.data.length > 0) setShelters(json.data);
+        }
+        if (hospRes.ok) {
+          const json = await hospRes.json();
+          if (json.success && Array.isArray(json.data) && json.data.length > 0) setHospitals(json.data);
+        }
+        if (resRes.ok) {
+          const json = await resRes.json();
+          if (json.success && Array.isArray(json.data) && json.data.length > 0) setResources(json.data);
+        }
+        if (zoneRes.ok) {
+          const json = await zoneRes.json();
+          if (json.success && Array.isArray(json.data) && json.data.length > 0) setZones(json.data);
         }
       } catch (err) {
-        console.warn('Initial reports fetch warning:', err);
+        console.warn('Initial database data fetch warning:', err);
       }
     }
-    fetchReports();
+    fetchAllData();
   }, []);
 
   // Custom Hooks
